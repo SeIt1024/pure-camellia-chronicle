@@ -1196,7 +1196,7 @@
             }
         }
 
-        // ===== CLOUD STORAGE FUNCTIONS (Updated for {"articles": []} structure) =====
+        // ===== CLOUD STORAGE FUNCTIONS (Public Bins) =====
         function getCloudConfig() {
             const apiKey = localStorage.getItem('jsonbin_api_key');
             const articlesBinId = localStorage.getItem('jsonbin_articles_bin');
@@ -1214,50 +1214,46 @@
             const config = getCloudConfig();
             if (!config) return Promise.reject('No config');
 
-            return fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
-                headers: {
-                    'X-Master-Key': config.apiKey
-                }
-            })
-            .then(response => response.json())
-            .then(response => {
-                let existingData = response.record;
-                let articlesArray = [];
-                
-                if (existingData && typeof existingData === 'object' && existingData.articles) {
-                    articlesArray = existingData.articles || [];
-                } else if (Array.isArray(existingData)) {
-                    articlesArray = existingData;
-                } else if (existingData && typeof existingData === 'object') {
-                    articlesArray = [existingData];
-                } else {
-                    articlesArray = [];
-                }
-                
-                articlesArray.push(data);
-                
-                const updateData = {
-                    articles: articlesArray
-                };
-                
-                return fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Master-Key': config.apiKey
-                    },
-                    body: JSON.stringify(updateData)
+            // First, get existing data from public endpoint
+            return fetch(`https://api.jsonbin.io/v3/b/${binId}/latest?meta=false`)
+                .then(response => response.json())
+                .then(existingData => {
+                    let articlesArray = [];
+                    
+                    if (existingData && typeof existingData === 'object' && existingData.articles) {
+                        articlesArray = existingData.articles || [];
+                    } else if (Array.isArray(existingData)) {
+                        articlesArray = existingData;
+                    } else if (existingData && typeof existingData === 'object') {
+                        articlesArray = [existingData];
+                    } else {
+                        articlesArray = [];
+                    }
+                    
+                    articlesArray.push(data);
+                    
+                    const updateData = {
+                        articles: articlesArray
+                    };
+                    
+                    return fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Master-Key': config.apiKey
+                        },
+                        body: JSON.stringify(updateData)
+                    });
+                })
+                .then(response => response.json())
+                .then(result => {
+                    console.log(`✅ ${type} saved to cloud:`, result);
+                    return result;
+                })
+                .catch(error => {
+                    console.error(`❌ Error saving ${type}:`, error);
+                    throw error;
                 });
-            })
-            .then(response => response.json())
-            .then(result => {
-                console.log(`✅ ${type} saved to cloud:`, result);
-                return result;
-            })
-            .catch(error => {
-                console.error(`❌ Error saving ${type}:`, error);
-                throw error;
-            });
         }
 
         // ===== IMAGE PREVIEW =====
