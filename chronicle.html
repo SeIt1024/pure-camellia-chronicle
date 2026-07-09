@@ -624,39 +624,40 @@
             return { apiKey, articlesBinId };
         }
 
-        // ===== LOAD ARTICLES FROM CLOUD =====
+        // ===== LOAD ARTICLES FROM PUBLIC JSONBin =====
         function loadArticles() {
             const config = getCloudConfig();
             const grid = document.getElementById('articlesGrid');
-
             const comingSoonCards = grid.querySelectorAll('.article-card[style*="opacity:0.6"]');
 
-            if (config) {
-                fetch(`https://api.jsonbin.io/v3/b/${config.articlesBinId}?meta=false`, {
-                    headers: {
-                        'X-Master-Key': config.apiKey
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    let articles = [];
-                    
-                    // Handle {"articles": []} structure
-                    if (data && typeof data === 'object' && data.articles) {
-                        articles = data.articles || [];
-                    } else if (Array.isArray(data)) {
-                        articles = data;
-                    } else if (data && typeof data === 'object') {
-                        articles = [data];
-                    }
-                    
-                    displayArticles(articles, grid, comingSoonCards);
-                    updateFeaturedCard(articles);
-                })
-                .catch(error => {
-                    console.error('❌ Error loading from cloud:', error);
-                    loadFromLocalStorage(grid, comingSoonCards);
-                });
+            if (config && config.articlesBinId) {
+                // Use public endpoint (no API key needed for reading)
+                const publicUrl = `https://api.jsonbin.io/v3/b/${config.articlesBinId}/latest?meta=false`;
+                
+                fetch(publicUrl)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Public fetch failed');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        let articles = [];
+                        if (data && typeof data === 'object' && data.articles) {
+                            articles = data.articles || [];
+                        } else if (Array.isArray(data)) {
+                            articles = data;
+                        } else if (data && typeof data === 'object') {
+                            articles = [data];
+                        }
+                        displayArticles(articles, grid, comingSoonCards);
+                        updateFeaturedCard(articles);
+                    })
+                    .catch(error => {
+                        console.error('❌ Error loading from public URL:', error);
+                        // Fallback to localStorage
+                        loadFromLocalStorage(grid, comingSoonCards);
+                    });
             } else {
                 loadFromLocalStorage(grid, comingSoonCards);
             }
