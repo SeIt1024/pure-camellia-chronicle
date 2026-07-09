@@ -629,11 +629,9 @@
             const config = getCloudConfig();
             const grid = document.getElementById('articlesGrid');
 
-            // Keep coming soon cards as fallback
             const comingSoonCards = grid.querySelectorAll('.article-card[style*="opacity:0.6"]');
 
             if (config) {
-                // Load from cloud
                 fetch(`https://api.jsonbin.io/v3/b/${config.articlesBinId}?meta=false`, {
                     headers: {
                         'X-Master-Key': config.apiKey
@@ -641,17 +639,25 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    const articles = Array.isArray(data) ? data : [];
+                    let articles = [];
+                    
+                    // Handle {"articles": []} structure
+                    if (data && typeof data === 'object' && data.articles) {
+                        articles = data.articles || [];
+                    } else if (Array.isArray(data)) {
+                        articles = data;
+                    } else if (data && typeof data === 'object') {
+                        articles = [data];
+                    }
+                    
                     displayArticles(articles, grid, comingSoonCards);
                     updateFeaturedCard(articles);
                 })
                 .catch(error => {
                     console.error('❌ Error loading from cloud:', error);
-                    // Fallback to localStorage
                     loadFromLocalStorage(grid, comingSoonCards);
                 });
             } else {
-                // Fallback to localStorage
                 loadFromLocalStorage(grid, comingSoonCards);
             }
         }
@@ -663,20 +669,15 @@
         }
 
         function displayArticles(articles, grid, comingSoonCards) {
-            // Remove existing published cards (keep coming soon)
             const publishedCards = grid.querySelectorAll('.article-card:not([style*="opacity:0.6"])');
             publishedCards.forEach(card => card.remove());
 
-            // If no articles, keep coming soon cards
             if (articles.length === 0) {
-                // Coming soon cards already exist
                 return;
             }
 
-            // Sort by day
             articles.sort((a, b) => parseInt(a.day) - parseInt(b.day));
 
-            // Create cards for each article
             articles.forEach(article => {
                 const card = document.createElement('div');
                 card.className = 'article-card';
@@ -698,7 +699,6 @@
                         <a href="${article.link}" target="_blank" class="read-link">Read Full Story →</a>
                     </div>
                 `;
-                // Insert before the first coming soon card
                 if (comingSoonCards.length > 0) {
                     grid.insertBefore(card, comingSoonCards[0]);
                 } else {
@@ -710,7 +710,6 @@
         function updateFeaturedCard(articles) {
             if (!articles || articles.length === 0) return;
 
-            // Get the latest article (highest day number)
             const sorted = [...articles].sort((a, b) => parseInt(b.day) - parseInt(a.day));
             const latest = sorted[0];
 
@@ -722,8 +721,6 @@
                 imageDiv.style.backgroundImage = `url('${latest.imageData}')`;
                 imageDiv.style.backgroundSize = 'cover';
                 imageDiv.style.backgroundPosition = 'center';
-            } else if (imageDiv) {
-                imageDiv.style.backgroundImage = 'linear-gradient(135deg, var(--mid), var(--dark))';
             }
 
             document.getElementById('featuredBadge').textContent = `Day ${latest.day}`;
@@ -739,7 +736,6 @@
             loadArticles();
         });
 
-        // Also reload when returning from admin page
         window.addEventListener('pageshow', function(e) {
             if (e.persisted) {
                 loadArticles();
