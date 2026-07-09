@@ -1,0 +1,1566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin — Pure Camellia</title>
+    <link rel="icon" type="image/png" href="images/logo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        /* ===== GLOBAL ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --dark: #1a3c2a;
+            --mid: #2d5a3d;
+            --gold: #b8860b;
+            --cream: #f5f0e8;
+            --light-gold: #d4a843;
+            --shadow: rgba(26,60,42,0.12);
+            --red: #b33;
+            --green: #2a7a4a;
+            --blue: #2a7a8a;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--cream);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+        }
+        a { text-decoration: none; color: inherit; }
+        img { max-width: 100%; display: block; }
+
+        /* ===== HEADER ===== */
+        .site-header {
+            background: var(--dark);
+            padding: 14px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 2px solid var(--gold);
+        }
+        .site-header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .logo a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo a img {
+            height: 40px;
+            width: auto;
+            display: block;
+        }
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #fff;
+        }
+        .logo-text span { color: var(--gold); }
+        .logo-sub {
+            font-size: 0.65rem;
+            color: rgba(255,255,255,0.5);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            display: block;
+            margin-top: -2px;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            list-style: none;
+        }
+        .nav-links a {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+            transition: color 0.3s;
+            position: relative;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gold);
+            transition: width 0.3s;
+        }
+        .nav-links a:hover { color: #fff; }
+        .nav-links a:hover::after { width: 100%; }
+        .nav-cta {
+            background: var(--gold);
+            color: var(--dark) !important;
+            padding: 8px 22px;
+            border-radius: 50px;
+            font-weight: 600 !important;
+        }
+        .nav-cta::after { display: none !important; }
+        .nav-cta:hover { background: var(--light-gold) !important; }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+        }
+        .menu-toggle span {
+            display: block;
+            width: 26px;
+            height: 2.5px;
+            background: #fff;
+            border-radius: 2px;
+        }
+
+        /* ===== ADMIN ===== */
+        .admin-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 24px;
+        }
+
+        /* ===== LOGIN CARD ===== */
+        .admin-card {
+            background: #fff;
+            padding: 40px 44px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px var(--shadow);
+            text-align: center;
+        }
+        .admin-card .icon {
+            font-size: 3rem;
+            margin-bottom: 12px;
+        }
+        .admin-card h1 {
+            font-size: 2.2rem;
+            margin-bottom: 4px;
+        }
+        .admin-card .sub {
+            color: #888;
+            margin-bottom: 24px;
+        }
+        .admin-card .lock {
+            color: var(--red);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .admin-card p {
+            color: #5a6b5e;
+            margin-bottom: 20px;
+        }
+
+        .btn-admin {
+            display: inline-block;
+            background: var(--gold);
+            color: var(--dark);
+            padding: 14px 48px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .btn-admin:hover {
+            background: var(--light-gold);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(184,134,11,0.3);
+        }
+
+        /* ===== LOGIN FORM ===== */
+        .login-form {
+            display: none;
+            margin-top: 24px;
+            text-align: left;
+        }
+        .login-form label {
+            display: block;
+            font-weight: 500;
+            margin-top: 14px;
+            font-size: 0.9rem;
+        }
+        .login-form input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-top: 4px;
+            transition: border-color 0.3s;
+        }
+        .login-form input:focus {
+            border-color: var(--gold);
+            outline: none;
+        }
+        .login-form .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .login-form .form-options a {
+            color: var(--gold);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .login-form .form-options a:hover {
+            color: var(--light-gold);
+            text-decoration: underline;
+        }
+        .login-form button {
+            margin-top: 20px;
+            width: 100%;
+            background: var(--gold);
+            color: var(--dark);
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .login-form button:hover {
+            background: var(--light-gold);
+        }
+        .login-error {
+            color: var(--red);
+            font-size: 0.85rem;
+            margin-top: 10px;
+            display: none;
+            text-align: center;
+        }
+        .login-success {
+            display: none;
+            text-align: center;
+            padding: 16px;
+            background: #e6f4ea;
+            border-radius: 12px;
+            color: var(--green);
+            margin-top: 16px;
+        }
+
+        /* ===== FORGOT PASSWORD ===== */
+        .forgot-password-form {
+            display: none;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            text-align: left;
+        }
+        .forgot-password-form h4 {
+            font-size: 1.1rem;
+            margin-bottom: 6px;
+            color: var(--dark);
+        }
+        .forgot-password-form p {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 14px;
+        }
+        .forgot-password-form input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-top: 4px;
+        }
+        .forgot-password-form input:focus {
+            border-color: var(--gold);
+            outline: none;
+        }
+        .forgot-password-form .btn-reset {
+            width: 100%;
+            background: var(--dark);
+            color: #fff;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 12px;
+        }
+        .forgot-password-form .btn-reset:hover {
+            background: var(--gold);
+            color: var(--dark);
+        }
+        .forgot-password-form .back-to-login {
+            display: block;
+            text-align: center;
+            margin-top: 12px;
+            color: var(--gold);
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+        .forgot-password-form .back-to-login:hover {
+            text-decoration: underline;
+        }
+        .reset-message {
+            display: none;
+            text-align: center;
+            padding: 16px;
+            background: #e6f4ea;
+            border-radius: 12px;
+            color: var(--green);
+            margin-top: 14px;
+        }
+
+        /* ===== PUBLISH SECTION ===== */
+        .publish-section {
+            display: none;
+            background: #fff;
+            padding: 36px 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px var(--shadow);
+            margin-top: 30px;
+        }
+        .publish-section .section-title {
+            font-size: 1.6rem;
+            margin-bottom: 6px;
+            color: var(--dark);
+        }
+        .publish-section .section-sub {
+            color: #888;
+            margin-bottom: 24px;
+        }
+        .publish-section .form-group {
+            margin-bottom: 20px;
+        }
+        .publish-section label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+            color: var(--dark);
+        }
+        .publish-section label .required {
+            color: var(--red);
+            margin-left: 2px;
+        }
+        .publish-section label .hint {
+            font-weight: 400;
+            color: #888;
+            font-size: 0.8rem;
+        }
+        .publish-section input,
+        .publish-section select,
+        .publish-section textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: border-color 0.3s;
+            background: #fafafa;
+        }
+        .publish-section input:focus,
+        .publish-section select:focus,
+        .publish-section textarea:focus {
+            border-color: var(--gold);
+            outline: none;
+            background: #fff;
+        }
+        .publish-section textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        .publish-section .file-input-wrapper input[type="file"] {
+            padding: 10px;
+            background: #fafafa;
+            cursor: pointer;
+        }
+        .publish-section .file-input-wrapper .file-name {
+            font-size: 0.85rem;
+            color: #888;
+            margin-top: 4px;
+        }
+        .publish-section .image-preview {
+            margin-top: 10px;
+            max-width: 200px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid #eee;
+            display: none;
+        }
+        .publish-section .image-preview img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .publish-section .btn-publish {
+            width: 100%;
+            background: var(--gold);
+            color: var(--dark);
+            padding: 16px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        .publish-section .btn-publish:hover {
+            background: var(--light-gold);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(184,134,11,0.3);
+        }
+        .publish-section .btn-publish:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ===== CONFIG SECTION ===== */
+        .config-section {
+            display: none;
+            background: #fff;
+            padding: 30px 36px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px var(--shadow);
+            margin-top: 30px;
+        }
+        .config-section h2 {
+            font-size: 1.4rem;
+            margin-bottom: 4px;
+        }
+        .config-section .sub {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+        }
+        .config-section .form-group {
+            margin-bottom: 14px;
+        }
+        .config-section label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+        }
+        .config-section input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+        }
+        .config-section input:focus {
+            border-color: var(--gold);
+            outline: none;
+        }
+        .config-section .btn-save {
+            background: var(--blue);
+            color: #fff;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 6px;
+        }
+        .config-section .btn-save:hover {
+            background: var(--dark);
+            transform: translateY(-2px);
+        }
+        .config-status {
+            font-size: 0.85rem;
+            margin-top: 10px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            display: none;
+        }
+        .config-status.success {
+            display: block;
+            background: #e6f4ea;
+            color: var(--green);
+        }
+        .config-status.error {
+            display: block;
+            background: #fde8e8;
+            color: var(--red);
+        }
+
+        /* ===== CONFIRMATION DIALOG ===== */
+        .dialog-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(4px);
+        }
+        .dialog-overlay.active {
+            display: flex;
+        }
+        .dialog-box {
+            background: #fff;
+            padding: 36px 40px;
+            border-radius: 20px;
+            max-width: 480px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+            animation: dialogFadeIn 0.3s ease;
+        }
+        @keyframes dialogFadeIn {
+            from { opacity: 0; transform: scale(0.95) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .dialog-box .dialog-icon {
+            font-size: 3rem;
+            margin-bottom: 12px;
+        }
+        .dialog-box h3 {
+            font-size: 1.4rem;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+        .dialog-box p {
+            color: #5a6b5e;
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+        }
+        .dialog-box .dialog-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .dialog-box .dialog-buttons button {
+            padding: 10px 32px;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .dialog-box .btn-confirm {
+            background: var(--gold);
+            color: var(--dark);
+        }
+        .dialog-box .btn-confirm:hover {
+            background: var(--light-gold);
+            transform: scale(1.02);
+        }
+        .dialog-box .btn-cancel {
+            background: #eee;
+            color: #555;
+        }
+        .dialog-box .btn-cancel:hover {
+            background: #ddd;
+        }
+        .dialog-box .btn-success {
+            background: var(--green);
+            color: #fff;
+        }
+        .dialog-box .btn-success:hover {
+            background: #1d6a3a;
+            transform: scale(1.02);
+        }
+
+        /* ===== TOAST ===== */
+        .toast {
+            display: none;
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--green);
+            color: #fff;
+            padding: 16px 28px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            z-index: 1100;
+            animation: slideUp 0.4s ease;
+            max-width: 400px;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .toast .toast-title {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        .toast .toast-desc {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        /* ===== STATS ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 16px;
+            text-align: center;
+            margin: 20px 0 10px;
+        }
+        .stats-grid .stat-item .stat-number {
+            display: block;
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--gold);
+        }
+        .stats-grid .stat-item .stat-label {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        /* ===== FOOTER ===== */
+        .site-footer {
+            background: #0d1f14;
+            color: rgba(255,255,255,0.5);
+            padding: 32px 0;
+            border-top: 1px solid rgba(255,255,255,0.04);
+            margin-top: 60px;
+        }
+        .site-footer .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Playfair Display', serif;
+            color: #fff;
+        }
+        .footer-logo img {
+            height: 32px;
+            width: auto;
+            display: block;
+        }
+        .footer-logo span { color: var(--gold); }
+        .footer-socials { display: flex; gap: 20px; }
+        .footer-socials a {
+            color: rgba(255,255,255,0.4);
+            font-size: 0.85rem;
+            transition: color 0.3s;
+        }
+        .footer-socials a:hover { color: var(--gold); }
+        .footer-copy { font-size: 0.8rem; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 700px) {
+            .menu-toggle { display: flex; }
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                padding: 16px 0 8px;
+                gap: 14px;
+            }
+            .nav-links.open { display: flex; }
+            .admin-card { padding: 28px 20px; }
+            .admin-card h1 { font-size: 1.6rem; }
+            .publish-section { padding: 24px 20px; }
+            .config-section { padding: 20px 18px; }
+            .login-form .form-options {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .dialog-box {
+                padding: 28px 24px;
+            }
+            .toast {
+                bottom: 16px;
+                right: 16px;
+                left: 16px;
+                max-width: none;
+            }
+        }
+        @media (max-width: 480px) {
+            .logo-text { font-size: 1.1rem; }
+            .admin-container { margin: 20px auto; }
+            .admin-card { padding: 20px 16px; }
+            .publish-section { padding: 20px 16px; }
+            .config-section { padding: 16px 14px; }
+            .footer-logo img { height: 26px; }
+            .dialog-box .dialog-buttons button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== HEADER ===== -->
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">
+                <a href="index.html">
+                    <img src="images/logo.png" alt="Pure Camellia Chronicle Logo" />
+                    <div>
+                        <span class="logo-text">Pure Camellia <span>Chronicle</span></span>
+                        <span class="logo-sub">565 Days of Tea History</span>
+                    </div>
+                </a>
+            </div>
+            <button class="menu-toggle" onclick="this.classList.toggle('open'); document.querySelector('.nav-links').classList.toggle('open')">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="chronicle.html">The Chronicle</a></li>
+                <li><a href="vault.html">Tea Vault</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="newsletter.html">Newsletter</a></li>
+                <li><a href="admin.html" class="nav-cta">Admin</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- ===== ADMIN CONTAINER ===== -->
+    <div class="admin-container">
+
+        <!-- ===== LOGIN CARD ===== -->
+        <div class="admin-card" id="loginCard">
+            <div class="icon">🔐</div>
+            <h1>Admin Dashboard</h1>
+            <p class="sub">Publish and manage your tea chronicle</p>
+
+            <div class="lock" id="loginLock">⛔ You need to be logged in to access the publishing dashboard.</div>
+            <p id="loginMessage">Use your secure credentials to log in and manage articles, reviews, and site content.</p>
+
+            <button class="btn-admin" id="loginBtn" onclick="showLoginForm()">Login →</button>
+
+            <div id="loginForm" class="login-form">
+                <form onsubmit="return handleLogin(event)">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="your@email.com" value="manoranjanise@gmail.com" />
+
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="••••••••" />
+
+                    <div class="form-options">
+                        <span style="font-size:0.85rem; color:#888;">
+                            <input type="checkbox" id="rememberMe" /> Remember me
+                        </span>
+                        <a onclick="showForgotPassword()">Forgot password?</a>
+                    </div>
+
+                    <button type="submit">🔑 Login</button>
+                    <div id="loginError" class="login-error">❌ Invalid email or password. Please try again.</div>
+                    <div id="loginSuccess" class="login-success">
+                        ✅ <strong>Login successful!</strong><br />
+                        Welcome to the Pure Camellia Chronicle admin dashboard.
+                    </div>
+                </form>
+
+                <div id="forgotPasswordForm" class="forgot-password-form">
+                    <h4>🔐 Reset Your Password</h4>
+                    <p>Enter your email address and we'll send you a link to reset your password.</p>
+                    <input type="email" id="resetEmail" placeholder="Enter your email" value="manoranjanise@gmail.com" />
+                    <button class="btn-reset" onclick="handlePasswordReset()">Send Reset Link</button>
+                    <div id="resetMessage" class="reset-message">
+                        <span class="check-icon">✅</span>
+                        A password reset link has been sent to your email address.
+                    </div>
+                    <a class="back-to-login" onclick="hideForgotPassword()">← Back to Login</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== CONFIGURATION SECTION ===== -->
+        <div class="config-section" id="configSection">
+            <h2>⚙️ Cloud Storage Setup</h2>
+            <p class="sub">Enter your JSONBin.io credentials to save articles to the cloud.</p>
+
+            <div class="form-group">
+                <label>API Key <span class="required">*</span></label>
+                <input type="text" id="apiKey" placeholder="Paste your JSONBin API Key" />
+            </div>
+
+            <div class="form-group">
+                <label>Articles Bin ID <span class="required">*</span></label>
+                <input type="text" id="articlesBinId" placeholder="e.g., 123456789" />
+            </div>
+
+            <div class="form-group">
+                <label>Reviews Bin ID <span class="required">*</span></label>
+                <input type="text" id="reviewsBinId" placeholder="e.g., 987654321" />
+            </div>
+
+            <button class="btn-save" onclick="saveConfig()">💾 Save Configuration</button>
+
+            <div id="configStatus" class="config-status"></div>
+            <p style="font-size:0.8rem; color:#888; margin-top:10px;">
+                💡 Get your API Key and Bin IDs from <a href="https://jsonbin.io" target="_blank" style="color:var(--gold);">jsonbin.io</a>
+            </p>
+        </div>
+
+        <!-- ===== PUBLISH ARTICLE SECTION ===== -->
+        <div class="publish-section" id="publishSection">
+            <h2 class="section-title">📝 Publish New Article</h2>
+            <p class="section-sub">Fill in the details below to publish a new day's article.</p>
+
+            <form id="publishForm" onsubmit="return false;">
+
+                <div class="form-group">
+                    <label>Day Number <span class="required">*</span></label>
+                    <input type="number" id="dayNumber" placeholder="e.g., 5" min="1" max="565" required />
+                </div>
+
+                <div class="form-group">
+                    <label>Article Title <span class="required">*</span></label>
+                    <input type="text" id="articleTitle" placeholder="e.g., The Deadly Guessing Game" required />
+                </div>
+
+                <div class="form-group">
+                    <label>Era / Date <span class="required">*</span></label>
+                    <input type="text" id="articleEra" placeholder="e.g., 2737 BCE" required />
+                </div>
+
+                <div class="form-group">
+                    <label>Category <span class="required">*</span></label>
+                    <select id="articleCategory" required>
+                        <option value="">Select a category...</option>
+                        <option value="History">History</option>
+                        <option value="People">People</option>
+                        <option value="Science">Science</option>
+                        <option value="Manufacturing">Manufacturing</option>
+                        <option value="Culture">Culture</option>
+                        <option value="Philosophy">Philosophy</option>
+                        <option value="Brand">Brand</option>
+                        <option value="Estates">Estates</option>
+                        <option value="Beauty">Beauty</option>
+                        <option value="Stories">Stories</option>
+                        <option value="Community">Community</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Excerpt (For Card) <span class="required">*</span></label>
+                    <textarea id="articleExcerpt" placeholder="Brief description of the article for the card..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Canva Article Link <span class="required">*</span></label>
+                    <input type="url" id="articleLink" placeholder="https://purecammellia1.my.canva.site/day-5" required />
+                </div>
+
+                <div class="form-group">
+                    <label>Card Image <span class="required">*</span> <span class="hint">(Recommended: 800x500px, JPG or PNG)</span></label>
+                    <div class="file-input-wrapper">
+                        <input type="file" id="articleImage" accept="image/*" onchange="previewImage(event)" required />
+                        <div class="file-name" id="fileName">No file chosen</div>
+                    </div>
+                    <div class="image-preview" id="imagePreview">
+                        <img id="previewImg" src="#" alt="Image preview" />
+                    </div>
+                </div>
+
+                <button type="button" class="btn-publish" id="publishBtn" onclick="startPublishProcess()">
+                    ☁️ Publish Article to Cloud
+                </button>
+            </form>
+        </div>
+
+        <!-- ===== PUBLISH REVIEW SECTION ===== -->
+        <div class="publish-section" id="reviewPublishSection">
+            <h2 class="section-title">🍃 Publish Tea Review</h2>
+            <p class="section-sub">Fill in the details below to publish a new tea review.</p>
+
+            <form id="reviewPublishForm" onsubmit="return false;">
+
+                <div class="form-group">
+                    <label>Review ID <span class="required">*</span></label>
+                    <input type="number" id="reviewId" placeholder="e.g., 1" min="1" required />
+                </div>
+
+                <div class="form-group">
+                    <label>Tea Name / Title <span class="required">*</span></label>
+                    <input type="text" id="reviewTitle" placeholder="e.g., Loolecondera Estate" required />
+                </div>
+
+                <div class="form-group">
+                    <label>Official Grade <span class="required">*</span></label>
+                    <input type="text" id="reviewGrade" placeholder="e.g., Orange Pekoe (OP)" required />
+                </div>
+
+                <div class="form-group">
+                    <label>Origin <span class="required">*</span></label>
+                    <input type="text" id="reviewOrigin" placeholder="e.g., 🇱🇰 Ceylon" required />
+                </div>
+
+                <div class="form-group">
+                    <label>Estate / Region</label>
+                    <input type="text" id="reviewEstate" placeholder="e.g., Single Estate, Dimbula Valley" />
+                </div>
+
+                <div class="form-group">
+                    <label>Excerpt <span class="required">*</span></label>
+                    <textarea id="reviewExcerpt" placeholder="Brief description of the tea..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Review Link <span class="required">*</span></label>
+                    <input type="url" id="reviewLink" placeholder="https://purecammellia1.my.canva.site/review-1" required />
+                </div>
+
+                <div class="form-group">
+                    <label>Card Image <span class="required">*</span> <span class="hint">(Recommended: 800x500px, JPG or PNG)</span></label>
+                    <div class="file-input-wrapper">
+                        <input type="file" id="reviewImage" accept="image/*" onchange="previewReviewImage(event)" required />
+                        <div class="file-name" id="reviewFileName">No file chosen</div>
+                    </div>
+                    <div class="image-preview" id="reviewImagePreview">
+                        <img id="reviewPreviewImg" src="#" alt="Image preview" />
+                    </div>
+                </div>
+
+                <button type="button" class="btn-publish" id="publishReviewBtn" onclick="startReviewPublish()">
+                    ☁️ Publish Review to Cloud
+                </button>
+            </form>
+        </div>
+
+        <!-- ===== QUICK STATS ===== -->
+        <div style="margin-top:30px; background:#fff; padding:24px; border-radius:16px; box-shadow:0 4px 20px var(--shadow);">
+            <h3 style="font-size:1.2rem; margin-bottom:8px;">📋 Quick Stats</h3>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number" id="publishedCount">0</span>
+                    <span class="stat-label">Articles Published</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="reviewCount">0</span>
+                    <span class="stat-label">Tea Reviews</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="cloudStatus">❌</span>
+                    <span class="stat-label">Cloud Status</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="daysRemaining">565</span>
+                    <span class="stat-label">Days Remaining</span>
+                </div>
+            </div>
+            <p style="font-size:0.8rem; color:#aaa; text-align:center; margin-top:12px;">
+                <a href="chronicle.html" style="color:var(--gold);">← Back to The Chronicle</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- ===== ARTICLE CONFIRMATION DIALOGS ===== -->
+    <div class="dialog-overlay" id="dialog1">
+        <div class="dialog-box">
+            <div class="dialog-icon">📝</div>
+            <h3>Publish Article?</h3>
+            <p id="dialog1Text">Are you sure you want to publish this article? It will appear on your website immediately.</p>
+            <div class="dialog-buttons">
+                <button class="btn-cancel" onclick="closeDialog('dialog1')">Cancel</button>
+                <button class="btn-confirm" onclick="confirmPublish()">Yes, Publish</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="dialog-overlay" id="dialog2">
+        <div class="dialog-box">
+            <div class="dialog-icon">⚠️</div>
+            <h3>Final Confirmation</h3>
+            <p id="dialog2Text">This action cannot be undone. Are you absolutely sure you want to publish this article?</p>
+            <div class="dialog-buttons">
+                <button class="btn-cancel" onclick="closeDialog('dialog2')">Cancel</button>
+                <button class="btn-confirm" onclick="finalPublish()">Yes, Publish Now</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="dialog-overlay" id="successDialog">
+        <div class="dialog-box">
+            <div class="dialog-icon">🎉</div>
+            <h3>Published Successfully!</h3>
+            <p id="successText">Your article has been published and is now live on your website.</p>
+            <div class="dialog-buttons">
+                <button class="btn-success" onclick="closeSuccessDialog()">View Article →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== REVIEW CONFIRMATION DIALOGS ===== -->
+    <div class="dialog-overlay" id="reviewDialog1">
+        <div class="dialog-box">
+            <div class="dialog-icon">🍃</div>
+            <h3>Publish Review?</h3>
+            <p id="reviewDialog1Text">Are you sure you want to publish this review?</p>
+            <div class="dialog-buttons">
+                <button class="btn-cancel" onclick="closeDialog('reviewDialog1')">Cancel</button>
+                <button class="btn-confirm" onclick="confirmReviewPublish()">Yes, Publish</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="dialog-overlay" id="reviewDialog2">
+        <div class="dialog-box">
+            <div class="dialog-icon">⚠️</div>
+            <h3>Final Confirmation</h3>
+            <p id="reviewDialog2Text">This action cannot be undone. Are you absolutely sure?</p>
+            <div class="dialog-buttons">
+                <button class="btn-cancel" onclick="closeDialog('reviewDialog2')">Cancel</button>
+                <button class="btn-confirm" onclick="finalReviewPublish()">Yes, Publish Now</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="dialog-overlay" id="reviewSuccessDialog">
+        <div class="dialog-box">
+            <div class="dialog-icon">🎉</div>
+            <h3>Published Successfully!</h3>
+            <p id="reviewSuccessText">Your review has been published and is now live on the Vault page.</p>
+            <div class="dialog-buttons">
+                <button class="btn-success" onclick="closeReviewSuccessDialog()">View Vault →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== TOAST ===== -->
+    <div class="toast" id="toast">
+        <div class="toast-title">✅ Success</div>
+        <div class="toast-desc" id="toastDesc">Published successfully!</div>
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-logo">
+                <img src="images/logo.png" alt="Pure Camellia Chronicle Logo" />
+                Pure Camellia <span>Chronicle</span>
+            </div>
+            <div class="footer-socials">
+                <a href="https://www.facebook.com/purecamelliachronicle" target="_blank">Facebook</a>
+                <a href="https://www.instagram.com/purecamelliachronicle" target="_blank">Instagram</a>
+                <a href="https://www.threads.com/@purecamelliachronicle" target="_blank">Threads</a>
+                <a href="https://www.pinterest.com/purecamelliachronicle/" target="_blank">Pinterest</a>
+            </div>
+            <div class="footer-copy">&copy; 2026 Pure Camellia Chronicle</div>
+        </div>
+    </footer>
+
+    <script>
+        // ===== NAVIGATION =====
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.querySelector('.menu-toggle').classList.remove('open');
+                document.querySelector('.nav-links').classList.remove('open');
+            });
+        });
+
+        // ===== CONFIGURATION =====
+        function saveConfig() {
+            const apiKey = document.getElementById('apiKey').value.trim();
+            const articlesBinId = document.getElementById('articlesBinId').value.trim();
+            const reviewsBinId = document.getElementById('reviewsBinId').value.trim();
+
+            if (!apiKey || !articlesBinId || !reviewsBinId) {
+                const status = document.getElementById('configStatus');
+                status.className = 'config-status error';
+                status.textContent = '❌ Please fill in all three fields.';
+                return;
+            }
+
+            // Save to localStorage
+            localStorage.setItem('jsonbin_api_key', apiKey);
+            localStorage.setItem('jsonbin_articles_bin', articlesBinId);
+            localStorage.setItem('jsonbin_reviews_bin', reviewsBinId);
+
+            const status = document.getElementById('configStatus');
+            status.className = 'config-status success';
+            status.textContent = '✅ Configuration saved successfully! You can now publish articles.';
+
+            // Update cloud status
+            document.getElementById('cloudStatus').textContent = '✅';
+            showToast('Configuration saved!', '⚙️');
+        }
+
+        function loadConfig() {
+            const apiKey = localStorage.getItem('jsonbin_api_key');
+            const articlesBinId = localStorage.getItem('jsonbin_articles_bin');
+            const reviewsBinId = localStorage.getItem('jsonbin_reviews_bin');
+
+            if (apiKey) document.getElementById('apiKey').value = apiKey;
+            if (articlesBinId) document.getElementById('articlesBinId').value = articlesBinId;
+            if (reviewsBinId) document.getElementById('reviewsBinId').value = reviewsBinId;
+
+            if (apiKey && articlesBinId && reviewsBinId) {
+                document.getElementById('cloudStatus').textContent = '✅';
+                const status = document.getElementById('configStatus');
+                status.className = 'config-status success';
+                status.textContent = '✅ Configuration loaded successfully.';
+            } else {
+                document.getElementById('cloudStatus').textContent = '⚠️';
+            }
+        }
+
+        // ===== LOGIN FUNCTIONS =====
+        function showLoginForm() {
+            document.getElementById('loginBtn').style.display = 'none';
+            document.getElementById('loginForm').style.display = 'block';
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorEl = document.getElementById('loginError');
+            const successEl = document.getElementById('loginSuccess');
+
+            if (email === 'manoranjanise@gmail.com' && password === 'sesidu1024') {
+                errorEl.style.display = 'none';
+                successEl.style.display = 'block';
+                document.getElementById('loginLock').style.display = 'none';
+                document.getElementById('loginMessage').style.display = 'none';
+                document.querySelector('#loginForm form').style.display = 'none';
+                document.getElementById('forgotPasswordForm').style.display = 'none';
+                document.getElementById('loginCard').style.display = 'none';
+
+                // Show sections
+                document.getElementById('configSection').style.display = 'block';
+                document.getElementById('publishSection').style.display = 'block';
+                document.getElementById('reviewPublishSection').style.display = 'block';
+
+                // Load config
+                loadConfig();
+
+                // Update stats
+                const articles = JSON.parse(localStorage.getItem('chronicleArticles')) || [];
+                document.getElementById('publishedCount').textContent = articles.length;
+                document.getElementById('daysRemaining').textContent = 565 - articles.length;
+
+                const reviews = JSON.parse(localStorage.getItem('vaultReviews')) || [];
+                document.getElementById('reviewCount').textContent = reviews.length;
+
+                showToast('Welcome back! You are now logged in.', '✅');
+                return false;
+            } else {
+                errorEl.style.display = 'block';
+                successEl.style.display = 'none';
+                return false;
+            }
+        }
+
+        function showForgotPassword() {
+            document.querySelector('#loginForm form').style.display = 'none';
+            document.getElementById('forgotPasswordForm').style.display = 'block';
+            document.getElementById('resetMessage').style.display = 'none';
+        }
+
+        function hideForgotPassword() {
+            document.querySelector('#loginForm form').style.display = 'block';
+            document.getElementById('forgotPasswordForm').style.display = 'none';
+            document.getElementById('resetMessage').style.display = 'none';
+        }
+
+        function handlePasswordReset() {
+            const email = document.getElementById('resetEmail').value;
+            const messageEl = document.getElementById('resetMessage');
+            if (email && email.includes('@')) {
+                messageEl.style.display = 'block';
+                console.log(`Password reset email sent to: ${email}`);
+                showToast(`Reset link sent to ${email}`, '📧');
+            } else {
+                alert('Please enter a valid email address.');
+            }
+        }
+
+        // ===== CLOUD STORAGE FUNCTIONS =====
+        function getCloudConfig() {
+            const apiKey = localStorage.getItem('jsonbin_api_key');
+            const articlesBinId = localStorage.getItem('jsonbin_articles_bin');
+            const reviewsBinId = localStorage.getItem('jsonbin_reviews_bin');
+
+            if (!apiKey || !articlesBinId || !reviewsBinId) {
+                alert('⚠️ Please configure your JSONBin.io credentials first (API Key and Bin IDs).');
+                return null;
+            }
+
+            return { apiKey, articlesBinId, reviewsBinId };
+        }
+
+        function saveToCloud(binId, data, type) {
+            const config = getCloudConfig();
+            if (!config) return Promise.reject('No config');
+
+            // First, get existing data
+            return fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
+                headers: {
+                    'X-Master-Key': config.apiKey
+                }
+            })
+            .then(response => response.json())
+            .then(response => {
+                let existingData = response.record || [];
+                // If it's a single object (not array), make it an array
+                if (!Array.isArray(existingData)) existingData = [];
+                existingData.push(data);
+
+                // Update the bin
+                return fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': config.apiKey
+                    },
+                    body: JSON.stringify(existingData)
+                });
+            })
+            .then(response => response.json())
+            .then(result => {
+                console.log(`✅ ${type} saved to cloud:`, result);
+                return result;
+            })
+            .catch(error => {
+                console.error(`❌ Error saving ${type}:`, error);
+                throw error;
+            });
+        }
+
+        function loadFromCloud(binId) {
+            const config = getCloudConfig();
+            if (!config) return Promise.reject('No config');
+
+            return fetch(`https://api.jsonbin.io/v3/b/${binId}?meta=false`, {
+                headers: {
+                    'X-Master-Key': config.apiKey
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                return data;
+            })
+            .catch(error => {
+                console.error('❌ Error loading from cloud:', error);
+                throw error;
+            });
+        }
+
+        // ===== IMAGE PREVIEW =====
+        function previewImage(event) {
+            const file = event.target.files[0];
+            const fileName = document.getElementById('fileName');
+            const preview = document.getElementById('imagePreview');
+            const img = document.getElementById('previewImg');
+
+            if (file) {
+                fileName.textContent = file.name;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    img.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                fileName.textContent = 'No file chosen';
+                preview.style.display = 'none';
+            }
+        }
+
+        function previewReviewImage(event) {
+            const file = event.target.files[0];
+            const fileName = document.getElementById('reviewFileName');
+            const preview = document.getElementById('reviewImagePreview');
+            const img = document.getElementById('reviewPreviewImg');
+
+            if (file) {
+                fileName.textContent = file.name;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    img.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                fileName.textContent = 'No file chosen';
+                preview.style.display = 'none';
+            }
+        }
+
+        // ===== ARTICLE PUBLISH PROCESS =====
+        let publishData = {};
+
+        function startPublishProcess() {
+            const day = document.getElementById('dayNumber').value;
+            const title = document.getElementById('articleTitle').value.trim();
+            const era = document.getElementById('articleEra').value.trim();
+            const category = document.getElementById('articleCategory').value;
+            const excerpt = document.getElementById('articleExcerpt').value.trim();
+            const link = document.getElementById('articleLink').value.trim();
+            const imageFile = document.getElementById('articleImage').files[0];
+
+            if (!day || !title || !era || !category || !excerpt || !link || !imageFile) {
+                alert('⚠️ Please fill in all required fields and select an image.');
+                return;
+            }
+
+            publishData = {
+                day: day,
+                title: title,
+                era: era,
+                category: category,
+                excerpt: excerpt,
+                link: link,
+                image: imageFile
+            };
+
+            document.getElementById('dialog1Text').textContent =
+                `Are you sure you want to publish Day ${day}: "${title}"? It will be saved to the cloud.`;
+            document.getElementById('dialog1').classList.add('active');
+        }
+
+        function confirmPublish() {
+            closeDialog('dialog1');
+            document.getElementById('dialog2Text').textContent =
+                `Publishing Day ${publishData.day}: "${publishData.title}". This action cannot be undone. Are you absolutely sure?`;
+            document.getElementById('dialog2').classList.add('active');
+        }
+
+        function finalPublish() {
+            closeDialog('dialog2');
+
+            const publishBtn = document.getElementById('publishBtn');
+            publishBtn.disabled = true;
+            publishBtn.textContent = '⏳ Saving to cloud...';
+
+            const articleData = {
+                day: parseInt(publishData.day),
+                title: publishData.title,
+                era: publishData.era,
+                category: publishData.category,
+                excerpt: publishData.excerpt,
+                link: publishData.link,
+                imageName: publishData.image.name,
+                imageData: null,
+                publishedDate: new Date().toISOString()
+            };
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                articleData.imageData = e.target.result;
+
+                // Get Bin ID from config
+                const config = getCloudConfig();
+                if (!config) {
+                    publishBtn.disabled = false;
+                    publishBtn.textContent = '☁️ Publish Article to Cloud';
+                    return;
+                }
+
+                // Save to cloud
+                saveToCloud(config.articlesBinId, articleData, 'Article')
+                    .then(() => {
+                        // Also save to localStorage as backup
+                        let articles = JSON.parse(localStorage.getItem('chronicleArticles')) || [];
+                        articles.push(articleData);
+                        localStorage.setItem('chronicleArticles', JSON.stringify(articles));
+                        localStorage.setItem('featuredArticle', JSON.stringify(articleData));
+
+                        const currentCount = parseInt(document.getElementById('publishedCount').textContent);
+                        document.getElementById('publishedCount').textContent = currentCount + 1;
+                        document.getElementById('daysRemaining').textContent = 565 - (currentCount + 1);
+
+                        document.getElementById('successText').textContent =
+                            `Day ${articleData.day}: "${articleData.title}" has been published to the cloud successfully!`;
+                        document.getElementById('successDialog').classList.add('active');
+                        showToast(`☁️ Day ${articleData.day} published to cloud!`, '🎉');
+
+                        publishBtn.disabled = false;
+                        publishBtn.textContent = '☁️ Publish Article to Cloud';
+                    })
+                    .catch(error => {
+                        alert('❌ Error saving to cloud. Please check your JSONBin credentials.');
+                        console.error(error);
+                        publishBtn.disabled = false;
+                        publishBtn.textContent = '☁️ Publish Article to Cloud';
+                    });
+            };
+            reader.readAsDataURL(publishData.image);
+        }
+
+        // ===== REVIEW PUBLISH PROCESS =====
+        let reviewPublishData = {};
+
+        function startReviewPublish() {
+            const id = document.getElementById('reviewId').value;
+            const title = document.getElementById('reviewTitle').value.trim();
+            const grade = document.getElementById('reviewGrade').value.trim();
+            const origin = document.getElementById('reviewOrigin').value.trim();
+            const estate = document.getElementById('reviewEstate').value.trim();
+            const excerpt = document.getElementById('reviewExcerpt').value.trim();
+            const link = document.getElementById('reviewLink').value.trim();
+            const imageFile = document.getElementById('reviewImage').files[0];
+
+            if (!id || !title || !grade || !origin || !excerpt || !link || !imageFile) {
+                alert('⚠️ Please fill in all required fields and select an image.');
+                return;
+            }
+
+            reviewPublishData = {
+                id: id,
+                title: title,
+                grade: grade,
+                origin: origin,
+                estate: estate || 'Single Estate',
+                excerpt: excerpt,
+                link: link,
+                image: imageFile
+            };
+
+            document.getElementById('reviewDialog1Text').textContent =
+                `Are you sure you want to publish review: "${title}"? It will be saved to the cloud.`;
+            document.getElementById('reviewDialog1').classList.add('active');
+        }
+
+        function confirmReviewPublish() {
+            closeDialog('reviewDialog1');
+            document.getElementById('reviewDialog2Text').textContent =
+                `Publishing review: "${reviewPublishData.title}". This action cannot be undone. Are you absolutely sure?`;
+            document.getElementById('reviewDialog2').classList.add('active');
+        }
+
+        function finalReviewPublish() {
+            closeDialog('reviewDialog2');
+
+            const publishBtn = document.getElementById('publishReviewBtn');
+            publishBtn.disabled = true;
+            publishBtn.textContent = '⏳ Saving to cloud...';
+
+            const reviewData = {
+                id: parseInt(reviewPublishData.id),
+                title: reviewPublishData.title,
+                grade: reviewPublishData.grade,
+                origin: reviewPublishData.origin,
+                estate: reviewPublishData.estate,
+                excerpt: reviewPublishData.excerpt,
+                link: reviewPublishData.link,
+                imageName: reviewPublishData.image.name,
+                imageData: null,
+                publishedDate: new Date().toISOString()
+            };
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                reviewData.imageData = e.target.result;
+
+                const config = getCloudConfig();
+                if (!config) {
+                    publishBtn.disabled = false;
+                    publishBtn.textContent = '☁️ Publish Review to Cloud';
+                    return;
+                }
+
+                saveToCloud(config.reviewsBinId, reviewData, 'Review')
+                    .then(() => {
+                        let reviews = JSON.parse(localStorage.getItem('vaultReviews')) || [];
+                        reviews.push(reviewData);
+                        localStorage.setItem('vaultReviews', JSON.stringify(reviews));
+
+                        document.getElementById('reviewSuccessText').textContent =
+                            `"${reviewData.title}" has been published to the cloud successfully!`;
+                        document.getElementById('reviewSuccessDialog').classList.add('active');
+                        showToast(`☁️ "${reviewData.title}" published to cloud!`, '🍃');
+
+                        const currentReviewCount = parseInt(document.getElementById('reviewCount').textContent);
+                        document.getElementById('reviewCount').textContent = currentReviewCount + 1;
+
+                        publishBtn.disabled = false;
+                        publishBtn.textContent = '☁️ Publish Review to Cloud';
+                    })
+                    .catch(error => {
+                        alert('❌ Error saving to cloud. Please check your JSONBin credentials.');
+                        console.error(error);
+                        publishBtn.disabled = false;
+                        publishBtn.textContent = '☁️ Publish Review to Cloud';
+                    });
+            };
+            reader.readAsDataURL(reviewPublishData.image);
+        }
+
+        function closeDialog(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        function closeSuccessDialog() {
+            document.getElementById('successDialog').classList.remove('active');
+            window.location.href = 'chronicle.html';
+        }
+
+        function closeReviewSuccessDialog() {
+            document.getElementById('reviewSuccessDialog').classList.remove('active');
+            window.location.href = 'vault.html';
+        }
+
+        // ===== TOAST =====
+        function showToast(message, icon = '✅') {
+            const toast = document.getElementById('toast');
+            const desc = document.getElementById('toastDesc');
+            desc.textContent = message;
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 4000);
+        }
+
+        // ===== ENTER KEY SUPPORT =====
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                const resetForm = document.getElementById('forgotPasswordForm');
+                if (resetForm.style.display === 'block') {
+                    handlePasswordReset();
+                }
+            }
+        });
+
+        // Load config on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if already logged in (show config if so)
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            if (isLoggedIn === 'true') {
+                // Auto-login
+                document.getElementById('loginCard').style.display = 'none';
+                document.getElementById('configSection').style.display = 'block';
+                document.getElementById('publishSection').style.display = 'block';
+                document.getElementById('reviewPublishSection').style.display = 'block';
+                loadConfig();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About — Pure Camellia</title>
+    <link rel="icon" type="image/png" href="images/logo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        /* ===== GLOBAL ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --dark: #1a3c2a;
+            --mid: #2d5a3d;
+            --gold: #b8860b;
+            --cream: #f5f0e8;
+            --light-gold: #d4a843;
+            --shadow: rgba(26,60,42,0.12);
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--cream);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+        }
+        a { text-decoration: none; color: inherit; }
+        img { max-width: 100%; display: block; }
+
+        /* ===== HEADER ===== */
+        .site-header {
+            background: var(--dark);
+            padding: 14px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 2px solid var(--gold);
+        }
+        .site-header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .logo a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo a img {
+            height: 40px;
+            width: auto;
+            display: block;
+        }
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #fff;
+        }
+        .logo-text span { color: var(--gold); }
+        .logo-sub {
+            font-size: 0.65rem;
+            color: rgba(255,255,255,0.5);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            display: block;
+            margin-top: -2px;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            list-style: none;
+        }
+        .nav-links a {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+            transition: color 0.3s;
+            position: relative;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gold);
+            transition: width 0.3s;
+        }
+        .nav-links a:hover { color: #fff; }
+        .nav-links a:hover::after { width: 100%; }
+        .nav-cta {
+            background: var(--gold);
+            color: var(--dark) !important;
+            padding: 8px 22px;
+            border-radius: 50px;
+            font-weight: 600 !important;
+        }
+        .nav-cta::after { display: none !important; }
+        .nav-cta:hover { background: var(--light-gold) !important; }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+        }
+        .menu-toggle span {
+            display: block;
+            width: 26px;
+            height: 2.5px;
+            background: #fff;
+            border-radius: 2px;
+        }
+
+        /* ===== PAGE HEADER with BACKGROUND IMAGE ===== */
+        .page-header {
+            position: relative;
+            padding: 80px 0 70px;
+            text-align: center;
+            overflow: hidden;
+            min-height: 350px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .page-header-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('images/about.png');
+            background-size: cover;
+            background-position: center;
+            z-index: 0;
+        }
+        .page-header-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(26,60,42,0.80) 0%, rgba(15,40,28,0.88) 100%);
+        }
+        .page-header .container {
+            position: relative;
+            z-index: 1;
+        }
+        .page-header .sub {
+            color: var(--gold);
+            font-size: 1.1rem;
+            font-weight: 300;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .page-header h1 {
+            color: #fff;
+            font-size: 3.2rem;
+            margin-bottom: 8px;
+            text-shadow: 0 4px 30px rgba(0,0,0,0.4);
+        }
+        .page-header p {
+            color: rgba(255,255,255,0.85);
+            font-size: 1.1rem;
+            max-width: 500px;
+            margin: 0 auto;
+            text-shadow: 0 2px 15px rgba(0,0,0,0.3);
+        }
+
+        /* ===== CONTENT ===== */
+        .about-content {
+            padding: 50px 0 60px;
+        }
+        .about-content h2 {
+            font-size: 2rem;
+            margin-top: 40px;
+            margin-bottom: 12px;
+        }
+        .about-content h2:first-of-type { margin-top: 0; }
+        .about-content p {
+            color: #5a6b5e;
+            max-width: 700px;
+            margin-bottom: 16px;
+        }
+        .about-content .quote {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 1.3rem;
+            color: var(--dark);
+            border-left: 4px solid var(--gold);
+            padding-left: 24px;
+            margin: 30px 0;
+            max-width: 600px;
+        }
+        .about-content .quote cite {
+            display: block;
+            font-size: 0.9rem;
+            font-style: normal;
+            color: #888;
+            margin-top: 8px;
+        }
+
+        /* ===== INFOGRAPHIC STYLE TIMELINE ===== */
+        .history-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin: 30px 0 20px;
+            counter-reset: step-counter;
+        }
+        .step-item {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            background: #fff;
+            padding: 20px 28px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px var(--shadow);
+            transition: transform 0.2s, box-shadow 0.2s;
+            border-left: 6px solid var(--gold);
+        }
+        .step-item:hover {
+            transform: translateX(6px);
+            box-shadow: 0 8px 25px rgba(26,60,42,0.12);
+        }
+        .step-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--gold);
+            min-width: 70px;
+            text-align: center;
+            opacity: 0.7;
+            counter-increment: step-counter;
+        }
+        .step-number::before {
+            content: counter(step-counter);
+        }
+        .step-content {
+            flex: 1;
+        }
+        .step-content .year {
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.9rem;
+        }
+        .step-content h4 {
+            font-size: 1.2rem;
+            margin: 2px 0 4px;
+        }
+        .step-content p {
+            color: #5a6b5e;
+            font-size: 0.95rem;
+            margin: 0;
+            max-width: 100%;
+        }
+        .step-content .detail {
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 2px;
+        }
+
+        /* ===== FOOTER ===== */
+        .site-footer {
+            background: #0d1f14;
+            color: rgba(255,255,255,0.5);
+            padding: 32px 0;
+            border-top: 1px solid rgba(255,255,255,0.04);
+        }
+        .site-footer .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Playfair Display', serif;
+            color: #fff;
+        }
+        .footer-logo img {
+            height: 32px;
+            width: auto;
+            display: block;
+        }
+        .footer-logo span { color: var(--gold); }
+        .footer-socials { display: flex; gap: 20px; }
+        .footer-socials a {
+            color: rgba(255,255,255,0.4);
+            font-size: 0.85rem;
+            transition: color 0.3s;
+        }
+        .footer-socials a:hover { color: var(--gold); }
+        .footer-copy { font-size: 0.8rem; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 900px) {
+            .page-header h1 { font-size: 2.6rem; }
+        }
+        @media (max-width: 700px) {
+            .menu-toggle { display: flex; }
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                padding: 16px 0 8px;
+                gap: 14px;
+            }
+            .nav-links.open { display: flex; }
+            .page-header {
+                padding: 50px 0 40px;
+                min-height: 250px;
+            }
+            .page-header h1 { font-size: 2.2rem; }
+            .step-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+                padding: 16px 20px;
+            }
+            .step-number {
+                font-size: 2rem;
+                min-width: auto;
+                text-align: left;
+            }
+        }
+        @media (max-width: 480px) {
+            .logo-text { font-size: 1.1rem; }
+            .page-header {
+                padding: 40px 0 30px;
+                min-height: 200px;
+            }
+            .page-header h1 { font-size: 1.8rem; }
+            .page-header p { font-size: 1rem; }
+            .about-content h2 { font-size: 1.6rem; }
+            .footer-logo img { height: 26px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== HEADER ===== -->
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">
+                <a href="index.html">
+                    <img src="images/logo.png" alt="Pure Camellia Chronicle Logo" />
+                    <div>
+                        <span class="logo-text">Pure Camellia <span>Chronicle</span></span>
+                        <span class="logo-sub">565 Days of Tea History</span>
+                    </div>
+                </a>
+            </div>
+            <button class="menu-toggle" onclick="this.classList.toggle('open'); document.querySelector('.nav-links').classList.toggle('open')">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="chronicle.html">The Chronicle</a></li>
+                <li><a href="vault.html">Tea Vault</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="newsletter.html">Newsletter</a></li>
+                <li><a href="admin.html" class="nav-cta">Admin</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- ===== PAGE HEADER WITH about.png BACKGROUND ===== -->
+    <section class="page-header">
+        <div class="page-header-bg"></div>
+        <div class="container">
+            <span class="sub">About the Chronicle</span>
+            <h1>History Brewed<br />One Day at a Time</h1>
+            <p>The story behind the story — why we set out to chronicle 4,000 years of tea history in 565 daily episodes.</p>
+        </div>
+    </section>
+
+    <!-- ===== CONTENT ===== -->
+    <section class="about-content">
+        <div class="container">
+
+            <h2>Not a Tea Blog. A Living Archive.</h2>
+            <p>Pure Camellia Chronicle was born from a simple, obsessive question: what if someone told the complete, unvarnished history of tea — not as a wellness trend or a lifestyle choice, but as the epic, world-shaping saga it actually is?</p>
+            <p>Tea is not just a beverage. It is the reason the British Empire stretched across a quarter of the globe. It is why the Boston Tea Party happened. It is the silent protagonist of the Opium Wars, the Industrial Revolution, and the birth of modern capitalism. Every cup carries centuries of history.</p>
+
+            <div class="quote">
+                "Every cup of tea is a sip of history. We're just here to tell you which history."
+                <cite>— The Chronicle Editors</cite>
+            </div>
+
+            <!-- ===== INFOGRAPHIC STYLE TIMELINE ===== -->
+            <h2>The Arc of History</h2>
+            <p style="margin-bottom:8px;">4,761 Years in Six Moments</p>
+
+            <div class="history-steps">
+                <div class="step-item">
+                    <div class="step-number"></div>
+                    <div class="step-content">
+                        <div class="year">2737 BCE</div>
+                        <h4>Emperor Shennong Discovers Tea</h4>
+                        <p>The mythic origin — where our chronicle begins.</p>
+                        <div class="detail">A leaf falls into boiling water, changing the world forever.</div>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-number"></div>
+                    <div class="step-content">
+                        <div class="year">760 CE</div>
+                        <h4>Lu Yu Writes the <em>Cha Jing</em></h4>
+                        <p>The world's first tea encyclopedia.</p>
+                        <div class="detail">A comprehensive guide to tea cultivation, preparation, and culture.</div>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-number"></div>
+                    <div class="step-content">
+                        <div class="year">1191 CE</div>
+                        <h4>Eisai Brings Tea to Japan</h4>
+                        <p>The birth of Japanese tea culture.</p>
+                        <div class="detail">Zen monks embrace tea as a meditation aid, giving rise to matcha.</div>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-number"></div>
+                    <div class="step-content">
+                        <div class="year">1610 CE</div>
+                        <h4>Tea Arrives in Europe via VOC</h4>
+                        <p>The beginning of the global tea trade.</p>
+                        <div class="detail">Dutch and Portuguese traders introduce tea to the West.</div>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-number"></div>
+                    <div class="step-content">
+                        <div class="year">1773 CE</div>
+                        <h4>The Boston Tea Party</h4>
+                        <p>When tea sparked a revolution.</p>
+                        <div class="detail">American colonists protest British taxation, forever linking tea with independence.</div>
+                    </div>
+                </div>
+                <div class="step-item">
+                    <div class="step-number"></div>
+                    <div class="step-content">
+                        <div class="year">2024 CE</div>
+                        <h4>Pure Camellia Chronicle Begins</h4>
+                        <p>565 days of untold history.</p>
+                        <div class="detail">Our daily journey to tell the complete story of tea.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== EDITORIAL STANDARDS SECTION REMOVED ===== -->
+
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-logo">
+                <img src="images/logo.png" alt="Pure Camellia Chronicle Logo" />
+                Pure Camellia <span>Chronicle</span>
+            </div>
+            <div class="footer-socials">
+                <a href="https://www.facebook.com/purecamelliachronicle" target="_blank">Facebook</a>
+                <a href="https://www.instagram.com/purecamelliachronicle" target="_blank">Instagram</a>
+                <a href="https://www.threads.com/@purecamelliachronicle" target="_blank">Threads</a>
+                <a href="https://www.pinterest.com/purecamelliachronicle/" target="_blank">Pinterest</a>
+            </div>
+            <div class="footer-copy">&copy; 2026 Pure Camellia Chronicle</div>
+        </div>
+    </footer>
+
+    <script>
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.querySelector('.menu-toggle').classList.remove('open');
+                document.querySelector('.nav-links').classList.remove('open');
+            });
+        });
+    </script>
+</body>
+</html>

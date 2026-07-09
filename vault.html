@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tea Vault — Pure Camellia</title>
+    <link rel="icon" type="image/png" href="images/logo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        /* ===== GLOBAL ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --dark: #1a3c2a;
+            --mid: #2d5a3d;
+            --gold: #b8860b;
+            --cream: #f5f0e8;
+            --light-gold: #d4a843;
+            --shadow: rgba(26,60,42,0.12);
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--cream);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+        }
+        a { text-decoration: none; color: inherit; }
+        img { max-width: 100%; display: block; }
+
+        /* ===== HEADER ===== */
+        .site-header {
+            background: var(--dark);
+            padding: 14px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 2px solid var(--gold);
+        }
+        .site-header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .logo a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo a img {
+            height: 40px;
+            width: auto;
+            display: block;
+        }
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #fff;
+        }
+        .logo-text span { color: var(--gold); }
+        .logo-sub {
+            font-size: 0.65rem;
+            color: rgba(255,255,255,0.5);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            display: block;
+            margin-top: -2px;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            list-style: none;
+        }
+        .nav-links a {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+            transition: color 0.3s;
+            position: relative;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gold);
+            transition: width 0.3s;
+        }
+        .nav-links a:hover { color: #fff; }
+        .nav-links a:hover::after { width: 100%; }
+        .nav-cta {
+            background: var(--gold);
+            color: var(--dark) !important;
+            padding: 8px 22px;
+            border-radius: 50px;
+            font-weight: 600 !important;
+        }
+        .nav-cta::after { display: none !important; }
+        .nav-cta:hover { background: var(--light-gold) !important; }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+        }
+        .menu-toggle span {
+            display: block;
+            width: 26px;
+            height: 2.5px;
+            background: #fff;
+            border-radius: 2px;
+        }
+
+        /* ===== PAGE HEADER with vault.png background ===== */
+        .page-header {
+            position: relative;
+            padding: 80px 0 70px;
+            text-align: center;
+            overflow: hidden;
+            min-height: 350px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .page-header-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('images/vault.png');
+            background-size: cover;
+            background-position: center;
+            z-index: 0;
+        }
+        .page-header-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(26,60,42,0.80) 0%, rgba(15,40,28,0.88) 100%);
+        }
+        .page-header .container {
+            position: relative;
+            z-index: 1;
+        }
+        .page-header .sub {
+            color: var(--gold);
+            font-size: 1.1rem;
+            font-weight: 300;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .page-header h1 {
+            color: #fff;
+            font-size: 3.2rem;
+            margin-bottom: 8px;
+            text-shadow: 0 4px 30px rgba(0,0,0,0.4);
+        }
+        .page-header p {
+            color: rgba(255,255,255,0.85);
+            font-size: 1.1rem;
+            max-width: 500px;
+            margin: 0 auto;
+            text-shadow: 0 2px 15px rgba(0,0,0,0.3);
+        }
+
+        /* ===== STATS ===== */
+        .vault-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            padding: 30px 0 10px;
+            flex-wrap: wrap;
+        }
+        .vault-stats div {
+            text-align: center;
+        }
+        .vault-stats .num {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gold);
+            display: block;
+        }
+        .vault-stats .lbl {
+            font-size: 0.8rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* ===== REVIEW CARDS GRID ===== */
+        .reviews-grid-section {
+            padding: 40px 0 60px;
+        }
+        .section-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--gold);
+            font-weight: 600;
+            display: block;
+            margin-bottom: 6px;
+        }
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 30px;
+        }
+        .reviews-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        .review-card {
+            background: #fff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px var(--shadow);
+            transition: all 0.3s;
+        }
+        .review-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 40px rgba(26,60,42,0.15);
+        }
+        .review-card .card-image {
+            height: 200px;
+            background: linear-gradient(135deg, var(--mid), var(--dark));
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .review-card .card-image .fallback-icon {
+            font-size: 3.5rem;
+            opacity: 0.3;
+            color: #fff;
+        }
+        .review-card .card-image .grade-badge {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            background: var(--gold);
+            color: var(--dark);
+            padding: 3px 14px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            z-index: 2;
+        }
+        .review-card .card-image .origin-badge {
+            position: absolute;
+            bottom: 14px;
+            left: 14px;
+            background: rgba(26,60,42,0.8);
+            color: #fff;
+            padding: 3px 14px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            z-index: 2;
+        }
+        .review-card .card-body {
+            padding: 20px 24px 24px;
+        }
+        .review-card .card-meta {
+            display: flex;
+            gap: 12px;
+            font-size: 0.8rem;
+            color: #888;
+            margin-bottom: 6px;
+            flex-wrap: wrap;
+        }
+        .review-card .card-meta .category {
+            color: var(--gold);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 0.05em;
+        }
+        .review-card .card-body h3 {
+            font-size: 1.2rem;
+            margin-bottom: 4px;
+        }
+        .review-card .card-body .official-grade {
+            font-size: 0.85rem;
+            color: var(--gold);
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+        .review-card .card-body p {
+            color: #5a6b5e;
+            font-size: 0.95rem;
+            margin-bottom: 14px;
+            line-height: 1.5;
+        }
+        .review-card .read-link {
+            color: var(--gold);
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: gap 0.3s;
+        }
+        .review-card .read-link:hover { gap: 12px; }
+
+        /* ===== PARTNER SECTION ===== */
+        .partner-box {
+            background: #fff;
+            padding: 30px 32px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px var(--shadow);
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .partner-box h3 {
+            font-size: 1.3rem;
+        }
+        .partner-box p {
+            color: #5a6b5e;
+            max-width: 500px;
+            margin: 0;
+        }
+        .btn-gold {
+            display: inline-block;
+            background: var(--gold);
+            color: var(--dark);
+            padding: 10px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .btn-gold:hover {
+            background: var(--light-gold);
+            transform: translateY(-2px);
+        }
+
+        /* ===== FOOTER ===== */
+        .site-footer {
+            background: #0d1f14;
+            color: rgba(255,255,255,0.5);
+            padding: 32px 0;
+            border-top: 1px solid rgba(255,255,255,0.04);
+        }
+        .site-footer .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Playfair Display', serif;
+            color: #fff;
+        }
+        .footer-logo img {
+            height: 32px;
+            width: auto;
+            display: block;
+        }
+        .footer-logo span { color: var(--gold); }
+        .footer-socials { display: flex; gap: 20px; }
+        .footer-socials a {
+            color: rgba(255,255,255,0.4);
+            font-size: 0.85rem;
+            transition: color 0.3s;
+        }
+        .footer-socials a:hover { color: var(--gold); }
+        .footer-copy { font-size: 0.8rem; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 900px) {
+            .page-header h1 { font-size: 2.6rem; }
+        }
+        @media (max-width: 700px) {
+            .menu-toggle { display: flex; }
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                padding: 16px 0 8px;
+                gap: 14px;
+            }
+            .nav-links.open { display: flex; }
+            .page-header {
+                padding: 50px 0 40px;
+                min-height: 250px;
+            }
+            .page-header h1 { font-size: 2.2rem; }
+            .reviews-grid { grid-template-columns: 1fr; }
+            .partner-box { flex-direction: column; text-align: center; }
+            .vault-stats { gap: 20px; }
+        }
+        @media (max-width: 480px) {
+            .logo-text { font-size: 1.1rem; }
+            .page-header {
+                padding: 40px 0 30px;
+                min-height: 200px;
+            }
+            .page-header h1 { font-size: 1.8rem; }
+            .page-header p { font-size: 1rem; }
+            .footer-logo img { height: 26px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== HEADER ===== -->
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">
+                <a href="index.html">
+                    <img src="images/logo.png" alt="Pure Camellia Chronicle Logo" />
+                    <div>
+                        <span class="logo-text">Pure Camellia <span>Chronicle</span></span>
+                        <span class="logo-sub">565 Days of Tea History</span>
+                    </div>
+                </a>
+            </div>
+            <button class="menu-toggle" onclick="this.classList.toggle('open'); document.querySelector('.nav-links').classList.toggle('open')">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="chronicle.html">The Chronicle</a></li>
+                <li><a href="vault.html">Tea Vault</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="newsletter.html">Newsletter</a></li>
+                <li><a href="admin.html" class="nav-cta">Admin</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- ===== PAGE HEADER with vault.png background ===== -->
+    <section class="page-header">
+        <div class="page-header-bg"></div>
+        <div class="container">
+            <span class="sub">The Tea Grade &amp; Review Vault</span>
+            <h1>Deep-Dive Reviews of<br />the World's Rarest Teas</h1>
+            <p>Meticulously graded by terroir, flavor profile, and ceremonial grade. Honest, expert, and unapologetically obsessive.</p>
+        </div>
+    </section>
+
+    <!-- ===== STATS ===== -->
+    <div class="container">
+        <div class="vault-stats">
+            <div><span class="num">30+</span><span class="lbl">Grades Reviewed</span></div>
+            <div><span class="num">97</span><span class="lbl">Highest Score</span></div>
+            <div><span class="num">6</span><span class="lbl">Tea Families</span></div>
+        </div>
+    </div>
+
+    <!-- ===== REVIEW CARDS GRID ===== -->
+    <section class="reviews-grid-section">
+        <div class="container">
+            <span class="section-label">The Vault</span>
+            <h2 class="section-title">Tea Reviews</h2>
+
+            <div class="reviews-grid" id="reviewsGrid">
+
+                <!-- ===== SAMPLE COMING SOON REVIEW CARD 1 ===== -->
+                <div class="review-card" style="opacity:0.6; filter:grayscale(0.3);">
+                    <div class="card-image" style="background: linear-gradient(135deg, #3a4a3f, #1a2a1f);">
+                        <span class="grade-badge" style="background:#888; color:#fff;">OP</span>
+                        <span class="origin-badge" style="background:rgba(60,60,60,0.8);">🇱🇰 Ceylon</span>
+                        <span class="fallback-icon">⏳</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-meta">
+                            <span class="category">Review</span>
+                            <span>•</span>
+                            <span>Coming Soon</span>
+                        </div>
+                        <h3>Loolecondera Estate</h3>
+                        <div class="official-grade">Official Grade: Orange Pekoe (OP)</div>
+                        <p>Bright, golden liquor with delicate floral notes and a smooth, well-balanced finish.</p>
+                        <span style="color:#aaa; font-size:0.9rem;">Coming soon</span>
+                    </div>
+                </div>
+
+                <!-- ===== SAMPLE COMING SOON REVIEW CARD 2 ===== -->
+                <div class="review-card" style="opacity:0.6; filter:grayscale(0.3);">
+                    <div class="card-image" style="background: linear-gradient(135deg, #3a4a3f, #1a2a1f);">
+                        <span class="grade-badge" style="background:#888; color:#fff;">BOP</span>
+                        <span class="origin-badge" style="background:rgba(60,60,60,0.8);">🇱🇰 Ceylon</span>
+                        <span class="fallback-icon">⏳</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-meta">
+                            <span class="category">Review</span>
+                            <span>•</span>
+                            <span>Coming Soon</span>
+                        </div>
+                        <h3>Dimbula Valley</h3>
+                        <div class="official-grade">Official Grade: Broken Orange Pekoe (BOP)</div>
+                        <p>A rich, full-bodied brew with notes of chocolate and spice — coming soon.</p>
+                        <span style="color:#aaa; font-size:0.9rem;">Coming soon</span>
+                    </div>
+                </div>
+
+                <!-- ===== SAMPLE COMING SOON REVIEW CARD 3 ===== -->
+                <div class="review-card" style="opacity:0.6; filter:grayscale(0.3);">
+                    <div class="card-image" style="background: linear-gradient(135deg, #3a4a3f, #1a2a1f);">
+                        <span class="grade-badge" style="background:#888; color:#fff;">FBOP</span>
+                        <span class="origin-badge" style="background:rgba(60,60,60,0.8);">🇱🇰 Ceylon</span>
+                        <span class="fallback-icon">⏳</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-meta">
+                            <span class="category">Review</span>
+                            <span>•</span>
+                            <span>Coming Soon</span>
+                        </div>
+                        <h3>Nuwara Eliya</h3>
+                        <div class="official-grade">Official Grade: Flowery Broken Orange Pekoe (FBOP)</div>
+                        <p>Delicate, floral, and brisk with a distinct golden hue — coming soon.</p>
+                        <span style="color:#aaa; font-size:0.9rem;">Coming soon</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CONTENT ===== -->
+    <section class="vault-content">
+        <div class="container">
+
+            <!-- Partner Box -->
+            <div class="partner-box">
+                <div>
+                    <h3>Partner with the Chronicle</h3>
+                    <p>Reach an audience of serious tea connoisseurs, collectors, and enthusiasts. We offer sponsored reviews, featured placements, and affiliate partnerships for premium tea brands.</p>
+                </div>
+                <a href="#" class="btn-gold">Enquire About Partnership →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-logo">
+                <img src="images/logo.png" alt="Pure Camellia Chronicle Logo" />
+                Pure Camellia <span>Chronicle</span>
+            </div>
+            <div class="footer-socials">
+                <a href="https://www.facebook.com/purecamelliachronicle" target="_blank">Facebook</a>
+                <a href="https://www.instagram.com/purecamelliachronicle" target="_blank">Instagram</a>
+                <a href="https://www.threads.com/@purecamelliachronicle" target="_blank">Threads</a>
+                <a href="https://www.pinterest.com/purecamelliachronicle/" target="_blank">Pinterest</a>
+            </div>
+            <div class="footer-copy">&copy; 2026 Pure Camellia Chronicle</div>
+        </div>
+    </footer>
+
+    <script>
+        // ===== NAVIGATION =====
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.querySelector('.menu-toggle').classList.remove('open');
+                document.querySelector('.nav-links').classList.remove('open');
+            });
+        });
+
+        // ===== CONFIGURATION =====
+        function getCloudConfig() {
+            const apiKey = localStorage.getItem('jsonbin_api_key');
+            const reviewsBinId = localStorage.getItem('jsonbin_reviews_bin');
+
+            if (!apiKey || !reviewsBinId) {
+                console.log('No cloud config found. Using localStorage.');
+                return null;
+            }
+
+            return { apiKey, reviewsBinId };
+        }
+
+        // ===== LOAD REVIEWS FROM CLOUD =====
+        function loadReviews() {
+            const config = getCloudConfig();
+            const grid = document.getElementById('reviewsGrid');
+
+            // Keep coming soon cards as fallback
+            const comingSoonCards = grid.querySelectorAll('.review-card[style*="opacity:0.6"]');
+
+            if (config) {
+                // Load from cloud
+                fetch(`https://api.jsonbin.io/v3/b/${config.reviewsBinId}?meta=false`, {
+                    headers: {
+                        'X-Master-Key': config.apiKey
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const reviews = Array.isArray(data) ? data : [];
+                    displayReviews(reviews, grid, comingSoonCards);
+                })
+                .catch(error => {
+                    console.error('❌ Error loading from cloud:', error);
+                    // Fallback to localStorage
+                    loadFromLocalStorage(grid, comingSoonCards);
+                });
+            } else {
+                // Fallback to localStorage
+                loadFromLocalStorage(grid, comingSoonCards);
+            }
+        }
+
+        function loadFromLocalStorage(grid, comingSoonCards) {
+            const reviews = JSON.parse(localStorage.getItem('vaultReviews')) || [];
+            displayReviews(reviews, grid, comingSoonCards);
+        }
+
+        function displayReviews(reviews, grid, comingSoonCards) {
+            // Remove existing published cards (keep coming soon)
+            const publishedCards = grid.querySelectorAll('.review-card:not([style*="opacity:0.6"])');
+            publishedCards.forEach(card => card.remove());
+
+            // If no reviews, keep coming soon cards
+            if (reviews.length === 0) {
+                return;
+            }
+
+            // Sort by id
+            reviews.sort((a, b) => parseInt(a.id) - parseInt(b.id));
+
+            // Create cards for each review
+            reviews.forEach(review => {
+                const card = document.createElement('div');
+                card.className = 'review-card';
+                const imageStyle = review.imageData
+                    ? `background-image: url('${review.imageData}');`
+                    : 'background: linear-gradient(135deg, var(--mid), var(--dark));';
+                card.innerHTML = `
+                    <div class="card-image" style="${imageStyle} background-size: cover; background-position: center;">
+                        <span class="grade-badge">${review.grade || 'N/A'}</span>
+                        <span class="origin-badge">${review.origin || 'Unknown'}</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-meta">
+                            <span class="category">Review</span>
+                            <span>•</span>
+                            <span>${review.estate || 'Single Estate'}</span>
+                        </div>
+                        <h3>${review.title}</h3>
+                        <div class="official-grade">Official Grade: ${review.grade || 'N/A'}</div>
+                        <p>${review.excerpt}</p>
+                        <a href="${review.link}" target="_blank" class="read-link">Read Full Review →</a>
+                    </div>
+                `;
+                // Insert before the first coming soon card
+                if (comingSoonCards.length > 0) {
+                    grid.insertBefore(card, comingSoonCards[0]);
+                } else {
+                    grid.appendChild(card);
+                }
+            });
+        }
+
+        // ===== LOAD ON PAGE LOAD =====
+        document.addEventListener('DOMContentLoaded', function() {
+            loadReviews();
+        });
+
+        // Also reload when returning from admin page
+        window.addEventListener('pageshow', function(e) {
+            if (e.persisted) {
+                loadReviews();
+            }
+        });
+    </script>
+</body>
+</html>

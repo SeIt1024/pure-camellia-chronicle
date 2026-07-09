@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Chronicle — Pure Camellia</title>
+    <link rel="icon" type="image/png" href="images/logo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        /* ===== GLOBAL ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --dark: #1a3c2a;
+            --mid: #2d5a3d;
+            --gold: #b8860b;
+            --cream: #f5f0e8;
+            --light-gold: #d4a843;
+            --shadow: rgba(26,60,42,0.12);
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--cream);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+        }
+        a { text-decoration: none; color: inherit; }
+        img { max-width: 100%; display: block; }
+
+        /* ===== HEADER ===== */
+        .site-header {
+            background: var(--dark);
+            padding: 14px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 2px solid var(--gold);
+        }
+        .site-header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .logo a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo a img {
+            height: 40px;
+            width: auto;
+            display: block;
+        }
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #fff;
+        }
+        .logo-text span { color: var(--gold); }
+        .logo-sub {
+            font-size: 0.65rem;
+            color: rgba(255,255,255,0.5);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            display: block;
+            margin-top: -2px;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            list-style: none;
+        }
+        .nav-links a {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+            transition: color 0.3s;
+            position: relative;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gold);
+            transition: width 0.3s;
+        }
+        .nav-links a:hover { color: #fff; }
+        .nav-links a:hover::after { width: 100%; }
+        .nav-cta {
+            background: var(--gold);
+            color: var(--dark) !important;
+            padding: 8px 22px;
+            border-radius: 50px;
+            font-weight: 600 !important;
+        }
+        .nav-cta::after { display: none !important; }
+        .nav-cta:hover { background: var(--light-gold) !important; }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+        }
+        .menu-toggle span {
+            display: block;
+            width: 26px;
+            height: 2.5px;
+            background: #fff;
+            border-radius: 2px;
+        }
+
+        /* ===== PAGE HEADER ===== */
+        .page-header {
+            position: relative;
+            padding: 80px 0 70px;
+            text-align: center;
+            overflow: hidden;
+            min-height: 350px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .page-header-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('images/chronicle.png');
+            background-size: cover;
+            background-position: center;
+            z-index: 0;
+        }
+        .page-header-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(26,60,42,0.75) 0%, rgba(15,40,28,0.85) 100%);
+        }
+        .page-header .container {
+            position: relative;
+            z-index: 1;
+        }
+        .page-header h1 {
+            color: #fff;
+            font-size: 3.6rem;
+            margin-bottom: 8px;
+            text-shadow: 0 4px 30px rgba(0,0,0,0.4);
+        }
+        .page-header p {
+            color: rgba(255,255,255,0.85);
+            font-size: 1.2rem;
+            max-width: 500px;
+            margin: 0 auto;
+            text-shadow: 0 2px 15px rgba(0,0,0,0.3);
+        }
+
+        /* ===== FEATURED CARD ===== */
+        .featured-card {
+            background: #fff;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 40px var(--shadow);
+            margin-bottom: 50px;
+            transition: all 0.3s;
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 0;
+            min-height: 280px;
+        }
+        .featured-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 60px rgba(26,60,42,0.18);
+        }
+        .featured-card .card-image {
+            min-height: 280px;
+            height: 100%;
+            background: linear-gradient(135deg, var(--mid), var(--dark));
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .featured-card .card-image .fallback-icon {
+            font-size: 5rem;
+            opacity: 0.3;
+            color: #fff;
+        }
+        .featured-card .card-image .day-badge {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            background: var(--gold);
+            color: var(--dark);
+            padding: 6px 18px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            z-index: 2;
+        }
+        .featured-card .card-body {
+            padding: 32px 36px 36px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: #fff;
+        }
+        .featured-card .card-meta {
+            display: flex;
+            gap: 14px;
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 6px;
+            flex-wrap: wrap;
+        }
+        .featured-card .card-meta .category {
+            color: var(--gold);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+        .featured-card .card-body h3 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+        .featured-card .card-body p {
+            color: #5a6b5e;
+            font-size: 1.05rem;
+            margin-bottom: 18px;
+            line-height: 1.5;
+        }
+        .featured-card .read-link {
+            color: var(--gold);
+            font-weight: 600;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: gap 0.3s;
+            width: fit-content;
+        }
+        .featured-card .read-link:hover { gap: 14px; }
+
+        /* ===== ARTICLES GRID ===== */
+        .articles-grid-section {
+            padding: 40px 0 60px;
+        }
+        .section-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--gold);
+            font-weight: 600;
+            display: block;
+            margin-bottom: 6px;
+        }
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 30px;
+        }
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        .article-card {
+            background: #fff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px var(--shadow);
+            transition: all 0.3s;
+        }
+        .article-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 40px rgba(26,60,42,0.15);
+        }
+        .article-card .card-image {
+            height: 200px;
+            background: linear-gradient(135deg, var(--mid), var(--dark));
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .article-card .card-image .fallback-icon {
+            font-size: 3.5rem;
+            opacity: 0.3;
+            color: #fff;
+        }
+        .article-card .card-image .day-badge {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            background: var(--gold);
+            color: var(--dark);
+            padding: 3px 14px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            z-index: 2;
+        }
+        .article-card .card-body {
+            padding: 20px 24px 24px;
+        }
+        .article-card .card-meta {
+            display: flex;
+            gap: 12px;
+            font-size: 0.8rem;
+            color: #888;
+            margin-bottom: 6px;
+            flex-wrap: wrap;
+        }
+        .article-card .card-meta .category {
+            color: var(--gold);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 0.05em;
+        }
+        .article-card .card-body h3 {
+            font-size: 1.2rem;
+            margin-bottom: 6px;
+        }
+        .article-card .card-body p {
+            color: #5a6b5e;
+            font-size: 0.95rem;
+            margin-bottom: 14px;
+            line-height: 1.5;
+        }
+        .article-card .read-link {
+            color: var(--gold);
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: gap 0.3s;
+        }
+        .article-card .read-link:hover { gap: 12px; }
+
+        /* ===== FOOTER ===== */
+        .site-footer {
+            background: #0d1f14;
+            color: rgba(255,255,255,0.5);
+            padding: 32px 0;
+            border-top: 1px solid rgba(255,255,255,0.04);
+        }
+        .site-footer .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Playfair Display', serif;
+            color: #fff;
+        }
+        .footer-logo img {
+            height: 32px;
+            width: auto;
+            display: block;
+        }
+        .footer-logo span { color: var(--gold); }
+        .footer-socials { display: flex; gap: 20px; }
+        .footer-socials a {
+            color: rgba(255,255,255,0.4);
+            font-size: 0.85rem;
+            transition: color 0.3s;
+        }
+        .footer-socials a:hover { color: var(--gold); }
+        .footer-copy { font-size: 0.8rem; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 900px) {
+            .page-header h1 { font-size: 2.6rem; }
+            .featured-card {
+                grid-template-columns: 1fr;
+            }
+            .featured-card .card-image {
+                min-height: 200px;
+            }
+            .featured-card .card-body h3 {
+                font-size: 1.5rem;
+            }
+        }
+        @media (max-width: 700px) {
+            .menu-toggle { display: flex; }
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                padding: 16px 0 8px;
+                gap: 14px;
+            }
+            .nav-links.open { display: flex; }
+            .page-header {
+                padding: 50px 0 40px;
+                min-height: 250px;
+            }
+            .page-header h1 { font-size: 2.2rem; }
+            .articles-grid { grid-template-columns: 1fr; }
+            .featured-card .card-body {
+                padding: 24px 20px 28px;
+            }
+            .featured-card .card-body h3 {
+                font-size: 1.3rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .logo-text { font-size: 1.1rem; }
+            .page-header {
+                padding: 40px 0 30px;
+                min-height: 200px;
+            }
+            .page-header h1 { font-size: 1.8rem; }
+            .page-header p { font-size: 1rem; }
+            .featured-card .card-image {
+                min-height: 150px;
+            }
+            .featured-card .card-body h3 {
+                font-size: 1.1rem;
+            }
+            .footer-logo img { height: 26px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== HEADER ===== -->
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">
+                <a href="index.html">
+                    <img src="images/logo.png" alt="Pure Camellia Chronicle Logo" />
+                    <div>
+                        <span class="logo-text">Pure Camellia <span>Chronicle</span></span>
+                        <span class="logo-sub">565 Days of Tea History</span>
+                    </div>
+                </a>
+            </div>
+            <button class="menu-toggle" onclick="this.classList.toggle('open'); document.querySelector('.nav-links').classList.toggle('open')">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="chronicle.html">The Chronicle</a></li>
+                <li><a href="vault.html">Tea Vault</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="newsletter.html">Newsletter</a></li>
+                <li><a href="admin.html" class="nav-cta">Admin</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- ===== PAGE HEADER ===== -->
+    <section class="page-header">
+        <div class="page-header-bg"></div>
+        <div class="container">
+            <h1>The Chronicle</h1>
+            <p>565 Days. One Leaf. The Untold Story of Everything.</p>
+        </div>
+    </section>
+
+    <!-- ===== ARTICLES GRID SECTION ===== -->
+    <section class="articles-grid-section">
+        <div class="container">
+
+            <!-- ===== FEATURED CARD ===== -->
+            <div class="featured-card" id="featuredCard">
+                <div class="card-image" id="featuredImage">
+                    <span class="day-badge" id="featuredBadge">Day 1</span>
+                    <span class="fallback-icon">🍃</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-meta">
+                        <span class="category" id="featuredCategory">History</span>
+                        <span>•</span>
+                        <span id="featuredEra">2737 BCE</span>
+                    </div>
+                    <h3 id="featuredTitle">The Deadly Guessing Game</h3>
+                    <p id="featuredExcerpt">In 2737 BCE, a chieftain named Shen Nung walked into a jungle and discovered a leaf that would change the world.</p>
+                    <a href="#" id="featuredLink" class="read-link">Read Full Story →</a>
+                </div>
+            </div>
+
+            <!-- ===== SECTION TITLE ===== -->
+            <span class="section-label">The Archive</span>
+            <h2 class="section-title">All Episodes</h2>
+
+            <!-- ===== ARTICLES GRID ===== -->
+            <div class="articles-grid" id="articlesGrid">
+
+                <!-- ===== SAMPLE COMING SOON CARD 1 ===== -->
+                <div class="article-card" style="opacity:0.6; filter:grayscale(0.3);">
+                    <div class="card-image" style="background: linear-gradient(135deg, #3a4a3f, #1a2a1f);">
+                        <span class="day-badge" style="background:#888; color:#fff;">Coming</span>
+                        <span class="fallback-icon">⏳</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-meta">
+                            <span class="category">History</span>
+                            <span>•</span>
+                            <span>2737 BCE</span>
+                        </div>
+                        <h3>The World of 2737 BCE</h3>
+                        <p>Before stone roads, before towns, before written language — humanity lived in a wild, untamed world.</p>
+                        <span style="color:#aaa; font-size:0.9rem;">Coming tomorrow</span>
+                    </div>
+                </div>
+
+                <!-- ===== SAMPLE COMING SOON CARD 2 ===== -->
+                <div class="article-card" style="opacity:0.6; filter:grayscale(0.3);">
+                    <div class="card-image" style="background: linear-gradient(135deg, #3a4a3f, #1a2a1f);">
+                        <span class="day-badge" style="background:#888; color:#fff;">Coming</span>
+                        <span class="fallback-icon">⚔️</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-meta">
+                            <span class="category">People</span>
+                            <span>•</span>
+                            <span>2737 BCE</span>
+                        </div>
+                        <h3>Shen Nung's Vow</h3>
+                        <p>A brilliant leader turned his own body into a living laboratory — testing every plant in the jungle.</p>
+                        <span style="color:#aaa; font-size:0.9rem;">Coming soon</span>
+                    </div>
+                </div>
+
+                <!-- ===== SAMPLE COMING SOON CARD 3 ===== -->
+                <div class="article-card" style="opacity:0.6; filter:grayscale(0.3);">
+                    <div class="card-image" style="background: linear-gradient(135deg, #3a4a3f, #1a2a1f);">
+                        <span class="day-badge" style="background:#888; color:#fff;">Coming</span>
+                        <span class="fallback-icon">🌿</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-meta">
+                            <span class="category">History</span>
+                            <span>•</span>
+                            <span>2737 BCE</span>
+                        </div>
+                        <h3>The First Footsteps</h3>
+                        <p>Shen Nung takes his first historic steps into the deep undergrowth, his bamboo basket ready.</p>
+                        <span style="color:#aaa; font-size:0.9rem;">Coming soon</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-logo">
+                <img src="images/logo.png" alt="Pure Camellia Chronicle Logo" />
+                Pure Camellia <span>Chronicle</span>
+            </div>
+            <div class="footer-socials">
+                <a href="https://www.facebook.com/purecamelliachronicle" target="_blank">Facebook</a>
+                <a href="https://www.instagram.com/purecamelliachronicle" target="_blank">Instagram</a>
+                <a href="https://www.threads.com/@purecamelliachronicle" target="_blank">Threads</a>
+                <a href="https://www.pinterest.com/purecamelliachronicle/" target="_blank">Pinterest</a>
+            </div>
+            <div class="footer-copy">&copy; 2026 Pure Camellia Chronicle</div>
+        </div>
+    </footer>
+
+    <script>
+        // ===== NAVIGATION =====
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.querySelector('.menu-toggle').classList.remove('open');
+                document.querySelector('.nav-links').classList.remove('open');
+            });
+        });
+
+        // ===== CONFIGURATION =====
+        function getCloudConfig() {
+            const apiKey = localStorage.getItem('jsonbin_api_key');
+            const articlesBinId = localStorage.getItem('jsonbin_articles_bin');
+
+            if (!apiKey || !articlesBinId) {
+                console.log('No cloud config found. Using localStorage.');
+                return null;
+            }
+
+            return { apiKey, articlesBinId };
+        }
+
+        // ===== LOAD ARTICLES FROM CLOUD =====
+        function loadArticles() {
+            const config = getCloudConfig();
+            const grid = document.getElementById('articlesGrid');
+
+            // Keep coming soon cards as fallback
+            const comingSoonCards = grid.querySelectorAll('.article-card[style*="opacity:0.6"]');
+
+            if (config) {
+                // Load from cloud
+                fetch(`https://api.jsonbin.io/v3/b/${config.articlesBinId}?meta=false`, {
+                    headers: {
+                        'X-Master-Key': config.apiKey
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const articles = Array.isArray(data) ? data : [];
+                    displayArticles(articles, grid, comingSoonCards);
+                    updateFeaturedCard(articles);
+                })
+                .catch(error => {
+                    console.error('❌ Error loading from cloud:', error);
+                    // Fallback to localStorage
+                    loadFromLocalStorage(grid, comingSoonCards);
+                });
+            } else {
+                // Fallback to localStorage
+                loadFromLocalStorage(grid, comingSoonCards);
+            }
+        }
+
+        function loadFromLocalStorage(grid, comingSoonCards) {
+            const articles = JSON.parse(localStorage.getItem('chronicleArticles')) || [];
+            displayArticles(articles, grid, comingSoonCards);
+            updateFeaturedCard(articles);
+        }
+
+        function displayArticles(articles, grid, comingSoonCards) {
+            // Remove existing published cards (keep coming soon)
+            const publishedCards = grid.querySelectorAll('.article-card:not([style*="opacity:0.6"])');
+            publishedCards.forEach(card => card.remove());
+
+            // If no articles, keep coming soon cards
+            if (articles.length === 0) {
+                // Coming soon cards already exist
+                return;
+            }
+
+            // Sort by day
+            articles.sort((a, b) => parseInt(a.day) - parseInt(b.day));
+
+            // Create cards for each article
+            articles.forEach(article => {
+                const card = document.createElement('div');
+                card.className = 'article-card';
+                const imageStyle = article.imageData
+                    ? `background-image: url('${article.imageData}');`
+                    : 'background: linear-gradient(135deg, var(--mid), var(--dark));';
+                card.innerHTML = `
+                    <div class="card-image" style="${imageStyle} background-size: cover; background-position: center;">
+                        <span class="day-badge">Day ${article.day}</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-meta">
+                            <span class="category">${article.category || 'History'}</span>
+                            <span>•</span>
+                            <span>${article.era || 'Unknown'}</span>
+                        </div>
+                        <h3>${article.title}</h3>
+                        <p>${article.excerpt}</p>
+                        <a href="${article.link}" target="_blank" class="read-link">Read Full Story →</a>
+                    </div>
+                `;
+                // Insert before the first coming soon card
+                if (comingSoonCards.length > 0) {
+                    grid.insertBefore(card, comingSoonCards[0]);
+                } else {
+                    grid.appendChild(card);
+                }
+            });
+        }
+
+        function updateFeaturedCard(articles) {
+            if (!articles || articles.length === 0) return;
+
+            // Get the latest article (highest day number)
+            const sorted = [...articles].sort((a, b) => parseInt(b.day) - parseInt(a.day));
+            const latest = sorted[0];
+
+            const featuredCard = document.getElementById('featuredCard');
+            if (!featuredCard) return;
+
+            const imageDiv = document.getElementById('featuredImage');
+            if (imageDiv && latest.imageData) {
+                imageDiv.style.backgroundImage = `url('${latest.imageData}')`;
+                imageDiv.style.backgroundSize = 'cover';
+                imageDiv.style.backgroundPosition = 'center';
+            } else if (imageDiv) {
+                imageDiv.style.backgroundImage = 'linear-gradient(135deg, var(--mid), var(--dark))';
+            }
+
+            document.getElementById('featuredBadge').textContent = `Day ${latest.day}`;
+            document.getElementById('featuredCategory').textContent = latest.category || 'Featured';
+            document.getElementById('featuredEra').textContent = latest.era || 'Unknown';
+            document.getElementById('featuredTitle').textContent = latest.title;
+            document.getElementById('featuredExcerpt').textContent = latest.excerpt;
+            document.getElementById('featuredLink').href = latest.link;
+        }
+
+        // ===== LOAD ON PAGE LOAD =====
+        document.addEventListener('DOMContentLoaded', function() {
+            loadArticles();
+        });
+
+        // Also reload when returning from admin page
+        window.addEventListener('pageshow', function(e) {
+            if (e.persisted) {
+                loadArticles();
+            }
+        });
+    </script>
+</body>
+</html>

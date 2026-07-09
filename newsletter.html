@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Newsletter — Pure Camellia</title>
+    <link rel="icon" type="image/png" href="images/logo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+        /* ===== GLOBAL ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --dark: #1a3c2a;
+            --mid: #2d5a3d;
+            --gold: #b8860b;
+            --cream: #f5f0e8;
+            --light-gold: #d4a843;
+            --shadow: rgba(26,60,42,0.12);
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--cream);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+        }
+        a { text-decoration: none; color: inherit; }
+        img { max-width: 100%; display: block; }
+
+        /* ===== HEADER ===== */
+        .site-header {
+            background: var(--dark);
+            padding: 14px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 2px solid var(--gold);
+        }
+        .site-header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .logo a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo a img {
+            height: 40px;
+            width: auto;
+            display: block;
+        }
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #fff;
+        }
+        .logo-text span { color: var(--gold); }
+        .logo-sub {
+            font-size: 0.65rem;
+            color: rgba(255,255,255,0.5);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            display: block;
+            margin-top: -2px;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            list-style: none;
+        }
+        .nav-links a {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+            transition: color 0.3s;
+            position: relative;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gold);
+            transition: width 0.3s;
+        }
+        .nav-links a:hover { color: #fff; }
+        .nav-links a:hover::after { width: 100%; }
+        .nav-cta {
+            background: var(--gold);
+            color: var(--dark) !important;
+            padding: 8px 22px;
+            border-radius: 50px;
+            font-weight: 600 !important;
+        }
+        .nav-cta::after { display: none !important; }
+        .nav-cta:hover { background: var(--light-gold) !important; }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+        }
+        .menu-toggle span {
+            display: block;
+            width: 26px;
+            height: 2.5px;
+            background: #fff;
+            border-radius: 2px;
+        }
+
+        /* ===== PAGE HEADER with news.jpg background ===== */
+        .page-header {
+            position: relative;
+            padding: 80px 0 70px;
+            text-align: center;
+            overflow: hidden;
+            min-height: 350px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .page-header-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('images/news.jpg');
+            background-size: cover;
+            background-position: center;
+            z-index: 0;
+        }
+        .page-header-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(26,60,42,0.80) 0%, rgba(15,40,28,0.88) 100%);
+        }
+        .page-header .container {
+            position: relative;
+            z-index: 1;
+        }
+        .page-header .sub {
+            color: var(--gold);
+            font-size: 1.1rem;
+            font-weight: 300;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .page-header h1 {
+            color: #fff;
+            font-size: 3.2rem;
+            margin-bottom: 8px;
+            text-shadow: 0 4px 30px rgba(0,0,0,0.4);
+        }
+        .page-header p {
+            color: rgba(255,255,255,0.85);
+            font-size: 1.1rem;
+            max-width: 500px;
+            margin: 0 auto;
+            text-shadow: 0 2px 15px rgba(0,0,0,0.3);
+        }
+        .page-header .sub-note {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.85rem;
+            margin-top: 6px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        /* ===== FEATURES GRID ===== */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 40px 0 20px;
+        }
+        .feature-item {
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px var(--shadow);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        .feature-item:hover {
+            transform: translateY(-4px);
+        }
+        .feature-item .icon {
+            font-size: 1.8rem;
+            display: block;
+            margin-bottom: 6px;
+        }
+        .feature-item h4 {
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+        .feature-item p {
+            font-size: 0.85rem;
+            color: #5a6b5e;
+        }
+
+        /* ===== SAMPLE EPISODE ===== */
+        .sample-episode {
+            background: #fff;
+            padding: 30px 32px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px var(--shadow);
+            margin: 30px 0;
+        }
+        .sample-episode .day-tag {
+            color: var(--gold);
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .sample-episode .subhead {
+            color: #888;
+            font-size: 0.95rem;
+            font-style: italic;
+            margin-bottom: 14px;
+        }
+        .sample-episode h3 {
+            font-size: 1.4rem;
+            margin: 4px 0 6px;
+        }
+        .sample-episode p {
+            color: #5a6b5e;
+            margin-bottom: 14px;
+            line-height: 1.7;
+        }
+        .sample-episode .meta {
+            color: #888;
+            font-size: 0.85rem;
+            margin-top: 10px;
+        }
+        .sample-episode .read-more-link {
+            display: inline-block;
+            color: var(--gold);
+            font-weight: 600;
+            margin-top: 6px;
+            transition: gap 0.3s;
+        }
+        .sample-episode .read-more-link:hover {
+            gap: 8px;
+        }
+        .sample-episode .divider {
+            border: none;
+            border-top: 1px solid #eee;
+            margin: 16px 0;
+        }
+
+        /* ===== TESTIMONIALS ===== */
+        .testimonials {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin: 30px 0;
+        }
+        .testimonial {
+            background: #fff;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px var(--shadow);
+            transition: transform 0.3s;
+        }
+        .testimonial:hover {
+            transform: translateY(-4px);
+        }
+        .testimonial .quote-mark {
+            font-size: 2rem;
+            color: var(--gold);
+            line-height: 1;
+        }
+        .testimonial blockquote {
+            font-style: italic;
+            color: #333;
+            margin: 6px 0 10px;
+        }
+        .testimonial cite {
+            font-style: normal;
+            font-size: 0.85rem;
+            color: #888;
+        }
+
+        /* ===== CTA BOX ===== */
+        .cta-box {
+            background: var(--dark);
+            color: #fff;
+            padding: 40px 32px;
+            border-radius: 16px;
+            text-align: center;
+            margin: 30px 0 10px;
+        }
+        .cta-box h3 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+        .cta-box p {
+            color: rgba(255,255,255,0.6);
+            max-width: 400px;
+            margin: 0 auto 20px;
+        }
+        .cta-box .btn-primary {
+            display: inline-block;
+            background: var(--gold);
+            color: var(--dark);
+            padding: 12px 36px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        .cta-box .btn-primary:hover {
+            background: var(--light-gold);
+            transform: translateY(-2px);
+        }
+        .cta-box .sub-note {
+            color: rgba(255,255,255,0.3);
+            font-size: 0.75rem;
+            margin-top: 12px;
+        }
+
+        /* ===== FOOTER ===== */
+        .site-footer {
+            background: #0d1f14;
+            color: rgba(255,255,255,0.5);
+            padding: 32px 0;
+            border-top: 1px solid rgba(255,255,255,0.04);
+        }
+        .site-footer .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Playfair Display', serif;
+            color: #fff;
+        }
+        .footer-logo img {
+            height: 32px;
+            width: auto;
+            display: block;
+        }
+        .footer-logo span { color: var(--gold); }
+        .footer-socials { display: flex; gap: 20px; }
+        .footer-socials a {
+            color: rgba(255,255,255,0.4);
+            font-size: 0.85rem;
+            transition: color 0.3s;
+        }
+        .footer-socials a:hover { color: var(--gold); }
+        .footer-copy { font-size: 0.8rem; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 900px) {
+            .page-header h1 { font-size: 2.6rem; }
+        }
+        @media (max-width: 700px) {
+            .menu-toggle { display: flex; }
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                padding: 16px 0 8px;
+                gap: 14px;
+            }
+            .nav-links.open { display: flex; }
+            .page-header {
+                padding: 50px 0 40px;
+                min-height: 250px;
+            }
+            .page-header h1 { font-size: 2.2rem; }
+            .features-grid { grid-template-columns: 1fr 1fr; }
+            .testimonials { grid-template-columns: 1fr; }
+            .sample-episode { padding: 20px; }
+            .sample-episode h3 { font-size: 1.2rem; }
+        }
+        @media (max-width: 480px) {
+            .logo-text { font-size: 1.1rem; }
+            .page-header {
+                padding: 40px 0 30px;
+                min-height: 200px;
+            }
+            .page-header h1 { font-size: 1.8rem; }
+            .page-header p { font-size: 1rem; }
+            .features-grid { grid-template-columns: 1fr; }
+            .sample-episode { padding: 16px; }
+            .cta-box { padding: 28px 20px; }
+            .footer-logo img { height: 26px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== HEADER ===== -->
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">
+                <a href="index.html">
+                    <img src="images/logo.png" alt="Pure Camellia Chronicle Logo" />
+                    <div>
+                        <span class="logo-text">Pure Camellia <span>Chronicle</span></span>
+                        <span class="logo-sub">565 Days of Tea History</span>
+                    </div>
+                </a>
+            </div>
+            <button class="menu-toggle" onclick="this.classList.toggle('open'); document.querySelector('.nav-links').classList.toggle('open')">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="chronicle.html">The Chronicle</a></li>
+                <li><a href="vault.html">Tea Vault</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="newsletter.html">Newsletter</a></li>
+                <li><a href="admin.html" class="nav-cta">Admin</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- ===== PAGE HEADER with news.png background ===== -->
+    <section class="page-header">
+        <div class="page-header-bg"></div>
+        <div class="container">
+            <span class="sub">The Daily Brew</span>
+            <h1>565 Days of Tea History<br />Delivered to Your Inbox</h1>
+            <p>Each morning, a new episode. Each story, meticulously researched and beautifully told.</p>
+            <p class="sub-note">No spam. Unsubscribe anytime. One story per day.</p>
+        </div>
+    </section>
+
+    <!-- ===== FEATURES ===== -->
+    <div class="container">
+        <h2 style="text-align:center; font-size:2rem; padding-top:20px;">More Than a Newsletter</h2>
+        <div class="features-grid">
+            <div class="feature-item">
+                <span class="icon">◆</span>
+                <h4>Daily Dispatch</h4>
+                <p>One beautifully written episode each morning — 565 consecutive days of tea history.</p>
+            </div>
+            <div class="feature-item">
+                <span class="icon">◉</span>
+                <h4>Exclusive Vault Access</h4>
+                <p>First access to new tea grade reviews and premium content.</p>
+            </div>
+            <div class="feature-item">
+                <span class="icon">◈</span>
+                <h4>Archive Forever</h4>
+                <p>Browse the complete chronicle anytime. Your subscription never expires.</p>
+            </div>
+            <div class="feature-item">
+                <span class="icon">◊</span>
+                <h4>Community</h4>
+                <p>Join thousands of tea enthusiasts, historians, and connoisseurs.</p>
+            </div>
+            <div class="feature-item">
+                <span class="icon">✦</span>
+                <h4>Completely Free</h4>
+                <p>No paywalls. No tiers. Every story, every day, for everyone.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SAMPLE EPISODE ===== -->
+    <div class="container">
+        <h2 style="text-align:center; font-size:1.8rem;">A Sample Episode</h2>
+        <div class="sample-episode">
+            <span class="day-tag">DAY 001 · Ancient Origins · 2737 BCE</span>
+            <h3>The Deadly Guessing Game</h3>
+            <p class="subhead">2737 BCE — The Primeval Jungle, Eastern Asia</p>
+
+            <p>The year is 2737 BCE.</p>
+
+            <p>If you stood on a mountain ridge in eastern Asia, you would see no stone roads, no towns, and no farmers' fields. The world was a wild, untamed wilderness—a massive, dense jungle that stretched for thousands of miles in every direction.</p>
+
+            <p>Human beings lived in small, isolated tribes. They survived by hunting wild animals with crude spears and gathering plants from the forest floor. They had no books, no written language, and no doctors. They had no maps, no medicine, and no guides to tell them what was safe and what would kill them.</p>
+
+            <p><strong>Knowledge was bought with human lives.</strong></p>
+
+            <p>Every single morning brought the same terrifying challenge: finding food without accidentally poisoning yourself.</p>
+
+            <hr class="divider" />
+
+            <p style="font-style:italic; color:#888;">The journey continues... A king. A jungle. A leaf that changed the world. Subscribe to read the full story.</p>
+
+            <div class="meta">8 min read · 2,400 words</div>
+            <a href="https://purecammellia1.my.canva.site/" target="_blank" class="read-more-link">Read Full Story →</a>
+        </div>
+
+        <!-- ===== TESTIMONIALS ===== -->
+        <div class="testimonials">
+            <div class="testimonial">
+                <div class="quote-mark">"</div>
+                <blockquote>Each morning, I wake up to a new chapter in the most epic story I never knew I needed to read.</blockquote>
+                <cite>******* — Tea Collector, Singapore</cite>
+            </div>
+            <div class="testimonial">
+                <div class="quote-mark">"</div>
+                <blockquote>The research is impeccable. The writing is gorgeous. This is how history should be told.</blockquote>
+                <cite>******** — Historian, Oxford University</cite>
+            </div>
+            <div class="testimonial">
+                <div class="quote-mark">"</div>
+                <blockquote>I've learned more about tea in three weeks than in my entire life. Absolutely obsessed.</blockquote>
+                <cite>******** — Chef &amp; Food Writer, Mumbai</cite>
+            </div>
+        </div>
+
+        <!-- ===== CTA ===== -->
+        <div class="cta-box">
+            <h3>Begin the Odyssey</h3>
+            <p>Join thousands of tea enthusiasts, historians, and curious minds. 565 days of stories. Zero cost. Zero spam. Pure history.</p>
+            <form action="#" method="post" style="display:flex; flex-wrap:wrap; gap:10px; justify-content:center; max-width:460px; margin:0 auto;">
+                <input type="email" placeholder="Enter your email" required style="flex:1; min-width:200px; padding:12px 20px; border:none; border-radius:50px; font-size:1rem;" />
+                <button type="submit" class="btn-primary" style="padding:12px 30px;">Subscribe Free</button>
+            </form>
+            <p class="sub-note">No credit card required. Unsubscribe anytime.</p>
+        </div>
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-logo">
+                <img src="images/logo.png" alt="Pure Camellia Chronicle Logo" />
+                Pure Camellia <span>Chronicle</span>
+            </div>
+            <div class="footer-socials">
+                <a href="https://www.facebook.com/purecamelliachronicle" target="_blank">Facebook</a>
+                <a href="https://www.instagram.com/purecamelliachronicle" target="_blank">Instagram</a>
+                <a href="https://www.threads.com/@purecamelliachronicle" target="_blank">Threads</a>
+                <a href="https://www.pinterest.com/purecamelliachronicle/" target="_blank">Pinterest</a>
+            </div>
+            <div class="footer-copy">&copy; 2026 Pure Camellia Chronicle</div>
+        </div>
+    </footer>
+
+    <script>
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.querySelector('.menu-toggle').classList.remove('open');
+                document.querySelector('.nav-links').classList.remove('open');
+            });
+        });
+    </script>
+</body>
+</html>
