@@ -1097,7 +1097,6 @@
                 return;
             }
 
-            // Save to localStorage
             localStorage.setItem('jsonbin_api_key', apiKey);
             localStorage.setItem('jsonbin_articles_bin', articlesBinId);
             localStorage.setItem('jsonbin_reviews_bin', reviewsBinId);
@@ -1106,7 +1105,6 @@
             status.className = 'config-status success';
             status.textContent = '✅ Configuration saved successfully! You can now publish articles.';
 
-            // Update cloud status
             document.getElementById('cloudStatus').textContent = '✅';
             showToast('Configuration saved!', '⚙️');
         }
@@ -1152,15 +1150,12 @@
                 document.getElementById('forgotPasswordForm').style.display = 'none';
                 document.getElementById('loginCard').style.display = 'none';
 
-                // Show sections
                 document.getElementById('configSection').style.display = 'block';
                 document.getElementById('publishSection').style.display = 'block';
                 document.getElementById('reviewPublishSection').style.display = 'block';
 
-                // Load config
                 loadConfig();
 
-                // Update stats
                 const articles = JSON.parse(localStorage.getItem('chronicleArticles')) || [];
                 document.getElementById('publishedCount').textContent = articles.length;
                 document.getElementById('daysRemaining').textContent = 565 - articles.length;
@@ -1201,7 +1196,7 @@
             }
         }
 
-        // ===== CLOUD STORAGE FUNCTIONS =====
+        // ===== CLOUD STORAGE FUNCTIONS (Updated for {"articles": []} structure) =====
         function getCloudConfig() {
             const apiKey = localStorage.getItem('jsonbin_api_key');
             const articlesBinId = localStorage.getItem('jsonbin_articles_bin');
@@ -1219,7 +1214,6 @@
             const config = getCloudConfig();
             if (!config) return Promise.reject('No config');
 
-            // First, get existing data
             return fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
                 headers: {
                     'X-Master-Key': config.apiKey
@@ -1227,19 +1221,32 @@
             })
             .then(response => response.json())
             .then(response => {
-                let existingData = response.record || [];
-                // If it's a single object (not array), make it an array
-                if (!Array.isArray(existingData)) existingData = [];
-                existingData.push(data);
-
-                // Update the bin
+                let existingData = response.record;
+                let articlesArray = [];
+                
+                if (existingData && typeof existingData === 'object' && existingData.articles) {
+                    articlesArray = existingData.articles || [];
+                } else if (Array.isArray(existingData)) {
+                    articlesArray = existingData;
+                } else if (existingData && typeof existingData === 'object') {
+                    articlesArray = [existingData];
+                } else {
+                    articlesArray = [];
+                }
+                
+                articlesArray.push(data);
+                
+                const updateData = {
+                    articles: articlesArray
+                };
+                
                 return fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-Master-Key': config.apiKey
                     },
-                    body: JSON.stringify(existingData)
+                    body: JSON.stringify(updateData)
                 });
             })
             .then(response => response.json())
@@ -1249,25 +1256,6 @@
             })
             .catch(error => {
                 console.error(`❌ Error saving ${type}:`, error);
-                throw error;
-            });
-        }
-
-        function loadFromCloud(binId) {
-            const config = getCloudConfig();
-            if (!config) return Promise.reject('No config');
-
-            return fetch(`https://api.jsonbin.io/v3/b/${binId}?meta=false`, {
-                headers: {
-                    'X-Master-Key': config.apiKey
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                return data;
-            })
-            .catch(error => {
-                console.error('❌ Error loading from cloud:', error);
                 throw error;
             });
         }
@@ -1375,7 +1363,6 @@
             reader.onload = function(e) {
                 articleData.imageData = e.target.result;
 
-                // Get Bin ID from config
                 const config = getCloudConfig();
                 if (!config) {
                     publishBtn.disabled = false;
@@ -1383,10 +1370,8 @@
                     return;
                 }
 
-                // Save to cloud
                 saveToCloud(config.articlesBinId, articleData, 'Article')
                     .then(() => {
-                        // Also save to localStorage as backup
                         let articles = JSON.parse(localStorage.getItem('chronicleArticles')) || [];
                         articles.push(articleData);
                         localStorage.setItem('chronicleArticles', JSON.stringify(articles));
@@ -1405,7 +1390,7 @@
                         publishBtn.textContent = '☁️ Publish Article to Cloud';
                     })
                     .catch(error => {
-                        alert('❌ Error saving to cloud. Please check your JSONBin credentials.');
+                        alert('❌ Error saving to cloud: ' + error.message);
                         console.error(error);
                         publishBtn.disabled = false;
                         publishBtn.textContent = '☁️ Publish Article to Cloud';
@@ -1504,7 +1489,7 @@
                         publishBtn.textContent = '☁️ Publish Review to Cloud';
                     })
                     .catch(error => {
-                        alert('❌ Error saving to cloud. Please check your JSONBin credentials.');
+                        alert('❌ Error saving to cloud: ' + error.message);
                         console.error(error);
                         publishBtn.disabled = false;
                         publishBtn.textContent = '☁️ Publish Review to Cloud';
@@ -1550,10 +1535,8 @@
 
         // Load config on page load
         document.addEventListener('DOMContentLoaded', function() {
-            // Check if already logged in (show config if so)
             const isLoggedIn = localStorage.getItem('isLoggedIn');
             if (isLoggedIn === 'true') {
-                // Auto-login
                 document.getElementById('loginCard').style.display = 'none';
                 document.getElementById('configSection').style.display = 'block';
                 document.getElementById('publishSection').style.display = 'block';
