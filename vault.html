@@ -614,11 +614,9 @@
             const config = getCloudConfig();
             const grid = document.getElementById('reviewsGrid');
 
-            // Keep coming soon cards as fallback
             const comingSoonCards = grid.querySelectorAll('.review-card[style*="opacity:0.6"]');
 
             if (config) {
-                // Load from cloud
                 fetch(`https://api.jsonbin.io/v3/b/${config.reviewsBinId}?meta=false`, {
                     headers: {
                         'X-Master-Key': config.apiKey
@@ -626,16 +624,24 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    const reviews = Array.isArray(data) ? data : [];
+                    let reviews = [];
+                    
+                    // Handle {"reviews": []} structure
+                    if (data && typeof data === 'object' && data.reviews) {
+                        reviews = data.reviews || [];
+                    } else if (Array.isArray(data)) {
+                        reviews = data;
+                    } else if (data && typeof data === 'object') {
+                        reviews = [data];
+                    }
+                    
                     displayReviews(reviews, grid, comingSoonCards);
                 })
                 .catch(error => {
-                    console.error('❌ Error loading from cloud:', error);
-                    // Fallback to localStorage
+                    console.error('❌ Error loading reviews from cloud:', error);
                     loadFromLocalStorage(grid, comingSoonCards);
                 });
             } else {
-                // Fallback to localStorage
                 loadFromLocalStorage(grid, comingSoonCards);
             }
         }
@@ -646,19 +652,15 @@
         }
 
         function displayReviews(reviews, grid, comingSoonCards) {
-            // Remove existing published cards (keep coming soon)
             const publishedCards = grid.querySelectorAll('.review-card:not([style*="opacity:0.6"])');
             publishedCards.forEach(card => card.remove());
 
-            // If no reviews, keep coming soon cards
             if (reviews.length === 0) {
                 return;
             }
 
-            // Sort by id
             reviews.sort((a, b) => parseInt(a.id) - parseInt(b.id));
 
-            // Create cards for each review
             reviews.forEach(review => {
                 const card = document.createElement('div');
                 card.className = 'review-card';
@@ -682,7 +684,6 @@
                         <a href="${review.link}" target="_blank" class="read-link">Read Full Review →</a>
                     </div>
                 `;
-                // Insert before the first coming soon card
                 if (comingSoonCards.length > 0) {
                     grid.insertBefore(card, comingSoonCards[0]);
                 } else {
@@ -696,7 +697,6 @@
             loadReviews();
         });
 
-        // Also reload when returning from admin page
         window.addEventListener('pageshow', function(e) {
             if (e.persisted) {
                 loadReviews();
