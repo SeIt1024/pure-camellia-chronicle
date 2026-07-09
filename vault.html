@@ -609,38 +609,38 @@
             return { apiKey, reviewsBinId };
         }
 
-        // ===== LOAD REVIEWS FROM CLOUD =====
+        // ===== LOAD REVIEWS FROM PUBLIC JSONBin =====
         function loadReviews() {
             const config = getCloudConfig();
             const grid = document.getElementById('reviewsGrid');
-
             const comingSoonCards = grid.querySelectorAll('.review-card[style*="opacity:0.6"]');
 
-            if (config) {
-                fetch(`https://api.jsonbin.io/v3/b/${config.reviewsBinId}?meta=false`, {
-                    headers: {
-                        'X-Master-Key': config.apiKey
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    let reviews = [];
-                    
-                    // Handle {"reviews": []} structure
-                    if (data && typeof data === 'object' && data.reviews) {
-                        reviews = data.reviews || [];
-                    } else if (Array.isArray(data)) {
-                        reviews = data;
-                    } else if (data && typeof data === 'object') {
-                        reviews = [data];
-                    }
-                    
-                    displayReviews(reviews, grid, comingSoonCards);
-                })
-                .catch(error => {
-                    console.error('❌ Error loading reviews from cloud:', error);
-                    loadFromLocalStorage(grid, comingSoonCards);
-                });
+            if (config && config.reviewsBinId) {
+                // Use public endpoint (no API key needed for reading)
+                const publicUrl = `https://api.jsonbin.io/v3/b/${config.reviewsBinId}/latest?meta=false`;
+                
+                fetch(publicUrl)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Public fetch failed');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        let reviews = [];
+                        if (data && typeof data === 'object' && data.reviews) {
+                            reviews = data.reviews || [];
+                        } else if (Array.isArray(data)) {
+                            reviews = data;
+                        } else if (data && typeof data === 'object') {
+                            reviews = [data];
+                        }
+                        displayReviews(reviews, grid, comingSoonCards);
+                    })
+                    .catch(error => {
+                        console.error('❌ Error loading reviews from public URL:', error);
+                        loadFromLocalStorage(grid, comingSoonCards);
+                    });
             } else {
                 loadFromLocalStorage(grid, comingSoonCards);
             }
