@@ -1210,52 +1210,56 @@
             return { apiKey, articlesBinId, reviewsBinId };
         }
 
-        function saveToCloud(binId, data, type) {
-            const config = getCloudConfig();
-            if (!config) return Promise.reject('No config');
+       function saveToCloud(binId, data, type) {
+    const config = getCloudConfig();
+    if (!config) return Promise.reject('No config');
 
-            // First, get existing data from public endpoint
-            return fetch(`https://api.jsonbin.io/v3/b/${binId}/latest?meta=false`)
-                .then(response => response.json())
-                .then(existingData => {
-                    let articlesArray = [];
-                    
-                    if (existingData && typeof existingData === 'object' && existingData.articles) {
-                        articlesArray = existingData.articles || [];
-                    } else if (Array.isArray(existingData)) {
-                        articlesArray = existingData;
-                    } else if (existingData && typeof existingData === 'object') {
-                        articlesArray = [existingData];
-                    } else {
-                        articlesArray = [];
-                    }
-                    
-                    articlesArray.push(data);
-                    
-                    const updateData = {
-                        articles: articlesArray
-                    };
-                    
-                    return fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-Master-Key': config.apiKey
-                        },
-                        body: JSON.stringify(updateData)
-                    });
-                })
-                .then(response => response.json())
-                .then(result => {
-                    console.log(`✅ ${type} saved to cloud:`, result);
-                    return result;
-                })
-                .catch(error => {
-                    console.error(`❌ Error saving ${type}:`, error);
-                    throw error;
-                });
+    // Use a CORS proxy to bypass browser restrictions
+    const proxyUrl = 'https://corsproxy.io/?';
+    const apiUrl = `https://api.jsonbin.io/v3/b/${binId}`;
+
+    return fetch(proxyUrl + encodeURIComponent(apiUrl), {
+        headers: {
+            'X-Master-Key': config.apiKey
         }
-
+    })
+    .then(response => response.json())
+    .then(existingData => {
+        let articlesArray = [];
+        
+        if (existingData && typeof existingData === 'object' && existingData.articles) {
+            articlesArray = existingData.articles || [];
+        } else if (Array.isArray(existingData)) {
+            articlesArray = existingData;
+        } else {
+            articlesArray = [];
+        }
+        
+        articlesArray.push(data);
+        
+        const updateData = {
+            articles: articlesArray
+        };
+        
+        return fetch(proxyUrl + encodeURIComponent(apiUrl), {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Master-Key': config.apiKey
+            },
+            body: JSON.stringify(updateData)
+        });
+    })
+    .then(response => response.json())
+    .then(result => {
+        console.log(`✅ ${type} saved to cloud:`, result);
+        return result;
+    })
+    .catch(error => {
+        console.error(`❌ Error saving ${type}:`, error);
+        throw error;
+    });
+}
         // ===== IMAGE PREVIEW =====
         function previewImage(event) {
             const file = event.target.files[0];
