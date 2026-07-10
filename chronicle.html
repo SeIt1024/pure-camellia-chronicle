@@ -146,9 +146,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('images/chronicle.png');
-            background-size: cover;
-            background-position: center;
+            background: linear-gradient(135deg, var(--dark) 0%, #0d2818 100%);
             z-index: 0;
         }
         .page-header-bg::after {
@@ -158,7 +156,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, rgba(26,60,42,0.75) 0%, rgba(15,40,28,0.85) 100%);
+            background: linear-gradient(135deg, rgba(26,60,42,0.85) 0%, rgba(15,40,28,0.95) 100%);
         }
         .page-header .container {
             position: relative;
@@ -586,7 +584,6 @@
         });
 
         // ===== GOOGLE SHEETS CONFIGURATION =====
-        // The sheet ID from your URL: https://docs.google.com/spreadsheets/d/1R-NhrRiigpcafwtmgl-qBSeZLT_4ZLSzdXaQnRiZNi8/edit?usp=sharing
         const SHEET_ID = '1R-NhrRiigpcafwtmgl-qBSeZLT_4ZLSzdXaQnRiZNi8';
         const API_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
 
@@ -616,7 +613,8 @@
                 const rows = data.table.rows;
                 let articles = [];
                 
-                // Skip header row (index 0) and loop through data rows
+                // Loop through all rows
+                // Column mapping: A=day, B=title, C=era, D=category, E=excerpt, F=link
                 for (let i = 0; i < rows.length; i++) {
                     const row = rows[i];
                     // Check if row has a day value (first column)
@@ -627,8 +625,7 @@
                             era: row.c[2]?.v || 'Unknown',
                             category: row.c[3]?.v || 'History',
                             excerpt: row.c[4]?.v || '',
-                            link: row.c[5]?.v || '#',
-                            imageData: row.c[6]?.v || null
+                            link: row.c[5]?.v || '#'
                         };
                         articles.push(article);
                         console.log(`📊 Added article: Day ${article.day} - ${article.title}`);
@@ -665,7 +662,7 @@
                 grid.innerHTML = `
                     <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px;">
                         <p style="font-size: 1.2rem; color: #b33; margin-bottom: 10px;">⚠️ Could not load articles</p>
-                        <p style="color: #888;">Please check your internet connection and try again.</p>
+                        <p style="color: #888;">Error: ${error.message}</p>
                         <button onclick="loadArticles()" style="margin-top: 20px; padding: 10px 30px; background: var(--gold); color: var(--dark); border: none; border-radius: 50px; font-weight: 600; cursor: pointer; font-size: 1rem;">
                             Retry
                         </button>
@@ -675,7 +672,7 @@
         }
 
         function displayArticles(articles, grid) {
-            // Clear existing content (keep the grid)
+            // Clear existing content
             grid.innerHTML = '';
             
             // Create cards for each article (newest first)
@@ -683,17 +680,11 @@
                 const card = document.createElement('div');
                 card.className = 'article-card';
                 
-                // Determine image style
-                let imageStyle = 'background: linear-gradient(135deg, var(--mid), var(--dark));';
-                if (article.imageData && article.imageData !== '') {
-                    imageStyle = `background-image: url('${article.imageData}'); background-size: cover; background-position: center;`;
-                }
-                
                 // Create card HTML
                 card.innerHTML = `
-                    <div class="card-image" style="${imageStyle}">
+                    <div class="card-image">
                         <span class="day-badge">Day ${article.day}</span>
-                        ${!article.imageData ? '<span class="fallback-icon">🍃</span>' : ''}
+                        <span class="fallback-icon">🍃</span>
                     </div>
                     <div class="card-body">
                         <div class="card-meta">
@@ -715,21 +706,9 @@
             if (!articles || articles.length === 0) return;
             
             // Get the current day's article (highest day number)
-            // This will automatically update when new articles are added
             const currentDayArticle = articles[0]; // Already sorted by day desc
             
             console.log(`📊 Featured card: Day ${currentDayArticle.day} - ${currentDayArticle.title}`);
-            
-            const imageDiv = document.getElementById('featuredImage');
-            
-            // Update background image if available
-            if (currentDayArticle.imageData && currentDayArticle.imageData !== '') {
-                imageDiv.style.backgroundImage = `url('${currentDayArticle.imageData}')`;
-                imageDiv.style.backgroundSize = 'cover';
-                imageDiv.style.backgroundPosition = 'center';
-            } else {
-                imageDiv.style.background = 'linear-gradient(135deg, var(--mid), var(--dark))';
-            }
             
             // Update all featured card elements
             document.getElementById('featuredBadge').textContent = `Day ${currentDayArticle.day}`;
@@ -740,23 +719,14 @@
             document.getElementById('featuredLink').href = currentDayArticle.link || '#';
         }
 
-        // ===== AUTO-REFRESH EVERY 5 MINUTES (300,000ms) =====
-        // This ensures the page stays updated when you add new articles to Google Sheets
-        let refreshInterval = null;
-
-        function startAutoRefresh() {
-            // Refresh every 5 minutes
-            refreshInterval = setInterval(() => {
-                console.log('🔄 Auto-refreshing articles...');
-                loadArticles();
-            }, 300000); // 5 minutes
-        }
+        // ===== AUTO-REFRESH EVERY 5 MINUTES =====
+        setInterval(() => {
+            console.log('🔄 Auto-refreshing articles...');
+            loadArticles();
+        }, 300000); // 5 minutes
 
         // ===== LOAD ON PAGE LOAD =====
-        document.addEventListener('DOMContentLoaded', () => {
-            loadArticles();
-            startAutoRefresh();
-        });
+        document.addEventListener('DOMContentLoaded', loadArticles);
     </script>
 </body>
 </html>
