@@ -527,7 +527,7 @@
             <!-- ===== ARTICLES GRID ===== -->
             <div class="articles-grid" id="articlesGrid">
 
-                <!-- ===== SAMPLE COMING SOON CARD 1 ===== -->
+                <!-- ===== SAMPLE COMING SOON CARDS (will be replaced if articles exist) ===== -->
                 <div class="article-card" style="opacity:0.6; filter:grayscale(0.3);">
                     <div class="card-image" style="background: linear-gradient(135deg, #3a4a3f, #1a2a1f);">
                         <span class="day-badge" style="background:#888; color:#fff;">Coming</span>
@@ -545,7 +545,6 @@
                     </div>
                 </div>
 
-                <!-- ===== SAMPLE COMING SOON CARD 2 ===== -->
                 <div class="article-card" style="opacity:0.6; filter:grayscale(0.3);">
                     <div class="card-image" style="background: linear-gradient(135deg, #3a4a3f, #1a2a1f);">
                         <span class="day-badge" style="background:#888; color:#fff;">Coming</span>
@@ -563,7 +562,6 @@
                     </div>
                 </div>
 
-                <!-- ===== SAMPLE COMING SOON CARD 3 ===== -->
                 <div class="article-card" style="opacity:0.6; filter:grayscale(0.3);">
                     <div class="card-image" style="background: linear-gradient(135deg, #3a4a3f, #1a2a1f);">
                         <span class="day-badge" style="background:#888; color:#fff;">Coming</span>
@@ -616,34 +614,41 @@
             const grid = document.getElementById('articlesGrid');
             const comingSoonCards = grid.querySelectorAll('.article-card[style*="opacity:0.6"]');
 
-            // Your Google Sheet URL
-            const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRL7Z5Uaj3E_h-1htcHhdEY3tQYnElniPWhzT3tAvIFz5Zv6xiog5MQIMH33HOKD3gJv0dR5ilPZ8Up/pubhtml';
-
-            // Extract the sheet ID from the URL
-            const sheetId = sheetUrl.match(/\/d\/e\/([^\/]+)/)[1];
-
-            // Use the Google Sheets API to get JSON data
+            // Your Google Sheet ID from the published link
+            const sheetId = '2PACX-1vRL7Z5Uaj3E_h-1htcHhdEY3tQYnElniPWhzT3tAvIFz5Zv6xiog5MQIMH33HOKD3gJv0dR5ilPZ8Up';
             const apiUrl = `https://docs.google.com/spreadsheets/d/e/${sheetId}/gviz/tq?tqx=out:json`;
 
+            console.log('📊 Fetching articles from Google Sheets...');
+
             fetch(apiUrl)
-                .then(response => response.text())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
+                })
                 .then(text => {
-                    // Parse Google Sheets JSONP response
-                    // The response starts with "/*O_o*/" and then the JSON
-                    const jsonText = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
-                    const json = JSON.parse(jsonText);
-                    const rows = json.table.rows;
+                    // Google Sheets returns JSONP with a prefix
+                    // Extract just the JSON part
+                    const jsonStart = text.indexOf('{');
+                    const jsonEnd = text.lastIndexOf('}') + 1;
+                    const jsonText = text.substring(jsonStart, jsonEnd);
+                    const data = JSON.parse(jsonText);
+                    
+                    const rows = data.table.rows;
                     let articles = [];
+
+                    console.log(`📊 Found ${rows.length - 1} rows of data`);
 
                     // Skip header row (index 0)
                     for (let i = 1; i < rows.length; i++) {
                         const row = rows[i];
-                        // Check if row has data
-                        if (row.c && row.c[0] && row.c[0].v) {
+                        // Check if row has a day value (first column)
+                        if (row.c && row.c[0] && row.c[0].v !== null && row.c[0].v !== '') {
                             articles.push({
                                 day: parseInt(row.c[0]?.v || 0),
-                                title: row.c[1]?.v || '',
-                                era: row.c[2]?.v || '',
+                                title: row.c[1]?.v || 'Untitled',
+                                era: row.c[2]?.v || 'Unknown',
                                 category: row.c[3]?.v || 'History',
                                 excerpt: row.c[4]?.v || '',
                                 link: row.c[5]?.v || '#',
@@ -652,15 +657,18 @@
                         }
                     }
 
-                    displayArticles(articles, grid, comingSoonCards);
-                    updateFeaturedCard(articles);
+                    console.log(`📊 Loaded ${articles.length} articles`);
+
+                    if (articles.length > 0) {
+                        displayArticles(articles, grid, comingSoonCards);
+                        updateFeaturedCard(articles);
+                    } else {
+                        console.log('📊 No articles found, showing coming soon cards');
+                    }
                 })
                 .catch(error => {
-                    console.error('Error loading from Google Sheets:', error);
-                    // Fallback to localStorage
-                    const articles = JSON.parse(localStorage.getItem('chronicleArticles')) || [];
-                    displayArticles(articles, grid, comingSoonCards);
-                    updateFeaturedCard(articles);
+                    console.error('❌ Error loading from Google Sheets:', error);
+                    // Keep the coming soon cards as fallback
                 });
         }
 
@@ -668,11 +676,6 @@
             // Remove existing published cards (keep coming soon)
             const publishedCards = grid.querySelectorAll('.article-card:not([style*="opacity:0.6"])');
             publishedCards.forEach(card => card.remove());
-
-            // If no articles, keep coming soon cards
-            if (articles.length === 0) {
-                return;
-            }
 
             // Sort by day
             articles.sort((a, b) => parseInt(a.day) - parseInt(b.day));
@@ -682,10 +685,10 @@
                 const card = document.createElement('div');
                 card.className = 'article-card';
                 const imageStyle = article.imageData
-                    ? `background-image: url('${article.imageData}');`
+                    ? `background-image: url('${article.imageData}'); background-size: cover; background-position: center;`
                     : 'background: linear-gradient(135deg, var(--mid), var(--dark));';
                 card.innerHTML = `
-                    <div class="card-image" style="${imageStyle} background-size: cover; background-position: center;">
+                    <div class="card-image" style="${imageStyle}">
                         <span class="day-badge">Day ${article.day}</span>
                     </div>
                     <div class="card-body">
@@ -715,16 +718,11 @@
             const sorted = [...articles].sort((a, b) => parseInt(b.day) - parseInt(a.day));
             const latest = sorted[0];
 
-            const featuredCard = document.getElementById('featuredCard');
-            if (!featuredCard) return;
-
             const imageDiv = document.getElementById('featuredImage');
             if (imageDiv && latest.imageData) {
                 imageDiv.style.backgroundImage = `url('${latest.imageData}')`;
                 imageDiv.style.backgroundSize = 'cover';
                 imageDiv.style.backgroundPosition = 'center';
-            } else if (imageDiv) {
-                imageDiv.style.backgroundImage = 'linear-gradient(135deg, var(--mid), var(--dark))';
             }
 
             document.getElementById('featuredBadge').textContent = `Day ${latest.day}`;
@@ -738,13 +736,6 @@
         // ===== LOAD ON PAGE LOAD =====
         document.addEventListener('DOMContentLoaded', function() {
             loadArticles();
-        });
-
-        // Also reload when returning from admin page
-        window.addEventListener('pageshow', function(e) {
-            if (e.persisted) {
-                loadArticles();
-            }
         });
     </script>
 </body>
