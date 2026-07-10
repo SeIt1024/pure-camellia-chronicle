@@ -351,6 +351,26 @@
             100% { transform: rotate(360deg); }
         }
 
+        /* ===== DEBUG INFO ===== */
+        .debug-info {
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            display: none;
+            max-height: 300px;
+            overflow: auto;
+        }
+        .debug-info.show {
+            display: block;
+        }
+        .debug-info pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
         /* ===== PARTNER SECTION ===== */
         .partner-box {
             background: #fff;
@@ -509,6 +529,12 @@
             <span class="section-label">The Directory</span>
             <h2 class="section-title">Tea Profiles</h2>
 
+            <!-- ===== DEBUG INFO ===== -->
+            <div class="debug-info" id="debugInfo">
+                <strong>🔍 Debug Info:</strong>
+                <pre id="debugContent">Waiting for data...</pre>
+            </div>
+
             <div class="reviews-grid" id="reviewsGrid">
                 <div class="loading-spinner" id="loadingSpinner">
                     <div class="spinner"></div>
@@ -566,21 +592,36 @@
         async function loadReviews() {
             const grid = document.getElementById('reviewsGrid');
             const spinner = document.getElementById('loadingSpinner');
+            const debugInfo = document.getElementById('debugInfo');
+            const debugContent = document.getElementById('debugContent');
             
             try {
+                debugContent.textContent = '⏳ Fetching from: ' + API_URL + '\n';
+                
                 console.log('📊 Fetching reviews from:', API_URL);
                 
                 const response = await fetch(API_URL);
+                debugContent.textContent += '✅ Response status: ' + response.status + '\n';
+                
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 
                 const text = await response.text();
+                debugContent.textContent += '✅ Response received, length: ' + text.length + ' characters\n';
+                debugContent.textContent += '\n📄 Raw response (first 300 chars):\n' + text.substring(0, 300) + '...\n';
+                
                 console.log('📊 Response received, length:', text.length);
                 
                 // Parse the JSON response
                 const jsonStart = text.indexOf('{');
                 const jsonEnd = text.lastIndexOf('}') + 1;
                 const jsonText = text.substring(jsonStart, jsonEnd);
+                
+                debugContent.textContent += '\n📊 Parsing JSON...\n';
+                
                 const data = JSON.parse(jsonText);
+                
+                debugContent.textContent += '✅ JSON parsed successfully\n';
+                debugContent.textContent += '📊 Total rows: ' + (data.table.rows ? data.table.rows.length : 0) + '\n';
                 
                 console.log('📊 Parsed data successfully');
                 
@@ -602,11 +643,16 @@
                             link: row.c[5]?.v || '#'
                         };
                         reviews.push(review);
+                        debugContent.textContent += `  📌 Row ${i}: ID=${review.id}, Title="${review.title}", Grade="${review.grade}", Origin="${review.origin}"\n`;
                         console.log(`📊 Added entry: ${review.id} - ${review.title}`);
                     }
                 }
                 
+                debugContent.textContent += `\n✅ Total entries loaded: ${reviews.length}\n`;
                 console.log(`📊 Total entries loaded: ${reviews.length}`);
+                
+                // Show debug info
+                debugInfo.classList.add('show');
                 
                 // Remove loading spinner
                 if (spinner) spinner.remove();
@@ -616,6 +662,7 @@
                         <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; color: var(--dark);">
                             <p style="font-size: 1.2rem; margin-bottom: 10px;">📚 No entries found yet</p>
                             <p style="color: #888;">Check back soon for new tea profiles!</p>
+                            <p style="color: #888; font-size: 0.8rem; margin-top: 10px;">Debug info shows ${reviews.length} entries loaded</p>
                         </div>
                     `;
                     return;
@@ -630,13 +677,20 @@
                 // Update stats
                 updateStats(sortedReviews);
                 
+                debugContent.textContent += '\n✅ Display complete!';
+                
             } catch (error) {
                 console.error('❌ Error loading reviews from Google Sheets:', error);
+                debugContent.textContent += `\n❌ ERROR: ${error.message}\n`;
+                debugContent.textContent += `\nStack trace: ${error.stack || 'No stack trace'}`;
+                debugInfo.classList.add('show');
+                
                 if (spinner) spinner.remove();
                 grid.innerHTML = `
                     <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px;">
                         <p style="font-size: 1.2rem; color: #b33; margin-bottom: 10px;">⚠️ Could not load directory</p>
                         <p style="color: #888;">Error: ${error.message}</p>
+                        <p style="color: #888; font-size: 0.8rem; margin-top: 10px;">Check the debug info above for details</p>
                         <button onclick="loadReviews()" style="margin-top: 20px; padding: 10px 30px; background: var(--gold); color: var(--dark); border: none; border-radius: 50px; font-weight: 600; cursor: pointer; font-size: 1rem;">
                             Retry
                         </button>
