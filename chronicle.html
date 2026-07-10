@@ -196,7 +196,7 @@
         .featured-card .card-image {
             min-height: 280px;
             height: 100%;
-            background: linear-gradient(135deg, var(--mid), var(--dark));
+            background-image: url('today.jpg');
             background-size: cover;
             background-position: center;
             position: relative;
@@ -304,7 +304,7 @@
         }
         .article-card .card-image {
             height: 200px;
-            background: linear-gradient(135deg, var(--mid), var(--dark));
+            background-image: url('day.jpg');
             background-size: cover;
             background-position: center;
             position: relative;
@@ -529,7 +529,6 @@
             <div class="featured-card" id="featuredCard">
                 <div class="card-image" id="featuredImage">
                     <span class="day-badge" id="featuredBadge">Day 1</span>
-                    <span class="fallback-icon">🍃</span>
                 </div>
                 <div class="card-body">
                     <div class="card-meta">
@@ -684,7 +683,6 @@
                 card.innerHTML = `
                     <div class="card-image">
                         <span class="day-badge">Day ${article.day}</span>
-                        <span class="fallback-icon">🍃</span>
                     </div>
                     <div class="card-body">
                         <div class="card-meta">
