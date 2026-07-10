@@ -629,10 +629,8 @@
     const grid = document.getElementById('articlesGrid');
     const comingSoonCards = grid.querySelectorAll('.article-card[style*="opacity:0.6"]');
 
-    // YOUR ARTICLES BIN ID
-    const binId = '6a50303ff5f4af5e297a0daa';
-    const proxyUrl = 'https://corsproxy.io/?';
-    const jsonUrl = proxyUrl + encodeURIComponent(`https://api.jsonbin.io/v3/b/${binId}/latest?meta=false`);
+    // Direct JSONBin URL (no proxy needed!)
+    const jsonUrl = 'https://api.jsonbin.io/v3/b/6a50303ff5f4af5e297a0daa/latest?meta=false';
 
     fetch(jsonUrl)
         .then(response => {
@@ -643,8 +641,6 @@
             let articles = [];
             if (data && data.articles) {
                 articles = data.articles || [];
-            } else if (Array.isArray(data)) {
-                articles = data;
             }
             displayArticles(articles, grid, comingSoonCards);
             updateFeaturedCard(articles);
