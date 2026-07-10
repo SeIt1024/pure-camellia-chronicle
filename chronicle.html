@@ -484,7 +484,6 @@
                 <li><a href="vault.html">Tea Vault</a></li>
                 <li><a href="about.html">About</a></li>
                 <li><a href="newsletter.html">Newsletter</a></li>
-                <li><a href="admin.html" class="nav-cta">Admin</a></li>
             </ul>
         </div>
     </header>
@@ -527,7 +526,7 @@
             <!-- ===== ARTICLES GRID ===== -->
             <div class="articles-grid" id="articlesGrid">
 
-                <!-- ===== SAMPLE COMING SOON CARDS (will be replaced if articles exist) ===== -->
+                <!-- ===== SAMPLE COMING SOON CARDS ===== -->
                 <div class="article-card" style="opacity:0.6; filter:grayscale(0.3);">
                     <div class="card-image" style="background: linear-gradient(135deg, #3a4a3f, #1a2a1f);">
                         <span class="day-badge" style="background:#888; color:#fff;">Coming</span>
@@ -601,142 +600,184 @@
     </footer>
 
     <script>
-        // ===== NAVIGATION =====
-        document.querySelectorAll('.nav-links a').forEach(link => {
-            link.addEventListener('click', () => {
-                document.querySelector('.menu-toggle').classList.remove('open');
-                document.querySelector('.nav-links').classList.remove('open');
-            });
-        });
+// ===== MOBILE MENU =====
+document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', () => {
+        document.querySelector('.menu-toggle')?.classList.remove('open');
+        document.querySelector('.nav-links')?.classList.remove('open');
+    });
+});
 
-        // ===== LOAD ARTICLES FROM GOOGLE SHEETS =====
-        function loadArticles() {
-            const grid = document.getElementById('articlesGrid');
-            const comingSoonCards = grid.querySelectorAll('.article-card[style*="opacity:0.6"]');
+// ===== GOOGLE SHEETS CONFIG =====
+const SHEET_ID = "1R-NhrRiigpcafwtmgl-qBSeZLT_4ZLSzdXaQnRiZNi8";
 
-            // Your Google Sheet ID from the published link
-            const sheetId = '2PACX-1vRL7Z5Uaj3E_h-1htcHhdEY3tQYnElniPWhzT3tAvIFz5Zv6xiog5MQIMH33HOKD3gJv0dR5ilPZ8Up';
-            const apiUrl = `https://docs.google.com/spreadsheets/d/e/${sheetId}/gviz/tq?tqx=out:json`;
+// ===== LOAD ARTICLES =====
+async function loadArticles() {
+    try {
 
-            console.log('📊 Fetching articles from Google Sheets...');
+        const response = await fetch(
+            `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`
+        );
 
-            fetch(apiUrl)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.text();
-                })
-                .then(text => {
-                    // Google Sheets returns JSONP with a prefix
-                    // Extract just the JSON part
-                    const jsonStart = text.indexOf('{');
-                    const jsonEnd = text.lastIndexOf('}') + 1;
-                    const jsonText = text.substring(jsonStart, jsonEnd);
-                    const data = JSON.parse(jsonText);
-                    
-                    const rows = data.table.rows;
-                    let articles = [];
+        const text = await response.text();
 
-                    console.log(`📊 Found ${rows.length - 1} rows of data`);
+        const json = JSON.parse(
+            text.substring(
+                text.indexOf("{"),
+                text.lastIndexOf("}") + 1
+            )
+        );
 
-                    // Skip header row (index 0)
-                    for (let i = 1; i < rows.length; i++) {
-                        const row = rows[i];
-                        // Check if row has a day value (first column)
-                        if (row.c && row.c[0] && row.c[0].v !== null && row.c[0].v !== '') {
-                            articles.push({
-                                day: parseInt(row.c[0]?.v || 0),
-                                title: row.c[1]?.v || 'Untitled',
-                                era: row.c[2]?.v || 'Unknown',
-                                category: row.c[3]?.v || 'History',
-                                excerpt: row.c[4]?.v || '',
-                                link: row.c[5]?.v || '#',
-                                imageData: row.c[6]?.v || null
-                            });
-                        }
-                    }
+        const rows = json.table.rows;
+        const articles = [];
 
-                    console.log(`📊 Loaded ${articles.length} articles`);
+        // Row 1 = Headers
+        // Row 2+ = Data
 
-                    if (articles.length > 0) {
-                        displayArticles(articles, grid, comingSoonCards);
-                        updateFeaturedCard(articles);
-                    } else {
-                        console.log('📊 No articles found, showing coming soon cards');
-                    }
-                })
-                .catch(error => {
-                    console.error('❌ Error loading from Google Sheets:', error);
-                    // Keep the coming soon cards as fallback
-                });
-        }
+        for (let i = 1; i < rows.length; i++) {
 
-        function displayArticles(articles, grid, comingSoonCards) {
-            // Remove existing published cards (keep coming soon)
-            const publishedCards = grid.querySelectorAll('.article-card:not([style*="opacity:0.6"])');
-            publishedCards.forEach(card => card.remove());
+            const row = rows[i];
 
-            // Sort by day
-            articles.sort((a, b) => parseInt(a.day) - parseInt(b.day));
+            if (
+                !row.c ||
+                !row.c[0] ||
+                row.c[0].v === null ||
+                row.c[0].v === ""
+            ) continue;
 
-            // Create cards for each article
-            articles.forEach(article => {
-                const card = document.createElement('div');
-                card.className = 'article-card';
-                const imageStyle = article.imageData
-                    ? `background-image: url('${article.imageData}'); background-size: cover; background-position: center;`
-                    : 'background: linear-gradient(135deg, var(--mid), var(--dark));';
-                card.innerHTML = `
-                    <div class="card-image" style="${imageStyle}">
-                        <span class="day-badge">Day ${article.day}</span>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-meta">
-                            <span class="category">${article.category || 'History'}</span>
-                            <span>•</span>
-                            <span>${article.era || 'Unknown'}</span>
-                        </div>
-                        <h3>${article.title}</h3>
-                        <p>${article.excerpt}</p>
-                        <a href="${article.link}" target="_blank" class="read-link">Read Full Story →</a>
-                    </div>
-                `;
-                // Insert before the first coming soon card
-                if (comingSoonCards.length > 0) {
-                    grid.insertBefore(card, comingSoonCards[0]);
-                } else {
-                    grid.appendChild(card);
-                }
+            articles.push({
+                day: Number(row.c[0]?.v || 0),
+                title: row.c[1]?.v || "Untitled",
+                era: row.c[2]?.v || "",
+                category: row.c[3]?.v || "History",
+                excerpt: row.c[4]?.v || "",
+                link: row.c[5]?.v || "#",
+                image: row.c[6]?.v || ""
             });
         }
 
-        function updateFeaturedCard(articles) {
-            if (!articles || articles.length === 0) return;
+        articles.sort((a, b) => a.day - b.day);
 
-            // Get the latest article (highest day number)
-            const sorted = [...articles].sort((a, b) => parseInt(b.day) - parseInt(a.day));
-            const latest = sorted[0];
+        renderFeaturedArticle(articles);
+        renderArticleCards(articles);
 
-            const imageDiv = document.getElementById('featuredImage');
-            if (imageDiv && latest.imageData) {
-                imageDiv.style.backgroundImage = `url('${latest.imageData}')`;
-                imageDiv.style.backgroundSize = 'cover';
-                imageDiv.style.backgroundPosition = 'center';
-            }
+    } catch (error) {
+        console.error("Failed loading Google Sheet:", error);
+    }
+}
 
-            document.getElementById('featuredBadge').textContent = `Day ${latest.day}`;
-            document.getElementById('featuredCategory').textContent = latest.category || 'Featured';
-            document.getElementById('featuredEra').textContent = latest.era || 'Unknown';
-            document.getElementById('featuredTitle').textContent = latest.title;
-            document.getElementById('featuredExcerpt').textContent = latest.excerpt;
-            document.getElementById('featuredLink').href = latest.link;
-        }
+// ===== FEATURED ARTICLE =====
+function renderFeaturedArticle(articles) {
 
-        // ===== LOAD ON PAGE LOAD =====
-        document.addEventListener('DOMContentLoaded', function() {
-            loadArticles();
-        });
-    </script>
+    if (!articles.length) return;
+
+    const latest = [...articles]
+        .sort((a, b) => b.day - a.day)[0];
+
+    document.getElementById("featuredBadge").textContent =
+        `Day ${latest.day}`;
+
+    document.getElementById("featuredCategory").textContent =
+        latest.category;
+
+    document.getElementById("featuredEra").textContent =
+        latest.era;
+
+    document.getElementById("featuredTitle").textContent =
+        latest.title;
+
+    document.getElementById("featuredExcerpt").textContent =
+        latest.excerpt;
+
+    const featuredLink =
+        document.getElementById("featuredLink");
+
+    featuredLink.href = latest.link;
+    featuredLink.target = "_blank";
+    featuredLink.rel = "noopener noreferrer";
+
+    const image =
+        document.getElementById("featuredImage");
+
+    if (latest.image) {
+        image.style.backgroundImage =
+            `url('${latest.image}')`;
+
+        image.style.backgroundSize = "cover";
+        image.style.backgroundPosition = "center";
+    }
+}
+
+// ===== ARTICLE CARDS =====
+function renderArticleCards(articles) {
+
+    const grid =
+        document.getElementById("articlesGrid");
+
+    grid.innerHTML = "";
+
+    articles.forEach(article => {
+
+        const card =
+            document.createElement("div");
+
+        card.className = "article-card";
+
+        const imageStyle = article.image
+            ? `
+                background-image:url('${article.image}');
+                background-size:cover;
+                background-position:center;
+            `
+            : `
+                background:linear-gradient(
+                    135deg,
+                    var(--mid),
+                    var(--dark)
+                );
+            `;
+
+        card.innerHTML = `
+            <div class="card-image"
+                 style="${imageStyle}">
+                <span class="day-badge">
+                    Day ${article.day}
+                </span>
+            </div>
+
+            <div class="card-body">
+
+                <div class="card-meta">
+                    <span class="category">
+                        ${article.category}
+                    </span>
+                    <span>•</span>
+                    <span>${article.era}</span>
+                </div>
+
+                <h3>${article.title}</h3>
+
+                <p>${article.excerpt}</p>
+
+                ${article.link}
+
+                    Read Full Story →
+                </a>
+
+            </div>
+        `;
+
+        grid.appendChild(card);
+
+    });
+}
+
+// ===== START =====
+document.addEventListener(
+    "DOMContentLoaded",
+    loadArticles
+);
+</script>
+``
 </body>
 </html>
