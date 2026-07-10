@@ -626,43 +626,37 @@
 
         // ===== LOAD ARTICLES FROM PUBLIC JSONBin =====
         function loadArticles() {
-            const config = getCloudConfig();
-            const grid = document.getElementById('articlesGrid');
-            const comingSoonCards = grid.querySelectorAll('.article-card[style*="opacity:0.6"]');
+    const grid = document.getElementById('articlesGrid');
+    const comingSoonCards = grid.querySelectorAll('.article-card[style*="opacity:0.6"]');
 
-            if (config && config.articlesBinId) {
-                // Use public endpoint (no API key needed for reading)
-                const publicUrl = `https://api.jsonbin.io/v3/b/${config.articlesBinId}/latest?meta=false`;
-                
-                fetch(publicUrl)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Public fetch failed');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        let articles = [];
-                        if (data && typeof data === 'object' && data.articles) {
-                            articles = data.articles || [];
-                        } else if (Array.isArray(data)) {
-                            articles = data;
-                        } else if (data && typeof data === 'object') {
-                            articles = [data];
-                        }
-                        displayArticles(articles, grid, comingSoonCards);
-                        updateFeaturedCard(articles);
-                    })
-                    .catch(error => {
-                        console.error('❌ Error loading from public URL:', error);
-                        // Fallback to localStorage
-                        loadFromLocalStorage(grid, comingSoonCards);
-                    });
-            } else {
-                loadFromLocalStorage(grid, comingSoonCards);
+    // YOUR ARTICLES BIN ID
+    const binId = '6a50303ff5f4af5e297a0daa';
+    const proxyUrl = 'https://corsproxy.io/?';
+    const jsonUrl = proxyUrl + encodeURIComponent(`https://api.jsonbin.io/v3/b/${binId}/latest?meta=false`);
+
+    fetch(jsonUrl)
+        .then(response => {
+            if (!response.ok) throw new Error('Failed to fetch');
+            return response.json();
+        })
+        .then(data => {
+            let articles = [];
+            if (data && data.articles) {
+                articles = data.articles || [];
+            } else if (Array.isArray(data)) {
+                articles = data;
             }
-        }
-
+            displayArticles(articles, grid, comingSoonCards);
+            updateFeaturedCard(articles);
+        })
+        .catch(error => {
+            console.error('Error loading articles:', error);
+            // Fallback to localStorage
+            const articles = JSON.parse(localStorage.getItem('chronicleArticles')) || [];
+            displayArticles(articles, grid, comingSoonCards);
+            updateFeaturedCard(articles);
+        });
+}
         function loadFromLocalStorage(grid, comingSoonCards) {
             const articles = JSON.parse(localStorage.getItem('chronicleArticles')) || [];
             displayArticles(articles, grid, comingSoonCards);
