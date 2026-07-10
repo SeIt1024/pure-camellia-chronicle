@@ -322,26 +322,6 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* ===== DEBUG INFO ===== */
-        .debug-info {
-            background: #f0f0f0;
-            border: 1px solid #ddd;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            display: none;
-            max-height: 300px;
-            overflow: auto;
-        }
-        .debug-info.show {
-            display: block;
-        }
-        .debug-info pre {
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-
         /* ===== PARTNER SECTION ===== */
         .partner-box {
             background: #fff;
@@ -488,7 +468,6 @@
     <div class="container">
         <div class="vault-stats">
             <div><span class="num" id="totalEntries">0</span><span class="lbl">Entries in Directory</span></div>
-            <div><span class="num" id="highestGrade">—</span><span class="lbl">Highest Grade</span></div>
             <div><span class="num" id="teaFamilies">—</span><span class="lbl">Tea Families</span></div>
         </div>
     </div>
@@ -498,12 +477,6 @@
         <div class="container">
             <span class="section-label">The Directory</span>
             <h2 class="section-title">Tea Profiles</h2>
-
-            <!-- ===== DEBUG INFO ===== -->
-            <div class="debug-info" id="debugInfo">
-                <strong>🔍 Debug Info:</strong>
-                <pre id="debugContent">Waiting for data...</pre>
-            </div>
 
             <div class="reviews-grid" id="reviewsGrid">
                 <div class="loading-spinner" id="loadingSpinner">
@@ -561,44 +534,32 @@
         async function loadReviews() {
             const grid = document.getElementById('reviewsGrid');
             const spinner = document.getElementById('loadingSpinner');
-            const debugInfo = document.getElementById('debugInfo');
-            const debugContent = document.getElementById('debugContent');
             
             try {
-                debugContent.textContent = '⏳ Fetching from: ' + API_URL + '\n';
-                
                 console.log('📊 Fetching reviews from:', API_URL);
                 
                 const response = await fetch(API_URL);
-                debugContent.textContent += '✅ Response status: ' + response.status + '\n';
-                
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 
                 const text = await response.text();
-                debugContent.textContent += '✅ Response received, length: ' + text.length + ' characters\n';
-                debugContent.textContent += '\n📄 Raw response (first 300 chars):\n' + text.substring(0, 300) + '...\n';
-                
                 console.log('📊 Response received, length:', text.length);
                 
+                // Parse the JSON response
                 const jsonStart = text.indexOf('{');
                 const jsonEnd = text.lastIndexOf('}') + 1;
                 const jsonText = text.substring(jsonStart, jsonEnd);
-                
-                debugContent.textContent += '\n📊 Parsing JSON...\n';
-                
                 const data = JSON.parse(jsonText);
-                
-                debugContent.textContent += '✅ JSON parsed successfully\n';
-                debugContent.textContent += '📊 Total rows: ' + (data.table.rows ? data.table.rows.length : 0) + '\n';
                 
                 console.log('📊 Parsed data successfully');
                 
+                // Extract rows from the response
                 const rows = data.table.rows;
                 let reviews = [];
                 
                 // Column mapping: A=id, B=title, C=grade, D=origin, E=excerpt, F=link
                 for (let i = 0; i < rows.length; i++) {
                     const row = rows[i];
+                    // Check if row has an id value (first column)
                     if (row.c && row.c[0] && row.c[0].v !== null && row.c[0].v !== '') {
                         const review = {
                             id: parseInt(row.c[0]?.v || 0),
@@ -609,16 +570,13 @@
                             link: row.c[5]?.v || '#'
                         };
                         reviews.push(review);
-                        debugContent.textContent += `  📌 Row ${i}: ID=${review.id}, Title="${review.title}", Grade="${review.grade}", Origin="${review.origin}"\n`;
                         console.log(`📊 Added entry: ${review.id} - ${review.title}`);
                     }
                 }
                 
-                debugContent.textContent += `\n✅ Total entries loaded: ${reviews.length}\n`;
                 console.log(`📊 Total entries loaded: ${reviews.length}`);
                 
-                debugInfo.classList.add('show');
-                
+                // Remove loading spinner
                 if (spinner) spinner.remove();
                 
                 if (reviews.length === 0) {
@@ -631,20 +589,17 @@
                     return;
                 }
                 
+                // Sort reviews by id
                 const sortedReviews = [...reviews].sort((a, b) => a.id - b.id);
                 
+                // Display reviews in grid
                 displayReviews(sortedReviews, grid);
                 
+                // Update stats
                 updateStats(sortedReviews);
-                
-                debugContent.textContent += '\n✅ Display complete!';
                 
             } catch (error) {
                 console.error('❌ Error loading reviews from Google Sheets:', error);
-                debugContent.textContent += `\n❌ ERROR: ${error.message}\n`;
-                debugContent.textContent += `\nStack trace: ${error.stack || 'No stack trace'}`;
-                debugInfo.classList.add('show');
-                
                 if (spinner) spinner.remove();
                 grid.innerHTML = `
                     <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px;">
@@ -659,13 +614,15 @@
         }
 
         function displayReviews(reviews, grid) {
+            // Clear existing content
             grid.innerHTML = '';
             
+            // Create cards for each review
             reviews.forEach(review => {
                 const card = document.createElement('div');
                 card.className = 'review-card';
                 
-                // Card structure: Title first, then Excerpt, then Read link
+                // Create card HTML with vday.jpg as background
                 card.innerHTML = `
                     <div class="card-image">
                         <span class="grade-badge">${review.grade || 'N/A'}</span>
@@ -683,14 +640,10 @@
         }
 
         function updateStats(reviews) {
+            // Update total entries count
             document.getElementById('totalEntries').textContent = reviews.length;
             
-            const grades = reviews.map(r => parseInt(r.grade)).filter(g => !isNaN(g));
-            if (grades.length > 0) {
-                const highest = Math.max(...grades);
-                document.getElementById('highestGrade').textContent = highest;
-            }
-            
+            // Update tea families count (unique origins)
             const origins = new Set(reviews.map(r => r.origin).filter(o => o && o !== 'Unknown'));
             document.getElementById('teaFamilies').textContent = origins.size || '—';
         }
