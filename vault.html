@@ -164,14 +164,6 @@
             position: relative;
             z-index: 1;
         }
-        .page-header .sub {
-            color: var(--gold);
-            font-size: 1.1rem;
-            font-weight: 300;
-            display: block;
-            margin-bottom: 4px;
-            letter-spacing: 0.05em;
-        }
         .page-header h1 {
             color: #fff;
             font-size: 3.2rem;
@@ -283,40 +275,19 @@
         .review-card .card-body {
             padding: 20px 24px 24px;
         }
-        .review-card .card-meta {
-            display: flex;
-            gap: 12px;
-            font-size: 0.8rem;
-            color: #888;
+        .review-card .card-body h3 {
+            font-size: 1.2rem;
             margin-bottom: 6px;
-            flex-wrap: wrap;
-        }
-        .review-card .card-meta .category {
-            color: var(--gold);
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.7rem;
-            letter-spacing: 0.05em;
         }
         .review-card .card-body .excerpt-text {
             color: #5a6b5e;
             font-size: 0.95rem;
             line-height: 1.6;
-            margin-bottom: 10px;
+            margin-bottom: 14px;
             display: -webkit-box;
             -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
-        }
-        .review-card .card-body h3 {
-            font-size: 1.2rem;
-            margin-bottom: 6px;
-        }
-        .review-card .card-body .official-grade {
-            font-size: 0.85rem;
-            color: var(--gold);
-            font-weight: 500;
-            margin-bottom: 8px;
         }
         .review-card .read-link {
             color: var(--gold);
@@ -508,7 +479,6 @@
     <section class="page-header">
         <div class="page-header-bg"></div>
         <div class="container">
-            <span class="sub">The Camellia Chronicle Vault</span>
             <h1>A Deep-Dive Directory of<br />Global Leaves and Brews</h1>
             <p class="header-desc">Exploring the origins, historical pioneers, botanical profiles, and manufacturing processes of everything from raw agricultural leaf grades to modern tea recipes. Unapologetically detailed, scientifically curious, and highly obsessive.</p>
         </div>
@@ -584,7 +554,6 @@
         });
 
         // ===== GOOGLE SHEETS CONFIGURATION =====
-        // Use the correct sheet ID from your edit URL
         const SHEET_ID = '1ZTrbGbyGNk8v3x8SDSyn4EsQ6WFRUGtsuzGb35vWk8U';
         const API_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
 
@@ -611,7 +580,6 @@
                 
                 console.log('📊 Response received, length:', text.length);
                 
-                // Parse the JSON response
                 const jsonStart = text.indexOf('{');
                 const jsonEnd = text.lastIndexOf('}') + 1;
                 const jsonText = text.substring(jsonStart, jsonEnd);
@@ -625,14 +593,12 @@
                 
                 console.log('📊 Parsed data successfully');
                 
-                // Extract rows from the response
                 const rows = data.table.rows;
                 let reviews = [];
                 
                 // Column mapping: A=id, B=title, C=grade, D=origin, E=excerpt, F=link
                 for (let i = 0; i < rows.length; i++) {
                     const row = rows[i];
-                    // Check if row has an id value (first column)
                     if (row.c && row.c[0] && row.c[0].v !== null && row.c[0].v !== '') {
                         const review = {
                             id: parseInt(row.c[0]?.v || 0),
@@ -651,10 +617,8 @@
                 debugContent.textContent += `\n✅ Total entries loaded: ${reviews.length}\n`;
                 console.log(`📊 Total entries loaded: ${reviews.length}`);
                 
-                // Show debug info
                 debugInfo.classList.add('show');
                 
-                // Remove loading spinner
                 if (spinner) spinner.remove();
                 
                 if (reviews.length === 0) {
@@ -662,19 +626,15 @@
                         <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; color: var(--dark);">
                             <p style="font-size: 1.2rem; margin-bottom: 10px;">📚 No entries found yet</p>
                             <p style="color: #888;">Check back soon for new tea profiles!</p>
-                            <p style="color: #888; font-size: 0.8rem; margin-top: 10px;">Debug info shows ${reviews.length} entries loaded</p>
                         </div>
                     `;
                     return;
                 }
                 
-                // Sort reviews by id
                 const sortedReviews = [...reviews].sort((a, b) => a.id - b.id);
                 
-                // Display reviews in grid
                 displayReviews(sortedReviews, grid);
                 
-                // Update stats
                 updateStats(sortedReviews);
                 
                 debugContent.textContent += '\n✅ Display complete!';
@@ -690,7 +650,6 @@
                     <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px;">
                         <p style="font-size: 1.2rem; color: #b33; margin-bottom: 10px;">⚠️ Could not load directory</p>
                         <p style="color: #888;">Error: ${error.message}</p>
-                        <p style="color: #888; font-size: 0.8rem; margin-top: 10px;">Check the debug info above for details</p>
                         <button onclick="loadReviews()" style="margin-top: 20px; padding: 10px 30px; background: var(--gold); color: var(--dark); border: none; border-radius: 50px; font-weight: 600; cursor: pointer; font-size: 1rem;">
                             Retry
                         </button>
@@ -700,28 +659,21 @@
         }
 
         function displayReviews(reviews, grid) {
-            // Clear existing content
             grid.innerHTML = '';
             
-            // Create cards for each review
             reviews.forEach(review => {
                 const card = document.createElement('div');
                 card.className = 'review-card';
                 
-                // Create card HTML with vday.jpg as background
+                // Card structure: Title first, then Excerpt, then Read link
                 card.innerHTML = `
                     <div class="card-image">
                         <span class="grade-badge">${review.grade || 'N/A'}</span>
                         <span class="origin-badge">${review.origin || 'Unknown'}</span>
                     </div>
                     <div class="card-body">
-                        <div class="card-meta">
-                            <span class="category">Profile</span>
-                            <span>•</span>
-                            <span>${review.grade || 'N/A'}</span>
-                        </div>
-                        <p class="excerpt-text">${review.excerpt || ''}</p>
                         <h3>${review.title}</h3>
+                        <p class="excerpt-text">${review.excerpt || ''}</p>
                         <a href="${review.link || '#'}" target="_blank" class="read-link">Read Full Profile →</a>
                     </div>
                 `;
@@ -731,17 +683,14 @@
         }
 
         function updateStats(reviews) {
-            // Update total entries count
             document.getElementById('totalEntries').textContent = reviews.length;
             
-            // Update highest grade (if grades are numbers)
             const grades = reviews.map(r => parseInt(r.grade)).filter(g => !isNaN(g));
             if (grades.length > 0) {
                 const highest = Math.max(...grades);
                 document.getElementById('highestGrade').textContent = highest;
             }
             
-            // Update tea families count (unique origins)
             const origins = new Set(reviews.map(r => r.origin).filter(o => o && o !== 'Unknown'));
             document.getElementById('teaFamilies').textContent = origins.size || '—';
         }
@@ -750,7 +699,7 @@
         setInterval(() => {
             console.log('🔄 Auto-refreshing directory...');
             loadReviews();
-        }, 300000); // 5 minutes
+        }, 300000);
 
         // ===== LOAD ON PAGE LOAD =====
         document.addEventListener('DOMContentLoaded', loadReviews);
