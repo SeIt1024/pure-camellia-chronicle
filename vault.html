@@ -542,15 +542,12 @@
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 
                 const text = await response.text();
-                console.log('📊 Response received, length:', text.length);
                 
                 // Parse the JSON response
                 const jsonStart = text.indexOf('{');
                 const jsonEnd = text.lastIndexOf('}') + 1;
                 const jsonText = text.substring(jsonStart, jsonEnd);
                 const data = JSON.parse(jsonText);
-                
-                console.log('📊 Parsed data successfully');
                 
                 // Extract rows from the response
                 const rows = data.table.rows;
@@ -570,11 +567,8 @@
                             link: row.c[5]?.v || '#'
                         };
                         reviews.push(review);
-                        console.log(`📊 Added entry: ${review.id} - ${review.title}`);
                     }
                 }
-                
-                console.log(`📊 Total entries loaded: ${reviews.length}`);
                 
                 // Remove loading spinner
                 if (spinner) spinner.remove();
