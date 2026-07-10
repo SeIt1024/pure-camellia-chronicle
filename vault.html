@@ -611,41 +611,35 @@
 
         // ===== LOAD REVIEWS FROM PUBLIC JSONBin =====
         function loadReviews() {
-            const config = getCloudConfig();
-            const grid = document.getElementById('reviewsGrid');
-            const comingSoonCards = grid.querySelectorAll('.review-card[style*="opacity:0.6"]');
+    const grid = document.getElementById('reviewsGrid');
+    const comingSoonCards = grid.querySelectorAll('.review-card[style*="opacity:0.6"]');
 
-            if (config && config.reviewsBinId) {
-                // Use public endpoint (no API key needed for reading)
-                const publicUrl = `https://api.jsonbin.io/v3/b/${config.reviewsBinId}/latest?meta=false`;
-                
-                fetch(publicUrl)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Public fetch failed');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        let reviews = [];
-                        if (data && typeof data === 'object' && data.reviews) {
-                            reviews = data.reviews || [];
-                        } else if (Array.isArray(data)) {
-                            reviews = data;
-                        } else if (data && typeof data === 'object') {
-                            reviews = [data];
-                        }
-                        displayReviews(reviews, grid, comingSoonCards);
-                    })
-                    .catch(error => {
-                        console.error('❌ Error loading reviews from public URL:', error);
-                        loadFromLocalStorage(grid, comingSoonCards);
-                    });
-            } else {
-                loadFromLocalStorage(grid, comingSoonCards);
+    // YOUR REVIEWS BIN ID
+    const binId = '6a503071da38895dfe488442';
+    const proxyUrl = 'https://corsproxy.io/?';
+    const jsonUrl = proxyUrl + encodeURIComponent(`https://api.jsonbin.io/v3/b/${binId}/latest?meta=false`);
+
+    fetch(jsonUrl)
+        .then(response => {
+            if (!response.ok) throw new Error('Failed to fetch');
+            return response.json();
+        })
+        .then(data => {
+            let reviews = [];
+            if (data && data.reviews) {
+                reviews = data.reviews || [];
+            } else if (Array.isArray(data)) {
+                reviews = data;
             }
-        }
-
+            displayReviews(reviews, grid, comingSoonCards);
+        })
+        .catch(error => {
+            console.error('Error loading reviews:', error);
+            // Fallback to localStorage
+            const reviews = JSON.parse(localStorage.getItem('vaultReviews')) || [];
+            displayReviews(reviews, grid, comingSoonCards);
+        });
+}
         function loadFromLocalStorage(grid, comingSoonCards) {
             const reviews = JSON.parse(localStorage.getItem('vaultReviews')) || [];
             displayReviews(reviews, grid, comingSoonCards);
