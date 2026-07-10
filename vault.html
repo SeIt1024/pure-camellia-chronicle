@@ -170,6 +170,7 @@
             font-weight: 300;
             display: block;
             margin-bottom: 4px;
+            letter-spacing: 0.05em;
         }
         .page-header h1 {
             color: #fff;
@@ -177,12 +178,13 @@
             margin-bottom: 8px;
             text-shadow: 0 4px 30px rgba(0,0,0,0.4);
         }
-        .page-header p {
+        .page-header .header-desc {
             color: rgba(255,255,255,0.85);
             font-size: 1.1rem;
-            max-width: 500px;
+            max-width: 700px;
             margin: 0 auto;
             text-shadow: 0 2px 15px rgba(0,0,0,0.3);
+            line-height: 1.7;
         }
 
         /* ===== STATS ===== */
@@ -296,25 +298,25 @@
             font-size: 0.7rem;
             letter-spacing: 0.05em;
         }
+        .review-card .card-body .excerpt-text {
+            color: #5a6b5e;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 10px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
         .review-card .card-body h3 {
             font-size: 1.2rem;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
         .review-card .card-body .official-grade {
             font-size: 0.85rem;
             color: var(--gold);
             font-weight: 500;
-            margin-bottom: 6px;
-        }
-        .review-card .card-body p {
-            color: #5a6b5e;
-            font-size: 0.95rem;
-            margin-bottom: 14px;
-            line-height: 1.5;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+            margin-bottom: 8px;
         }
         .review-card .read-link {
             color: var(--gold);
@@ -486,17 +488,17 @@
     <section class="page-header">
         <div class="page-header-bg"></div>
         <div class="container">
-            <span class="sub">The Tea Grade &amp; Review Vault</span>
-            <h1>Deep-Dive Reviews of<br />the World's Rarest Teas</h1>
-            <p>Meticulously graded by terroir, flavor profile, and ceremonial grade. Honest, expert, and unapologetically obsessive.</p>
+            <span class="sub">The Camellia Chronicle Vault</span>
+            <h1>A Deep-Dive Directory of<br />Global Leaves and Brews</h1>
+            <p class="header-desc">Exploring the origins, historical pioneers, botanical profiles, and manufacturing processes of everything from raw agricultural leaf grades to modern tea recipes. Unapologetically detailed, scientifically curious, and highly obsessive.</p>
         </div>
     </section>
 
     <!-- ===== STATS ===== -->
     <div class="container">
         <div class="vault-stats">
-            <div><span class="num" id="totalReviews">0</span><span class="lbl">Reviews Published</span></div>
-            <div><span class="num" id="highestGrade">—</span><span class="lbl">Highest Score</span></div>
+            <div><span class="num" id="totalEntries">0</span><span class="lbl">Entries in Directory</span></div>
+            <div><span class="num" id="highestGrade">—</span><span class="lbl">Highest Grade</span></div>
             <div><span class="num" id="teaFamilies">—</span><span class="lbl">Tea Families</span></div>
         </div>
     </div>
@@ -504,13 +506,13 @@
     <!-- ===== REVIEW CARDS GRID ===== -->
     <section class="reviews-grid-section">
         <div class="container">
-            <span class="section-label">The Vault</span>
-            <h2 class="section-title">Tea Reviews</h2>
+            <span class="section-label">The Directory</span>
+            <h2 class="section-title">Tea Profiles</h2>
 
             <div class="reviews-grid" id="reviewsGrid">
                 <div class="loading-spinner" id="loadingSpinner">
                     <div class="spinner"></div>
-                    <p>Loading reviews from Google Sheets...</p>
+                    <p>Loading directory entries from Google Sheets...</p>
                 </div>
             </div>
         </div>
@@ -586,7 +588,7 @@
                 const rows = data.table.rows;
                 let reviews = [];
                 
-                // Column mapping: A=id, B=title, C=grade, D=origin, E=estate, F=excerpt, G=link
+                // Column mapping: A=id, B=title, C=grade, D=origin, E=excerpt, F=link
                 for (let i = 0; i < rows.length; i++) {
                     const row = rows[i];
                     // Check if row has an id value (first column)
@@ -596,16 +598,15 @@
                             title: row.c[1]?.v || 'Untitled',
                             grade: row.c[2]?.v || 'N/A',
                             origin: row.c[3]?.v || 'Unknown',
-                            estate: row.c[4]?.v || 'Single Estate',
-                            excerpt: row.c[5]?.v || '',
-                            link: row.c[6]?.v || '#'
+                            excerpt: row.c[4]?.v || '',
+                            link: row.c[5]?.v || '#'
                         };
                         reviews.push(review);
-                        console.log(`📊 Added review: ${review.id} - ${review.title}`);
+                        console.log(`📊 Added entry: ${review.id} - ${review.title}`);
                     }
                 }
                 
-                console.log(`📊 Total reviews loaded: ${reviews.length}`);
+                console.log(`📊 Total entries loaded: ${reviews.length}`);
                 
                 // Remove loading spinner
                 if (spinner) spinner.remove();
@@ -613,8 +614,8 @@
                 if (reviews.length === 0) {
                     grid.innerHTML = `
                         <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; color: var(--dark);">
-                            <p style="font-size: 1.2rem; margin-bottom: 10px;">📚 No reviews found yet</p>
-                            <p style="color: #888;">Check back soon for tea reviews!</p>
+                            <p style="font-size: 1.2rem; margin-bottom: 10px;">📚 No entries found yet</p>
+                            <p style="color: #888;">Check back soon for new tea profiles!</p>
                         </div>
                     `;
                     return;
@@ -634,7 +635,7 @@
                 if (spinner) spinner.remove();
                 grid.innerHTML = `
                     <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px;">
-                        <p style="font-size: 1.2rem; color: #b33; margin-bottom: 10px;">⚠️ Could not load reviews</p>
+                        <p style="font-size: 1.2rem; color: #b33; margin-bottom: 10px;">⚠️ Could not load directory</p>
                         <p style="color: #888;">Error: ${error.message}</p>
                         <button onclick="loadReviews()" style="margin-top: 20px; padding: 10px 30px; background: var(--gold); color: var(--dark); border: none; border-radius: 50px; font-weight: 600; cursor: pointer; font-size: 1rem;">
                             Retry
@@ -661,14 +662,13 @@
                     </div>
                     <div class="card-body">
                         <div class="card-meta">
-                            <span class="category">Review</span>
+                            <span class="category">Profile</span>
                             <span>•</span>
-                            <span>${review.estate || 'Single Estate'}</span>
+                            <span>${review.grade || 'N/A'}</span>
                         </div>
+                        <p class="excerpt-text">${review.excerpt || ''}</p>
                         <h3>${review.title}</h3>
-                        <div class="official-grade">Official Grade: ${review.grade || 'N/A'}</div>
-                        <p>${review.excerpt || 'Click to read the full review...'}</p>
-                        <a href="${review.link || '#'}" target="_blank" class="read-link">Read Full Review →</a>
+                        <a href="${review.link || '#'}" target="_blank" class="read-link">Read Full Profile →</a>
                     </div>
                 `;
                 
@@ -677,8 +677,8 @@
         }
 
         function updateStats(reviews) {
-            // Update total reviews count
-            document.getElementById('totalReviews').textContent = reviews.length;
+            // Update total entries count
+            document.getElementById('totalEntries').textContent = reviews.length;
             
             // Update highest grade (if grades are numbers)
             const grades = reviews.map(r => parseInt(r.grade)).filter(g => !isNaN(g));
@@ -694,7 +694,7 @@
 
         // ===== AUTO-REFRESH EVERY 5 MINUTES =====
         setInterval(() => {
-            console.log('🔄 Auto-refreshing reviews...');
+            console.log('🔄 Auto-refreshing directory...');
             loadReviews();
         }, 300000); // 5 minutes
 
