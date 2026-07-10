@@ -526,7 +526,25 @@
             <!-- ===== ARTICLES GRID ===== -->
             <div class="articles-grid" id="articlesGrid">
 
-                <!-- ===== SAMPLE COMING SOON CARDS ===== -->
+                <!-- ===== DAY 1 CARD (DEMO) ===== -->
+                <div class="article-card">
+                    <div class="card-image" style="background: linear-gradient(135deg, #2d5a3d, #1a3c2a);">
+                        <span class="day-badge">Day 1</span>
+                        <span class="fallback-icon">🌿</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-meta">
+                            <span class="category">History</span>
+                            <span>•</span>
+                            <span>2737 BCE</span>
+                        </div>
+                        <h3>The Deadly Guessing Game</h3>
+                        <p>In 2737 BCE, a chieftain named Shen Nung walked into a jungle and discovered a leaf that would change the world. But he didn't know what it was.</p>
+                        <a href="https://purecammellia1.my.canva.site/" target="_blank" class="read-link">Read Full Story →</a>
+                    </div>
+                </div>
+
+                <!-- ===== COMING SOON CARDS ===== -->
                 <div class="article-card" style="opacity:0.6; filter:grayscale(0.3);">
                     <div class="card-image" style="background: linear-gradient(135deg, #3a4a3f, #1a2a1f);">
                         <span class="day-badge" style="background:#888; color:#fff;">Coming</span>
@@ -600,165 +618,12 @@
     </footer>
 
     <script>
-        // ===== NAVIGATION =====
         document.querySelectorAll('.nav-links a').forEach(link => {
             link.addEventListener('click', () => {
                 document.querySelector('.menu-toggle').classList.remove('open');
                 document.querySelector('.nav-links').classList.remove('open');
             });
         });
-
-        // ===== LOAD ARTICLES FROM GOOGLE SHEETS =====
-        function loadArticles() {
-            const grid = document.getElementById('articlesGrid');
-            const comingSoonCards = grid.querySelectorAll('.article-card[style*="opacity:0.6"]');
-
-            // YOUR EXACT SHEET ID FROM THE URL
-            const sheetId = '2PACX-1vRL7Z5Uaj3E_h-1htcHhdEY3tQYnElniPWhzT3tAvIFz5Zv6xiog5MQIMH33HOKD3gJv0dR5ilPZ8Up';
-            
-            // USE THE CORRECT GOOGLE SHEETS API URL
-            const apiUrl = `https://docs.google.com/spreadsheets/d/e/${sheetId}/gviz/tq?tqx=out:json`;
-
-            console.log('📊 Fetching from:', apiUrl);
-
-            fetch(apiUrl)
-                .then(response => {
-                    console.log('📊 Response status:', response.status);
-                    if (!response.ok) {
-                        throw new Error('HTTP error! status: ' + response.status);
-                    }
-                    return response.text();
-                })
-                .then(text => {
-                    console.log('📊 Raw response preview:', text.substring(0, 200) + '...');
-                    
-                    // Check if the response is HTML (404 page)
-                    if (text.trim().startsWith('<') || text.trim().startsWith('<!DOCTYPE')) {
-                        throw new Error('Received HTML instead of JSON. Sheet may not be published.');
-                    }
-                    
-                    // Extract JSON from the response
-                    const jsonStart = text.indexOf('{');
-                    const jsonEnd = text.lastIndexOf('}') + 1;
-                    const jsonText = text.substring(jsonStart, jsonEnd);
-                    const data = JSON.parse(jsonText);
-                    
-                    console.log('📊 Parsed data:', data);
-                    
-                    const rows = data.table.rows;
-                    let articles = [];
-
-                    // COLUMN MAPPING:
-                    // Column A (index 0) = day
-                    // Column B (index 1) = title
-                    // Column C (index 2) = era
-                    // Column D (index 3) = category
-                    // Column E (index 4) = excerpt
-                    // Column F (index 5) = link
-                    // Column G (index 6) = imageData
-
-                    // Skip header row (index 0) and loop through data rows
-                    for (let i = 1; i < rows.length; i++) {
-                        const row = rows[i];
-                        // Check if row has a day value (first column)
-                        if (row.c && row.c[0] && row.c[0].v !== null && row.c[0].v !== '') {
-                            const article = {
-                                day: parseInt(row.c[0]?.v || 0),
-                                title: row.c[1]?.v || 'Untitled',
-                                era: row.c[2]?.v || 'Unknown',
-                                category: row.c[3]?.v || 'History',
-                                excerpt: row.c[4]?.v || '',
-                                link: row.c[5]?.v || '#',
-                                imageData: row.c[6]?.v || null
-                            };
-                            articles.push(article);
-                            console.log('📊 Added article:', article);
-                        }
-                    }
-
-                    console.log('📊 Total articles loaded:', articles.length);
-
-                    if (articles.length > 0) {
-                        displayArticles(articles, grid, comingSoonCards);
-                        updateFeaturedCard(articles);
-                    } else {
-                        console.log('📊 No articles found. Check your sheet data.');
-                    }
-                })
-                .catch(error => {
-                    console.error('❌ Error loading from Google Sheets:', error);
-                    // Show error message on page
-                    const errorMsg = document.createElement('p');
-                    errorMsg.textContent = '⚠️ Could not load articles: ' + error.message;
-                    errorMsg.style.textAlign = 'center';
-                    errorMsg.style.color = '#b33';
-                    errorMsg.style.padding = '20px';
-                    grid.parentNode.insertBefore(errorMsg, grid);
-                });
-        }
-
-        function displayArticles(articles, grid, comingSoonCards) {
-            // Remove existing published cards (keep coming soon)
-            const publishedCards = grid.querySelectorAll('.article-card:not([style*="opacity:0.6"])');
-            publishedCards.forEach(card => card.remove());
-
-            // Sort by day
-            articles.sort((a, b) => parseInt(a.day) - parseInt(b.day));
-
-            // Create cards for each article
-            articles.forEach(article => {
-                const card = document.createElement('div');
-                card.className = 'article-card';
-                const imageStyle = article.imageData
-                    ? `background-image: url('${article.imageData}'); background-size: cover; background-position: center;`
-                    : 'background: linear-gradient(135deg, var(--mid), var(--dark));';
-                card.innerHTML = `
-                    <div class="card-image" style="${imageStyle}">
-                        <span class="day-badge">Day ${article.day}</span>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-meta">
-                            <span class="category">${article.category || 'History'}</span>
-                            <span>•</span>
-                            <span>${article.era || 'Unknown'}</span>
-                        </div>
-                        <h3>${article.title}</h3>
-                        <p>${article.excerpt}</p>
-                        <a href="${article.link}" target="_blank" class="read-link">Read Full Story →</a>
-                    </div>
-                `;
-                if (comingSoonCards.length > 0) {
-                    grid.insertBefore(card, comingSoonCards[0]);
-                } else {
-                    grid.appendChild(card);
-                }
-            });
-        }
-
-        function updateFeaturedCard(articles) {
-            if (!articles || articles.length === 0) return;
-
-            // Get the latest article (highest day number)
-            const sorted = [...articles].sort((a, b) => parseInt(b.day) - parseInt(a.day));
-            const latest = sorted[0];
-
-            const imageDiv = document.getElementById('featuredImage');
-            if (imageDiv && latest.imageData) {
-                imageDiv.style.backgroundImage = `url('${latest.imageData}')`;
-                imageDiv.style.backgroundSize = 'cover';
-                imageDiv.style.backgroundPosition = 'center';
-            }
-
-            document.getElementById('featuredBadge').textContent = `Day ${latest.day}`;
-            document.getElementById('featuredCategory').textContent = latest.category || 'Featured';
-            document.getElementById('featuredEra').textContent = latest.era || 'Unknown';
-            document.getElementById('featuredTitle').textContent = latest.title;
-            document.getElementById('featuredExcerpt').textContent = latest.excerpt;
-            document.getElementById('featuredLink').href = latest.link;
-        }
-
-        // ===== LOAD ON PAGE LOAD =====
-        document.addEventListener('DOMContentLoaded', loadArticles);
     </script>
 </body>
 </html>
