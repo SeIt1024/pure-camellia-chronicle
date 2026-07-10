@@ -611,64 +611,73 @@
             });
         });
 
-        // ===== CONFIGURATION =====
-        function getCloudConfig() {
-            const apiKey = localStorage.getItem('jsonbin_api_key');
-            const articlesBinId = localStorage.getItem('jsonbin_articles_bin');
-
-            if (!apiKey || !articlesBinId) {
-                console.log('No cloud config found. Using localStorage.');
-                return null;
-            }
-
-            return { apiKey, articlesBinId };
-        }
-
-        // ===== LOAD ARTICLES FROM PUBLIC JSONBin =====
+        // ===== LOAD ARTICLES FROM GOOGLE SHEETS =====
         function loadArticles() {
-    const grid = document.getElementById('articlesGrid');
-    const comingSoonCards = grid.querySelectorAll('.article-card[style*="opacity:0.6"]');
+            const grid = document.getElementById('articlesGrid');
+            const comingSoonCards = grid.querySelectorAll('.article-card[style*="opacity:0.6"]');
 
-    // Direct JSONBin URL (no proxy needed!)
-    const jsonUrl = 'https://api.jsonbin.io/v3/b/6a50303ff5f4af5e297a0daa/latest?meta=false';
+            // Your Google Sheet URL
+            const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRL7Z5Uaj3E_h-1htcHhdEY3tQYnElniPWhzT3tAvIFz5Zv6xiog5MQIMH33HOKD3gJv0dR5ilPZ8Up/pubhtml';
 
-    fetch(jsonUrl)
-        .then(response => {
-            if (!response.ok) throw new Error('Failed to fetch');
-            return response.json();
-        })
-        .then(data => {
-            let articles = [];
-            if (data && data.articles) {
-                articles = data.articles || [];
-            }
-            displayArticles(articles, grid, comingSoonCards);
-            updateFeaturedCard(articles);
-        })
-        .catch(error => {
-            console.error('Error loading articles:', error);
-            // Fallback to localStorage
-            const articles = JSON.parse(localStorage.getItem('chronicleArticles')) || [];
-            displayArticles(articles, grid, comingSoonCards);
-            updateFeaturedCard(articles);
-        });
-}
-        function loadFromLocalStorage(grid, comingSoonCards) {
-            const articles = JSON.parse(localStorage.getItem('chronicleArticles')) || [];
-            displayArticles(articles, grid, comingSoonCards);
-            updateFeaturedCard(articles);
+            // Extract the sheet ID from the URL
+            const sheetId = sheetUrl.match(/\/d\/e\/([^\/]+)/)[1];
+
+            // Use the Google Sheets API to get JSON data
+            const apiUrl = `https://docs.google.com/spreadsheets/d/e/${sheetId}/gviz/tq?tqx=out:json`;
+
+            fetch(apiUrl)
+                .then(response => response.text())
+                .then(text => {
+                    // Parse Google Sheets JSONP response
+                    // The response starts with "/*O_o*/" and then the JSON
+                    const jsonText = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
+                    const json = JSON.parse(jsonText);
+                    const rows = json.table.rows;
+                    let articles = [];
+
+                    // Skip header row (index 0)
+                    for (let i = 1; i < rows.length; i++) {
+                        const row = rows[i];
+                        // Check if row has data
+                        if (row.c && row.c[0] && row.c[0].v) {
+                            articles.push({
+                                day: parseInt(row.c[0]?.v || 0),
+                                title: row.c[1]?.v || '',
+                                era: row.c[2]?.v || '',
+                                category: row.c[3]?.v || 'History',
+                                excerpt: row.c[4]?.v || '',
+                                link: row.c[5]?.v || '#',
+                                imageData: row.c[6]?.v || null
+                            });
+                        }
+                    }
+
+                    displayArticles(articles, grid, comingSoonCards);
+                    updateFeaturedCard(articles);
+                })
+                .catch(error => {
+                    console.error('Error loading from Google Sheets:', error);
+                    // Fallback to localStorage
+                    const articles = JSON.parse(localStorage.getItem('chronicleArticles')) || [];
+                    displayArticles(articles, grid, comingSoonCards);
+                    updateFeaturedCard(articles);
+                });
         }
 
         function displayArticles(articles, grid, comingSoonCards) {
+            // Remove existing published cards (keep coming soon)
             const publishedCards = grid.querySelectorAll('.article-card:not([style*="opacity:0.6"])');
             publishedCards.forEach(card => card.remove());
 
+            // If no articles, keep coming soon cards
             if (articles.length === 0) {
                 return;
             }
 
+            // Sort by day
             articles.sort((a, b) => parseInt(a.day) - parseInt(b.day));
 
+            // Create cards for each article
             articles.forEach(article => {
                 const card = document.createElement('div');
                 card.className = 'article-card';
@@ -690,6 +699,7 @@
                         <a href="${article.link}" target="_blank" class="read-link">Read Full Story →</a>
                     </div>
                 `;
+                // Insert before the first coming soon card
                 if (comingSoonCards.length > 0) {
                     grid.insertBefore(card, comingSoonCards[0]);
                 } else {
@@ -701,6 +711,7 @@
         function updateFeaturedCard(articles) {
             if (!articles || articles.length === 0) return;
 
+            // Get the latest article (highest day number)
             const sorted = [...articles].sort((a, b) => parseInt(b.day) - parseInt(a.day));
             const latest = sorted[0];
 
@@ -712,6 +723,8 @@
                 imageDiv.style.backgroundImage = `url('${latest.imageData}')`;
                 imageDiv.style.backgroundSize = 'cover';
                 imageDiv.style.backgroundPosition = 'center';
+            } else if (imageDiv) {
+                imageDiv.style.backgroundImage = 'linear-gradient(135deg, var(--mid), var(--dark))';
             }
 
             document.getElementById('featuredBadge').textContent = `Day ${latest.day}`;
@@ -727,6 +740,7 @@
             loadArticles();
         });
 
+        // Also reload when returning from admin page
         window.addEventListener('pageshow', function(e) {
             if (e.persisted) {
                 loadArticles();
