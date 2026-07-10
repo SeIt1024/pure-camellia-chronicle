@@ -146,7 +146,19 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, var(--dark) 0%, #0d2818 100%);
+            /* TRY THESE OPTIONS - uncomment ONE: */
+            
+            /* Option 1: Relative path (if images folder is in same directory) */
+            background-image: url('images/today.jpg');
+            
+            /* Option 2: Absolute path for GitHub Pages (replace 'pure-camellia-chronicle' with your repo name) */
+            /* background-image: url('/pure-camellia-chronicle/images/today.jpg'); */
+            
+            /* Option 3: If your site is at the root domain */
+            /* background-image: url('/images/today.jpg'); */
+            
+            background-size: cover;
+            background-position: center;
             z-index: 0;
         }
         .page-header-bg::after {
@@ -196,7 +208,17 @@
         .featured-card .card-image {
             min-height: 280px;
             height: 100%;
+            /* TRY THESE OPTIONS - uncomment ONE: */
+            
+            /* Option 1: Relative path */
             background-image: url('images/today.jpg');
+            
+            /* Option 2: Absolute path for GitHub Pages */
+            /* background-image: url('/pure-camellia-chronicle/images/today.jpg'); */
+            
+            /* Option 3: If site is at root */
+            /* background-image: url('/images/today.jpg'); */
+            
             background-size: cover;
             background-position: center;
             position: relative;
@@ -299,7 +321,17 @@
         }
         .article-card .card-image {
             height: 200px;
+            /* TRY THESE OPTIONS - uncomment ONE: */
+            
+            /* Option 1: Relative path */
             background-image: url('images/day.jpg');
+            
+            /* Option 2: Absolute path for GitHub Pages */
+            /* background-image: url('/pure-camellia-chronicle/images/day.jpg'); */
+            
+            /* Option 3: If site is at root */
+            /* background-image: url('/images/day.jpg'); */
+            
             background-size: cover;
             background-position: center;
             position: relative;
