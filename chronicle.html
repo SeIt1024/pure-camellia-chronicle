@@ -146,7 +146,6 @@
             left: 0;
             width: 100%;
             height: 100%;
-            /* This is the background image behind the header text */
             background-image: url('images/chronicle.png');
             background-size: cover;
             background-position: center;
@@ -159,7 +158,6 @@
             left: 0;
             width: 100%;
             height: 100%;
-            /* Dark overlay to make text readable */
             background: linear-gradient(135deg, rgba(26,60,42,0.75) 0%, rgba(15,40,28,0.85) 100%);
         }
         .page-header .container {
@@ -506,7 +504,7 @@
         </div>
     </header>
 
-    <!-- ===== PAGE HEADER WITH BACKGROUND IMAGE ===== -->
+    <!-- ===== PAGE HEADER ===== -->
     <section class="page-header">
         <div class="page-header-bg"></div>
         <div class="container">
@@ -606,7 +604,6 @@
                 const rows = data.table.rows;
                 let articles = [];
                 
-                // Loop through all rows
                 // Column mapping: A=day, B=title, C=era, D=category, E=excerpt, F=link
                 for (let i = 0; i < rows.length; i++) {
                     const row = rows[i];
@@ -640,14 +637,15 @@
                     return;
                 }
                 
-                // Sort articles by day (newest first for display)
-                const sortedArticles = [...articles].sort((a, b) => b.day - a.day);
+                // Sort articles by day in ASCENDING order (Day 1 first, then Day 2, Day 3, etc.)
+                const sortedArticles = [...articles].sort((a, b) => a.day - b.day);
                 
                 // Display articles in grid
                 displayArticles(sortedArticles, grid);
                 
-                // Update featured card with the CURRENT DAY article (highest day number)
-                updateFeaturedCard(sortedArticles);
+                // Update featured card with the LATEST article (highest day number)
+                const latestArticle = [...articles].sort((a, b) => b.day - a.day)[0];
+                updateFeaturedCard(latestArticle);
                 
             } catch (error) {
                 console.error('❌ Error loading from Google Sheets:', error);
@@ -668,7 +666,7 @@
             // Clear existing content
             grid.innerHTML = '';
             
-            // Create cards for each article (newest first)
+            // Create cards for each article (Day 1 first, then Day 2, Day 3, etc.)
             articles.forEach(article => {
                 const card = document.createElement('div');
                 card.className = 'article-card';
@@ -694,28 +692,25 @@
             });
         }
 
-        function updateFeaturedCard(articles) {
-            if (!articles || articles.length === 0) return;
+        function updateFeaturedCard(article) {
+            if (!article) return;
             
-            // Get the current day's article (highest day number)
-            const currentDayArticle = articles[0]; // Already sorted by day desc
-            
-            console.log(`📊 Featured card: Day ${currentDayArticle.day} - ${currentDayArticle.title}`);
+            console.log(`📊 Featured card: Day ${article.day} - ${article.title}`);
             
             // Update all featured card elements
-            document.getElementById('featuredBadge').textContent = `Day ${currentDayArticle.day}`;
-            document.getElementById('featuredCategory').textContent = currentDayArticle.category || 'Featured';
-            document.getElementById('featuredEra').textContent = currentDayArticle.era || 'Unknown';
-            document.getElementById('featuredTitle').textContent = currentDayArticle.title;
-            document.getElementById('featuredExcerpt').textContent = currentDayArticle.excerpt || 'Click to read the full story...';
-            document.getElementById('featuredLink').href = currentDayArticle.link || '#';
+            document.getElementById('featuredBadge').textContent = `Day ${article.day}`;
+            document.getElementById('featuredCategory').textContent = article.category || 'Featured';
+            document.getElementById('featuredEra').textContent = article.era || 'Unknown';
+            document.getElementById('featuredTitle').textContent = article.title;
+            document.getElementById('featuredExcerpt').textContent = article.excerpt || 'Click to read the full story...';
+            document.getElementById('featuredLink').href = article.link || '#';
         }
 
         // ===== AUTO-REFRESH EVERY 5 MINUTES =====
         setInterval(() => {
             console.log('🔄 Auto-refreshing articles...');
             loadArticles();
-        }, 300000); // 5 minutes
+        }, 300000);
 
         // ===== LOAD ON PAGE LOAD =====
         document.addEventListener('DOMContentLoaded', loadArticles);
