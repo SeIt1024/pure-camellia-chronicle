@@ -468,7 +468,7 @@
 
             <!-- FEATURED CARD -->
             <div class="featured-card" id="featuredCard">
-                <div class="card-image" id="featuredImage">
+                <div class="card-image" id="featuredImage" style="background-image: url('images/chronicle.png'); background-size: cover; background-position: center;">
                     <span class="day-badge" id="featuredBadge">Day 1</span>
                 </div>
                 <div class="card-body">
@@ -487,56 +487,7 @@
             <h2 class="section-title">All Episodes</h2>
 
             <div class="articles-grid" id="articlesGrid">
-
-                <!-- COMING SOON CARDS -->
-                <div class="article-card" style="opacity:0.6; filter:grayscale(0.3);">
-                    <div class="card-image" style="background: linear-gradient(135deg, #3a4a3f, #1a2a1f);">
-                        <span class="day-badge" style="background:#888; color:#fff;">Coming</span>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-meta">
-                            <span class="category">History</span>
-                            <span>•</span>
-                            <span>2737 BCE</span>
-                        </div>
-                        <h3>The World of 2737 BCE</h3>
-                        <p>Before stone roads, before towns, before written language — humanity lived in a wild, untamed world.</p>
-                        <span style="color:#aaa; font-size:0.9rem;">Coming tomorrow</span>
-                    </div>
-                </div>
-
-                <div class="article-card" style="opacity:0.6; filter:grayscale(0.3);">
-                    <div class="card-image" style="background: linear-gradient(135deg, #3a4a3f, #1a2a1f);">
-                        <span class="day-badge" style="background:#888; color:#fff;">Coming</span>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-meta">
-                            <span class="category">People</span>
-                            <span>•</span>
-                            <span>2737 BCE</span>
-                        </div>
-                        <h3>Shen Nung's Vow</h3>
-                        <p>A brilliant leader turned his own body into a living laboratory — testing every plant in the jungle.</p>
-                        <span style="color:#aaa; font-size:0.9rem;">Coming soon</span>
-                    </div>
-                </div>
-
-                <div class="article-card" style="opacity:0.6; filter:grayscale(0.3);">
-                    <div class="card-image" style="background: linear-gradient(135deg, #3a4a3f, #1a2a1f);">
-                        <span class="day-badge" style="background:#888; color:#fff;">Coming</span>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-meta">
-                            <span class="category">History</span>
-                            <span>•</span>
-                            <span>2737 BCE</span>
-                        </div>
-                        <h3>The First Footsteps</h3>
-                        <p>Shen Nung takes his first historic steps into the deep undergrowth, his bamboo basket ready.</p>
-                        <span style="color:#aaa; font-size:0.9rem;">Coming soon</span>
-                    </div>
-                </div>
-
+                <!-- Articles will be inserted here by JavaScript -->
             </div>
         </div>
     </section>
@@ -558,7 +509,6 @@
     </footer>
 
     <script>
-        // ===== NAVIGATION =====
         document.querySelectorAll('.nav-links a').forEach(link => {
             link.addEventListener('click', () => {
                 document.querySelector('.menu-toggle').classList.remove('open');
@@ -566,28 +516,18 @@
             });
         });
 
-        // ===== LOAD ARTICLES FROM GOOGLE SHEETS =====
+        // ===== LOAD ARTICLES =====
         function loadArticles() {
             const grid = document.getElementById('articlesGrid');
-            const comingSoonCards = grid.querySelectorAll('.article-card[style*="opacity:0.6"]');
 
-            // CORRECT SHEET ID (without /e/)
+            // YOUR CORRECT SHEET ID
             const sheetId = '2PACX-1vRL7Z5Uaj3E_h-1htcHhdEY3tQYnElniPWhzT3tAvIFz5Zv6xiog5MQIMH33HOKD3gJv0dR5ilPZ8Up';
             const apiUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`;
 
-            console.log('📊 Fetching from:', apiUrl);
-
             fetch(apiUrl)
-                .then(response => {
-                    console.log('📊 Response status:', response.status);
-                    if (!response.ok) {
-                        throw new Error('HTTP error! status: ' + response.status);
-                    }
-                    return response.text();
-                })
+                .then(response => response.text())
                 .then(text => {
-                    console.log('📊 Raw response preview:', text.substring(0, 200) + '...');
-                    
+                    // Extract JSON from the response
                     const jsonStart = text.indexOf('{');
                     const jsonEnd = text.lastIndexOf('}') + 1;
                     const jsonText = text.substring(jsonStart, jsonEnd);
@@ -596,11 +536,11 @@
                     const rows = data.table.rows;
                     let articles = [];
 
-                    // Skip header row (index 0) and loop through data rows
-                    for (let i = 1; i < rows.length; i++) {
-                        const row = rows[i];
+                    // ROW 0 = HEADERS, ROW 1 = DATA
+                    if (rows.length > 1) {
+                        const row = rows[1];
                         if (row.c && row.c[0] && row.c[0].v !== null && row.c[0].v !== '') {
-                            const article = {
+                            articles.push({
                                 day: parseInt(row.c[0]?.v || 0),
                                 title: row.c[1]?.v || 'Untitled',
                                 era: row.c[2]?.v || 'Unknown',
@@ -608,36 +548,22 @@
                                 excerpt: row.c[4]?.v || '',
                                 link: row.c[5]?.v || '#',
                                 imageData: row.c[6]?.v || null
-                            };
-                            articles.push(article);
-                            console.log('📊 Added article:', article);
+                            });
                         }
                     }
 
-                    console.log('📊 Total articles loaded:', articles.length);
-
                     if (articles.length > 0) {
-                        displayArticles(articles, grid, comingSoonCards);
+                        displayArticles(articles, grid);
                         updateFeaturedCard(articles);
                     }
                 })
                 .catch(error => {
-                    console.error('❌ Error loading from Google Sheets:', error);
-                    const errorMsg = document.createElement('p');
-                    errorMsg.textContent = '⚠️ Could not load articles: ' + error.message;
-                    errorMsg.style.textAlign = 'center';
-                    errorMsg.style.color = '#b33';
-                    errorMsg.style.padding = '20px';
-                    grid.parentNode.insertBefore(errorMsg, grid);
+                    console.error('Error:', error);
                 });
         }
 
-        function displayArticles(articles, grid, comingSoonCards) {
-            const publishedCards = grid.querySelectorAll('.article-card:not([style*="opacity:0.6"])');
-            publishedCards.forEach(card => card.remove());
-
-            articles.sort((a, b) => parseInt(a.day) - parseInt(b.day));
-
+        function displayArticles(articles, grid) {
+            grid.innerHTML = '';
             articles.forEach(article => {
                 const card = document.createElement('div');
                 card.className = 'article-card';
@@ -653,43 +579,35 @@
                     </div>
                     <div class="card-body">
                         <div class="card-meta">
-                            <span class="category">${article.category || 'History'}</span>
+                            <span class="category">${article.category}</span>
                             <span>•</span>
-                            <span>${article.era || 'Unknown'}</span>
+                            <span>${article.era}</span>
                         </div>
                         <h3>${article.title}</h3>
                         <p>${article.excerpt}</p>
                         <a href="${article.link}" target="_blank" class="read-link">Read Full Story →</a>
                     </div>
                 `;
-                if (comingSoonCards.length > 0) {
-                    grid.insertBefore(card, comingSoonCards[0]);
-                } else {
-                    grid.appendChild(card);
-                }
+                grid.appendChild(card);
             });
         }
 
         function updateFeaturedCard(articles) {
             if (!articles || articles.length === 0) return;
-
-            const sorted = [...articles].sort((a, b) => parseInt(b.day) - parseInt(a.day));
-            const latest = sorted[0];
+            const latest = articles[0];
 
             const imageDiv = document.getElementById('featuredImage');
             if (imageDiv) {
                 if (latest.imageData && latest.imageData !== '' && latest.imageData !== 'null') {
                     imageDiv.style.backgroundImage = `url('${latest.imageData}')`;
-                } else {
-                    imageDiv.style.backgroundImage = "url('images/chronicle.png')";
                 }
                 imageDiv.style.backgroundSize = 'cover';
                 imageDiv.style.backgroundPosition = 'center';
             }
 
             document.getElementById('featuredBadge').textContent = `Day ${latest.day}`;
-            document.getElementById('featuredCategory').textContent = latest.category || 'Featured';
-            document.getElementById('featuredEra').textContent = latest.era || 'Unknown';
+            document.getElementById('featuredCategory').textContent = latest.category;
+            document.getElementById('featuredEra').textContent = latest.era;
             document.getElementById('featuredTitle').textContent = latest.title;
             document.getElementById('featuredExcerpt').textContent = latest.excerpt;
             document.getElementById('featuredLink').href = latest.link;
