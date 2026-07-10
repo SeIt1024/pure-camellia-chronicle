@@ -10,7 +10,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <style>
         /* ===== GLOBAL ===== */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         :root {
             --dark: #1a3c2a;
             --mid: #2d5a3d;
@@ -30,12 +34,21 @@
             margin: 0 auto;
             padding: 0 24px;
         }
-        h1, h2, h3, h4 {
+        h1,
+        h2,
+        h3,
+        h4 {
             font-family: 'Playfair Display', serif;
             font-weight: 700;
         }
-        a { text-decoration: none; color: inherit; }
-        img { max-width: 100%; display: block; }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        img {
+            max-width: 100%;
+            display: block;
+        }
 
         /* ===== HEADER ===== */
         .site-header {
@@ -69,10 +82,12 @@
             font-weight: 700;
             color: #fff;
         }
-        .logo-text span { color: var(--gold); }
+        .logo-text span {
+            color: var(--gold);
+        }
         .logo-sub {
             font-size: 0.65rem;
-            color: rgba(255,255,255,0.5);
+            color: rgba(255, 255, 255, 0.5);
             letter-spacing: 0.12em;
             text-transform: uppercase;
             display: block;
@@ -85,7 +100,7 @@
             list-style: none;
         }
         .nav-links a {
-            color: rgba(255,255,255,0.7);
+            color: rgba(255, 255, 255, 0.7);
             font-size: 0.9rem;
             transition: color 0.3s;
             position: relative;
@@ -100,8 +115,12 @@
             background: var(--gold);
             transition: width 0.3s;
         }
-        .nav-links a:hover { color: #fff; }
-        .nav-links a:hover::after { width: 100%; }
+        .nav-links a:hover {
+            color: #fff;
+        }
+        .nav-links a:hover::after {
+            width: 100%;
+        }
         .nav-cta {
             background: var(--gold);
             color: var(--dark) !important;
@@ -109,8 +128,12 @@
             border-radius: 50px;
             font-weight: 600 !important;
         }
-        .nav-cta::after { display: none !important; }
-        .nav-cta:hover { background: var(--light-gold) !important; }
+        .nav-cta::after {
+            display: none !important;
+        }
+        .nav-cta:hover {
+            background: var(--light-gold) !important;
+        }
 
         .menu-toggle {
             display: none;
@@ -158,7 +181,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, rgba(26,60,42,0.75) 0%, rgba(15,40,28,0.85) 100%);
+            background: linear-gradient(135deg, rgba(26, 60, 42, 0.75) 0%, rgba(15, 40, 28, 0.85) 100%);
         }
         .page-header .container {
             position: relative;
@@ -168,14 +191,14 @@
             color: #fff;
             font-size: 3.6rem;
             margin-bottom: 8px;
-            text-shadow: 0 4px 30px rgba(0,0,0,0.4);
+            text-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
         }
         .page-header p {
-            color: rgba(255,255,255,0.85);
+            color: rgba(255, 255, 255, 0.85);
             font-size: 1.2rem;
             max-width: 500px;
             margin: 0 auto;
-            text-shadow: 0 2px 15px rgba(0,0,0,0.3);
+            text-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
         }
 
         /* ===== FEATURED CARD ===== */
@@ -193,7 +216,7 @@
         }
         .featured-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 16px 60px rgba(26,60,42,0.18);
+            box-shadow: 0 16px 60px rgba(26, 60, 42, 0.18);
         }
         .featured-card .card-image {
             min-height: 280px;
@@ -205,11 +228,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-        .featured-card .card-image .fallback-icon {
-            font-size: 5rem;
-            opacity: 0.3;
-            color: #fff;
         }
         .featured-card .card-image .day-badge {
             position: absolute;
@@ -267,7 +285,9 @@
             transition: gap 0.3s;
             width: fit-content;
         }
-        .featured-card .read-link:hover { gap: 14px; }
+        .featured-card .read-link:hover {
+            gap: 14px;
+        }
 
         /* ===== ARTICLES GRID ===== */
         .articles-grid-section {
@@ -302,7 +322,7 @@
         }
         .article-card:hover {
             transform: translateY(-6px);
-            box-shadow: 0 16px 40px rgba(26,60,42,0.15);
+            box-shadow: 0 16px 40px rgba(26, 60, 42, 0.15);
         }
         .article-card .card-image {
             height: 200px;
@@ -313,11 +333,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-        .article-card .card-image .fallback-icon {
-            font-size: 3.5rem;
-            opacity: 0.3;
-            color: #fff;
         }
         .article-card .card-image .day-badge {
             position: absolute;
@@ -369,14 +384,16 @@
             gap: 6px;
             transition: gap 0.3s;
         }
-        .article-card .read-link:hover { gap: 12px; }
+        .article-card .read-link:hover {
+            gap: 12px;
+        }
 
         /* ===== FOOTER ===== */
         .site-footer {
             background: #0d1f14;
-            color: rgba(255,255,255,0.5);
+            color: rgba(255, 255, 255, 0.5);
             padding: 32px 0;
-            border-top: 1px solid rgba(255,255,255,0.04);
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
         }
         .site-footer .container {
             display: flex;
@@ -397,19 +414,30 @@
             width: auto;
             display: block;
         }
-        .footer-logo span { color: var(--gold); }
-        .footer-socials { display: flex; gap: 20px; }
+        .footer-logo span {
+            color: var(--gold);
+        }
+        .footer-socials {
+            display: flex;
+            gap: 20px;
+        }
         .footer-socials a {
-            color: rgba(255,255,255,0.4);
+            color: rgba(255, 255, 255, 0.4);
             font-size: 0.85rem;
             transition: color 0.3s;
         }
-        .footer-socials a:hover { color: var(--gold); }
-        .footer-copy { font-size: 0.8rem; }
+        .footer-socials a:hover {
+            color: var(--gold);
+        }
+        .footer-copy {
+            font-size: 0.8rem;
+        }
 
         /* ===== RESPONSIVE ===== */
         @media (max-width: 900px) {
-            .page-header h1 { font-size: 2.6rem; }
+            .page-header h1 {
+                font-size: 2.6rem;
+            }
             .featured-card {
                 grid-template-columns: 1fr;
             }
@@ -421,7 +449,9 @@
             }
         }
         @media (max-width: 700px) {
-            .menu-toggle { display: flex; }
+            .menu-toggle {
+                display: flex;
+            }
             .nav-links {
                 display: none;
                 flex-direction: column;
@@ -429,13 +459,19 @@
                 padding: 16px 0 8px;
                 gap: 14px;
             }
-            .nav-links.open { display: flex; }
+            .nav-links.open {
+                display: flex;
+            }
             .page-header {
                 padding: 50px 0 40px;
                 min-height: 250px;
             }
-            .page-header h1 { font-size: 2.2rem; }
-            .articles-grid { grid-template-columns: 1fr; }
+            .page-header h1 {
+                font-size: 2.2rem;
+            }
+            .articles-grid {
+                grid-template-columns: 1fr;
+            }
             .featured-card .card-body {
                 padding: 24px 20px 28px;
             }
@@ -444,20 +480,28 @@
             }
         }
         @media (max-width: 480px) {
-            .logo-text { font-size: 1.1rem; }
+            .logo-text {
+                font-size: 1.1rem;
+            }
             .page-header {
                 padding: 40px 0 30px;
                 min-height: 200px;
             }
-            .page-header h1 { font-size: 1.8rem; }
-            .page-header p { font-size: 1rem; }
+            .page-header h1 {
+                font-size: 1.8rem;
+            }
+            .page-header p {
+                font-size: 1rem;
+            }
             .featured-card .card-image {
                 min-height: 150px;
             }
             .featured-card .card-body h3 {
                 font-size: 1.1rem;
             }
-            .footer-logo img { height: 26px; }
+            .footer-logo img {
+                height: 26px;
+            }
         }
     </style>
 </head>
@@ -501,9 +545,9 @@
     <section class="articles-grid-section">
         <div class="container">
 
-            <!-- ===== FEATURED CARD (UPDATED DYNAMICALLY) ===== -->
+            <!-- ===== FEATURED CARD ===== -->
             <div class="featured-card" id="featuredCard">
-                <div class="card-image" id="featuredImage" style="background-image: url('images/chronicle.png'); background-size: cover; background-position: center;">
+                <div class="card-image" id="featuredImage">
                     <span class="day-badge" id="featuredBadge">Day 1</span>
                 </div>
                 <div class="card-body">
@@ -525,11 +569,10 @@
             <!-- ===== ARTICLES GRID ===== -->
             <div class="articles-grid" id="articlesGrid">
 
-                <!-- ===== SAMPLE COMING SOON CARDS (will be replaced by real data) ===== -->
+                <!-- ===== COMING SOON CARDS (will be replaced by real data) ===== -->
                 <div class="article-card" style="opacity:0.6; filter:grayscale(0.3);">
                     <div class="card-image" style="background: linear-gradient(135deg, #3a4a3f, #1a2a1f);">
                         <span class="day-badge" style="background:#888; color:#fff;">Coming</span>
-                        <span class="fallback-icon">⏳</span>
                     </div>
                     <div class="card-body">
                         <div class="card-meta">
@@ -546,7 +589,6 @@
                 <div class="article-card" style="opacity:0.6; filter:grayscale(0.3);">
                     <div class="card-image" style="background: linear-gradient(135deg, #3a4a3f, #1a2a1f);">
                         <span class="day-badge" style="background:#888; color:#fff;">Coming</span>
-                        <span class="fallback-icon">⚔️</span>
                     </div>
                     <div class="card-body">
                         <div class="card-meta">
@@ -563,7 +605,6 @@
                 <div class="article-card" style="opacity:0.6; filter:grayscale(0.3);">
                     <div class="card-image" style="background: linear-gradient(135deg, #3a4a3f, #1a2a1f);">
                         <span class="day-badge" style="background:#888; color:#fff;">Coming</span>
-                        <span class="fallback-icon">🌿</span>
                     </div>
                     <div class="card-body">
                         <div class="card-meta">
@@ -616,13 +657,9 @@
             const sheetId = '1R-NhrRiigpcafwtmgl-qBSeZLT_4ZLSzdXaQnRiZNi8';
             const apiUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`;
 
-            // Use a CORS proxy to avoid CORS issues
-            const proxyUrl = 'https://api.allorigins.win/raw?url=';
-            const finalUrl = proxyUrl + encodeURIComponent(apiUrl);
+            console.log('📊 Fetching from:', apiUrl);
 
-            console.log('📊 Fetching from:', finalUrl);
-
-            fetch(finalUrl)
+            fetch(apiUrl)
                 .then(response => {
                     console.log('📊 Response status:', response.status);
                     if (!response.ok) {
@@ -632,15 +669,15 @@
                 })
                 .then(text => {
                     console.log('📊 Response received, length:', text.length);
-                    
+
                     // Extract JSON from the response
                     const jsonStart = text.indexOf('{');
                     const jsonEnd = text.lastIndexOf('}') + 1;
                     const jsonText = text.substring(jsonStart, jsonEnd);
                     const data = JSON.parse(jsonText);
-                    
+
                     console.log('📊 Parsed data successfully');
-                    
+
                     const rows = data.table.rows;
                     let articles = [];
 
@@ -673,6 +710,7 @@
                 })
                 .catch(error => {
                     console.error('❌ Error loading from Google Sheets:', error);
+                    // Show error message on page
                     const errorMsg = document.createElement('p');
                     errorMsg.textContent = '⚠️ Could not load articles: ' + error.message;
                     errorMsg.style.textAlign = 'center';
@@ -694,24 +732,27 @@
             articles.forEach(article => {
                 const card = document.createElement('div');
                 card.className = 'article-card';
-                const imageStyle = article.imageData && article.imageData !== ''
-                    ? `background-image: url('${article.imageData}'); background-size: cover; background-position: center;`
-                    : 'background: linear-gradient(135deg, var(--mid), var(--dark));';
+
+                // Use imageData if available
+                const imageStyle = article.imageData && article.imageData !== '' ?
+                    `background-image: url('${article.imageData}'); background-size: cover; background-position: center;` :
+                    'background: linear-gradient(135deg, var(--mid), var(--dark));';
+
                 card.innerHTML = `
-                    <div class="card-image" style="${imageStyle}">
-                        <span class="day-badge">Day ${article.day}</span>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-meta">
-                            <span class="category">${article.category || 'History'}</span>
-                            <span>•</span>
-                            <span>${article.era || 'Unknown'}</span>
+                        <div class="card-image" style="${imageStyle}">
+                            <span class="day-badge">Day ${article.day}</span>
                         </div>
-                        <h3>${article.title}</h3>
-                        <p>${article.excerpt}</p>
-                        <a href="${article.link}" target="_blank" class="read-link">Read Full Story →</a>
-                    </div>
-                `;
+                        <div class="card-body">
+                            <div class="card-meta">
+                                <span class="category">${article.category || 'History'}</span>
+                                <span>•</span>
+                                <span>${article.era || 'Unknown'}</span>
+                            </div>
+                            <h3>${article.title}</h3>
+                            <p>${article.excerpt}</p>
+                            <a href="${article.link}" target="_blank" class="read-link">Read Full Story →</a>
+                        </div>
+                    `;
                 if (comingSoonCards.length > 0) {
                     grid.insertBefore(card, comingSoonCards[0]);
                 } else {
@@ -727,7 +768,9 @@
             const sorted = [...articles].sort((a, b) => parseInt(b.day) - parseInt(a.day));
             const latest = sorted[0];
 
-            // Update the featured card image
+            console.log('📊 Updating featured card with:', latest);
+
+            // Update image
             const imageDiv = document.getElementById('featuredImage');
             if (imageDiv) {
                 if (latest.imageData && latest.imageData !== '') {
