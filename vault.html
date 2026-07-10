@@ -610,14 +610,12 @@
         }
 
         // ===== LOAD REVIEWS FROM PUBLIC JSONBin =====
-        function loadReviews() {
+       function loadReviews() {
     const grid = document.getElementById('reviewsGrid');
     const comingSoonCards = grid.querySelectorAll('.review-card[style*="opacity:0.6"]');
 
-    // YOUR REVIEWS BIN ID
-    const binId = '6a503071da38895dfe488442';
-    const proxyUrl = 'https://corsproxy.io/?';
-    const jsonUrl = proxyUrl + encodeURIComponent(`https://api.jsonbin.io/v3/b/${binId}/latest?meta=false`);
+    // Direct JSONBin URL (no proxy needed!)
+    const jsonUrl = 'https://api.jsonbin.io/v3/b/6a503071da38895dfe488442/latest?meta=false';
 
     fetch(jsonUrl)
         .then(response => {
@@ -628,8 +626,6 @@
             let reviews = [];
             if (data && data.reviews) {
                 reviews = data.reviews || [];
-            } else if (Array.isArray(data)) {
-                reviews = data;
             }
             displayReviews(reviews, grid, comingSoonCards);
         })
