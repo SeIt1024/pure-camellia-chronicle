@@ -638,13 +638,15 @@
                 }
                 
                 // Sort articles by day in ASCENDING order (Day 1 first, then Day 2, Day 3, etc.)
-                const sortedArticles = [...articles].sort((a, b) => a.day - b.day);
+                const ascendingArticles = articles.sort((a, b) => a.day - b.day);
                 
-                // Display articles in grid
-                displayArticles(sortedArticles, grid);
+                // Display articles in ascending order
+                displayArticles(ascendingArticles, grid);
                 
-                // Update featured card with the LATEST article (highest day number)
-                const latestArticle = [...articles].sort((a, b) => b.day - a.day)[0];
+                // Find the latest article (highest day number) for the featured card
+                const latestArticle = articles.reduce((max, article) => 
+                    article.day > max.day ? article : max, articles[0]
+                );
                 updateFeaturedCard(latestArticle);
                 
             } catch (error) {
@@ -666,7 +668,7 @@
             // Clear existing content
             grid.innerHTML = '';
             
-            // Create cards for each article (Day 1 first, then Day 2, Day 3, etc.)
+            // Create cards for each article (already in ascending order: Day 1, Day 2, Day 3...)
             articles.forEach(article => {
                 const card = document.createElement('div');
                 card.className = 'article-card';
