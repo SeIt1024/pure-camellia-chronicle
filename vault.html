@@ -129,7 +129,7 @@
             border-radius: 2px;
         }
 
-        /* ===== PAGE HEADER with vault.png background ===== */
+        /* ===== PAGE HEADER ===== */
         .page-header {
             position: relative;
             padding: 80px 0 70px;
@@ -193,9 +193,7 @@
             padding: 30px 0 10px;
             flex-wrap: wrap;
         }
-        .vault-stats div {
-            text-align: center;
-        }
+        .vault-stats div { text-align: center; }
         .vault-stats .num {
             font-family: 'Playfair Display', serif;
             font-size: 2rem;
@@ -247,18 +245,13 @@
         }
         .review-card .card-image {
             height: 200px;
-            background: linear-gradient(135deg, var(--mid), var(--dark));
+            background-image: url('images/vday.jpg');
             background-size: cover;
             background-position: center;
             position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-        .review-card .card-image .fallback-icon {
-            font-size: 3.5rem;
-            opacity: 0.3;
-            color: #fff;
         }
         .review-card .card-image .grade-badge {
             position: absolute;
@@ -318,6 +311,10 @@
             font-size: 0.95rem;
             margin-bottom: 14px;
             line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
         .review-card .read-link {
             color: var(--gold);
@@ -329,6 +326,28 @@
             transition: gap 0.3s;
         }
         .review-card .read-link:hover { gap: 12px; }
+
+        /* ===== LOADING SPINNER ===== */
+        .loading-spinner {
+            text-align: center;
+            padding: 40px;
+            color: var(--dark);
+            font-size: 1.1rem;
+        }
+        .loading-spinner .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--cream);
+            border-top: 4px solid var(--gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 12px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
 
         /* ===== PARTNER SECTION ===== */
         .partner-box {
@@ -459,12 +478,11 @@
                 <li><a href="vault.html">Tea Vault</a></li>
                 <li><a href="about.html">About</a></li>
                 <li><a href="newsletter.html">Newsletter</a></li>
-                <li><a href="admin.html" class="nav-cta">Admin</a></li>
             </ul>
         </div>
     </header>
 
-    <!-- ===== PAGE HEADER with vault.png background ===== -->
+    <!-- ===== PAGE HEADER ===== -->
     <section class="page-header">
         <div class="page-header-bg"></div>
         <div class="container">
@@ -477,9 +495,9 @@
     <!-- ===== STATS ===== -->
     <div class="container">
         <div class="vault-stats">
-            <div><span class="num">30+</span><span class="lbl">Grades Reviewed</span></div>
-            <div><span class="num">97</span><span class="lbl">Highest Score</span></div>
-            <div><span class="num">6</span><span class="lbl">Tea Families</span></div>
+            <div><span class="num" id="totalReviews">0</span><span class="lbl">Reviews Published</span></div>
+            <div><span class="num" id="highestGrade">—</span><span class="lbl">Highest Score</span></div>
+            <div><span class="num" id="teaFamilies">—</span><span class="lbl">Tea Families</span></div>
         </div>
     </div>
 
@@ -490,76 +508,17 @@
             <h2 class="section-title">Tea Reviews</h2>
 
             <div class="reviews-grid" id="reviewsGrid">
-
-                <!-- ===== SAMPLE COMING SOON REVIEW CARD 1 ===== -->
-                <div class="review-card" style="opacity:0.6; filter:grayscale(0.3);">
-                    <div class="card-image" style="background: linear-gradient(135deg, #3a4a3f, #1a2a1f);">
-                        <span class="grade-badge" style="background:#888; color:#fff;">OP</span>
-                        <span class="origin-badge" style="background:rgba(60,60,60,0.8);">🇱🇰 Ceylon</span>
-                        <span class="fallback-icon">⏳</span>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-meta">
-                            <span class="category">Review</span>
-                            <span>•</span>
-                            <span>Coming Soon</span>
-                        </div>
-                        <h3>Loolecondera Estate</h3>
-                        <div class="official-grade">Official Grade: Orange Pekoe (OP)</div>
-                        <p>Bright, golden liquor with delicate floral notes and a smooth, well-balanced finish.</p>
-                        <span style="color:#aaa; font-size:0.9rem;">Coming soon</span>
-                    </div>
+                <div class="loading-spinner" id="loadingSpinner">
+                    <div class="spinner"></div>
+                    <p>Loading reviews from Google Sheets...</p>
                 </div>
-
-                <!-- ===== SAMPLE COMING SOON REVIEW CARD 2 ===== -->
-                <div class="review-card" style="opacity:0.6; filter:grayscale(0.3);">
-                    <div class="card-image" style="background: linear-gradient(135deg, #3a4a3f, #1a2a1f);">
-                        <span class="grade-badge" style="background:#888; color:#fff;">BOP</span>
-                        <span class="origin-badge" style="background:rgba(60,60,60,0.8);">🇱🇰 Ceylon</span>
-                        <span class="fallback-icon">⏳</span>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-meta">
-                            <span class="category">Review</span>
-                            <span>•</span>
-                            <span>Coming Soon</span>
-                        </div>
-                        <h3>Dimbula Valley</h3>
-                        <div class="official-grade">Official Grade: Broken Orange Pekoe (BOP)</div>
-                        <p>A rich, full-bodied brew with notes of chocolate and spice — coming soon.</p>
-                        <span style="color:#aaa; font-size:0.9rem;">Coming soon</span>
-                    </div>
-                </div>
-
-                <!-- ===== SAMPLE COMING SOON REVIEW CARD 3 ===== -->
-                <div class="review-card" style="opacity:0.6; filter:grayscale(0.3);">
-                    <div class="card-image" style="background: linear-gradient(135deg, #3a4a3f, #1a2a1f);">
-                        <span class="grade-badge" style="background:#888; color:#fff;">FBOP</span>
-                        <span class="origin-badge" style="background:rgba(60,60,60,0.8);">🇱🇰 Ceylon</span>
-                        <span class="fallback-icon">⏳</span>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-meta">
-                            <span class="category">Review</span>
-                            <span>•</span>
-                            <span>Coming Soon</span>
-                        </div>
-                        <h3>Nuwara Eliya</h3>
-                        <div class="official-grade">Official Grade: Flowery Broken Orange Pekoe (FBOP)</div>
-                        <p>Delicate, floral, and brisk with a distinct golden hue — coming soon.</p>
-                        <span style="color:#aaa; font-size:0.9rem;">Coming soon</span>
-                    </div>
-                </div>
-
             </div>
         </div>
     </section>
 
-    <!-- ===== CONTENT ===== -->
+    <!-- ===== PARTNER SECTION ===== -->
     <section class="vault-content">
         <div class="container">
-
-            <!-- Partner Box -->
             <div class="partner-box">
                 <div>
                     <h3>Partner with the Chronicle</h3>
@@ -596,69 +555,107 @@
             });
         });
 
-        // ===== CONFIGURATION =====
-        function getCloudConfig() {
-            const apiKey = localStorage.getItem('jsonbin_api_key');
-            const reviewsBinId = localStorage.getItem('jsonbin_reviews_bin');
+        // ===== GOOGLE SHEETS CONFIGURATION =====
+        // Use the correct sheet ID from your edit URL
+        const SHEET_ID = '1ZTrbGbyGNk8v3x8SDSyn4EsQ6WFRUGtsuzGb35vWk8U';
+        const API_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
 
-            if (!apiKey || !reviewsBinId) {
-                console.log('No cloud config found. Using localStorage.');
-                return null;
+        // ===== FETCH AND DISPLAY REVIEWS =====
+        async function loadReviews() {
+            const grid = document.getElementById('reviewsGrid');
+            const spinner = document.getElementById('loadingSpinner');
+            
+            try {
+                console.log('📊 Fetching reviews from:', API_URL);
+                
+                const response = await fetch(API_URL);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                
+                const text = await response.text();
+                console.log('📊 Response received, length:', text.length);
+                
+                // Parse the JSON response
+                const jsonStart = text.indexOf('{');
+                const jsonEnd = text.lastIndexOf('}') + 1;
+                const jsonText = text.substring(jsonStart, jsonEnd);
+                const data = JSON.parse(jsonText);
+                
+                console.log('📊 Parsed data successfully');
+                
+                // Extract rows from the response
+                const rows = data.table.rows;
+                let reviews = [];
+                
+                // Column mapping: A=id, B=title, C=grade, D=origin, E=estate, F=excerpt, G=link
+                for (let i = 0; i < rows.length; i++) {
+                    const row = rows[i];
+                    // Check if row has an id value (first column)
+                    if (row.c && row.c[0] && row.c[0].v !== null && row.c[0].v !== '') {
+                        const review = {
+                            id: parseInt(row.c[0]?.v || 0),
+                            title: row.c[1]?.v || 'Untitled',
+                            grade: row.c[2]?.v || 'N/A',
+                            origin: row.c[3]?.v || 'Unknown',
+                            estate: row.c[4]?.v || 'Single Estate',
+                            excerpt: row.c[5]?.v || '',
+                            link: row.c[6]?.v || '#'
+                        };
+                        reviews.push(review);
+                        console.log(`📊 Added review: ${review.id} - ${review.title}`);
+                    }
+                }
+                
+                console.log(`📊 Total reviews loaded: ${reviews.length}`);
+                
+                // Remove loading spinner
+                if (spinner) spinner.remove();
+                
+                if (reviews.length === 0) {
+                    grid.innerHTML = `
+                        <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; color: var(--dark);">
+                            <p style="font-size: 1.2rem; margin-bottom: 10px;">📚 No reviews found yet</p>
+                            <p style="color: #888;">Check back soon for tea reviews!</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Sort reviews by id
+                const sortedReviews = [...reviews].sort((a, b) => a.id - b.id);
+                
+                // Display reviews in grid
+                displayReviews(sortedReviews, grid);
+                
+                // Update stats
+                updateStats(sortedReviews);
+                
+            } catch (error) {
+                console.error('❌ Error loading reviews from Google Sheets:', error);
+                if (spinner) spinner.remove();
+                grid.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px;">
+                        <p style="font-size: 1.2rem; color: #b33; margin-bottom: 10px;">⚠️ Could not load reviews</p>
+                        <p style="color: #888;">Error: ${error.message}</p>
+                        <button onclick="loadReviews()" style="margin-top: 20px; padding: 10px 30px; background: var(--gold); color: var(--dark); border: none; border-radius: 50px; font-weight: 600; cursor: pointer; font-size: 1rem;">
+                            Retry
+                        </button>
+                    </div>
+                `;
             }
-
-            return { apiKey, reviewsBinId };
         }
 
-        // ===== LOAD REVIEWS FROM PUBLIC JSONBin =====
-       function loadReviews() {
-    const grid = document.getElementById('reviewsGrid');
-    const comingSoonCards = grid.querySelectorAll('.review-card[style*="opacity:0.6"]');
-
-    // Direct JSONBin URL (no proxy needed!)
-    const jsonUrl = 'https://api.jsonbin.io/v3/b/6a503071da38895dfe488442/latest?meta=false';
-
-    fetch(jsonUrl)
-        .then(response => {
-            if (!response.ok) throw new Error('Failed to fetch');
-            return response.json();
-        })
-        .then(data => {
-            let reviews = [];
-            if (data && data.reviews) {
-                reviews = data.reviews || [];
-            }
-            displayReviews(reviews, grid, comingSoonCards);
-        })
-        .catch(error => {
-            console.error('Error loading reviews:', error);
-            // Fallback to localStorage
-            const reviews = JSON.parse(localStorage.getItem('vaultReviews')) || [];
-            displayReviews(reviews, grid, comingSoonCards);
-        });
-}
-        function loadFromLocalStorage(grid, comingSoonCards) {
-            const reviews = JSON.parse(localStorage.getItem('vaultReviews')) || [];
-            displayReviews(reviews, grid, comingSoonCards);
-        }
-
-        function displayReviews(reviews, grid, comingSoonCards) {
-            const publishedCards = grid.querySelectorAll('.review-card:not([style*="opacity:0.6"])');
-            publishedCards.forEach(card => card.remove());
-
-            if (reviews.length === 0) {
-                return;
-            }
-
-            reviews.sort((a, b) => parseInt(a.id) - parseInt(b.id));
-
+        function displayReviews(reviews, grid) {
+            // Clear existing content
+            grid.innerHTML = '';
+            
+            // Create cards for each review
             reviews.forEach(review => {
                 const card = document.createElement('div');
                 card.className = 'review-card';
-                const imageStyle = review.imageData
-                    ? `background-image: url('${review.imageData}');`
-                    : 'background: linear-gradient(135deg, var(--mid), var(--dark));';
+                
+                // Create card HTML with vday.jpg as background
                 card.innerHTML = `
-                    <div class="card-image" style="${imageStyle} background-size: cover; background-position: center;">
+                    <div class="card-image">
                         <span class="grade-badge">${review.grade || 'N/A'}</span>
                         <span class="origin-badge">${review.origin || 'Unknown'}</span>
                     </div>
@@ -670,28 +667,39 @@
                         </div>
                         <h3>${review.title}</h3>
                         <div class="official-grade">Official Grade: ${review.grade || 'N/A'}</div>
-                        <p>${review.excerpt}</p>
-                        <a href="${review.link}" target="_blank" class="read-link">Read Full Review →</a>
+                        <p>${review.excerpt || 'Click to read the full review...'}</p>
+                        <a href="${review.link || '#'}" target="_blank" class="read-link">Read Full Review →</a>
                     </div>
                 `;
-                if (comingSoonCards.length > 0) {
-                    grid.insertBefore(card, comingSoonCards[0]);
-                } else {
-                    grid.appendChild(card);
-                }
+                
+                grid.appendChild(card);
             });
         }
 
-        // ===== LOAD ON PAGE LOAD =====
-        document.addEventListener('DOMContentLoaded', function() {
-            loadReviews();
-        });
-
-        window.addEventListener('pageshow', function(e) {
-            if (e.persisted) {
-                loadReviews();
+        function updateStats(reviews) {
+            // Update total reviews count
+            document.getElementById('totalReviews').textContent = reviews.length;
+            
+            // Update highest grade (if grades are numbers)
+            const grades = reviews.map(r => parseInt(r.grade)).filter(g => !isNaN(g));
+            if (grades.length > 0) {
+                const highest = Math.max(...grades);
+                document.getElementById('highestGrade').textContent = highest;
             }
-        });
+            
+            // Update tea families count (unique origins)
+            const origins = new Set(reviews.map(r => r.origin).filter(o => o && o !== 'Unknown'));
+            document.getElementById('teaFamilies').textContent = origins.size || '—';
+        }
+
+        // ===== AUTO-REFRESH EVERY 5 MINUTES =====
+        setInterval(() => {
+            console.log('🔄 Auto-refreshing reviews...');
+            loadReviews();
+        }, 300000); // 5 minutes
+
+        // ===== LOAD ON PAGE LOAD =====
+        document.addEventListener('DOMContentLoaded', loadReviews);
     </script>
 </body>
 </html>
