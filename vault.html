@@ -132,10 +132,10 @@
         /* ===== PAGE HEADER ===== */
         .page-header {
             position: relative;
-            padding: 80px 0 70px;
+            padding: 60px 0 50px;
             text-align: center;
             overflow: hidden;
-            min-height: 350px;
+            min-height: 280px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -166,14 +166,14 @@
         }
         .page-header h1 {
             color: #fff;
-            font-size: 3.2rem;
-            margin-bottom: 8px;
+            font-size: 3rem;
+            margin-bottom: 6px;
             text-shadow: 0 4px 30px rgba(0,0,0,0.4);
         }
         .page-header .header-desc {
             color: rgba(255,255,255,0.85);
-            font-size: 1.1rem;
-            max-width: 700px;
+            font-size: 1rem;
+            max-width: 650px;
             margin: 0 auto;
             text-shadow: 0 2px 15px rgba(0,0,0,0.3);
             line-height: 1.7;
@@ -184,61 +184,162 @@
             display: flex;
             justify-content: center;
             gap: 40px;
-            padding: 30px 0 10px;
+            padding: 20px 0 10px;
             flex-wrap: wrap;
         }
         .vault-stats div { text-align: center; }
         .vault-stats .num {
             font-family: 'Playfair Display', serif;
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 700;
             color: var(--gold);
             display: block;
         }
         .vault-stats .lbl {
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             color: #888;
             text-transform: uppercase;
             letter-spacing: 0.05em;
         }
 
+        /* ===== ORIGIN FILTER TABS ===== */
+        .filter-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 30px;
+            padding: 12px 16px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px var(--shadow);
+        }
+        .filter-wrapper .filter-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--dark);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .filter-wrapper .filter-label span {
+            color: var(--gold);
+        }
+        .filter-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            flex: 1;
+        }
+        .filter-tab {
+            padding: 5px 14px;
+            border-radius: 50px;
+            background: var(--cream);
+            color: var(--dark);
+            font-size: 0.7rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid #e0ddd8;
+            white-space: nowrap;
+        }
+        .filter-tab:hover {
+            background: var(--gold);
+            color: #fff;
+            border-color: var(--gold);
+            transform: translateY(-2px);
+        }
+        .filter-tab.active {
+            background: var(--gold);
+            color: #fff;
+            border-color: var(--gold);
+        }
+        .filter-tab .count {
+            font-size: 0.6rem;
+            opacity: 0.7;
+            margin-left: 4px;
+        }
+        .filter-search {
+            flex: 1;
+            min-width: 150px;
+            position: relative;
+        }
+        .filter-search input {
+            width: 100%;
+            padding: 8px 14px;
+            padding-left: 34px;
+            border: 1px solid #e0ddd8;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-family: 'Inter', sans-serif;
+            background: var(--cream);
+            color: var(--dark);
+            transition: border-color 0.3s;
+        }
+        .filter-search input::placeholder {
+            color: #aaa;
+        }
+        .filter-search input:hover {
+            border-color: var(--gold);
+        }
+        .filter-search input:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(184,134,11,0.15);
+        }
+        .filter-search .search-icon {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #aaa;
+            font-size: 0.85rem;
+        }
+        .filter-results-count {
+            font-size: 0.75rem;
+            color: #888;
+            white-space: nowrap;
+        }
+        .filter-results-count strong {
+            color: var(--dark);
+        }
+
         /* ===== REVIEW CARDS GRID ===== */
         .reviews-grid-section {
-            padding: 40px 0 60px;
+            padding: 30px 0 60px;
         }
         .section-label {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             text-transform: uppercase;
             letter-spacing: 0.15em;
             color: var(--gold);
             font-weight: 600;
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
         .section-title {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             font-weight: 700;
             color: var(--dark);
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
         .reviews-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 24px;
         }
         .review-card {
             background: #fff;
-            border-radius: 16px;
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 4px 20px var(--shadow);
+            box-shadow: 0 3px 15px var(--shadow);
             transition: all 0.3s;
         }
         .review-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 16px 40px rgba(26,60,42,0.15);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(26,60,42,0.15);
         }
         .review-card .card-image {
-            height: 200px;
+            height: 150px;
             background-image: url('images/vday.jpg');
             background-size: cover;
             background-position: center;
@@ -249,56 +350,56 @@
         }
         .review-card .card-image .grade-badge {
             position: absolute;
-            top: 14px;
-            left: 14px;
+            top: 10px;
+            left: 10px;
             background: var(--gold);
             color: var(--dark);
-            padding: 3px 14px;
+            padding: 2px 12px;
             border-radius: 50px;
-            font-size: 0.7rem;
+            font-size: 0.6rem;
             font-weight: 700;
             text-transform: uppercase;
             z-index: 2;
         }
         .review-card .card-image .origin-badge {
             position: absolute;
-            bottom: 14px;
-            left: 14px;
+            bottom: 10px;
+            left: 10px;
             background: rgba(26,60,42,0.8);
             color: #fff;
-            padding: 3px 14px;
+            padding: 2px 12px;
             border-radius: 50px;
-            font-size: 0.7rem;
+            font-size: 0.6rem;
             font-weight: 500;
             z-index: 2;
         }
         .review-card .card-body {
-            padding: 20px 24px 24px;
+            padding: 16px 18px 20px;
         }
         .review-card .card-body h3 {
-            font-size: 1.2rem;
-            margin-bottom: 6px;
+            font-size: 1rem;
+            margin-bottom: 4px;
         }
         .review-card .card-body .excerpt-text {
             color: #5a6b5e;
-            font-size: 0.95rem;
-            line-height: 1.6;
-            margin-bottom: 14px;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            margin-bottom: 10px;
             display: -webkit-box;
-            -webkit-line-clamp: 3;
+            -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
         .review-card .read-link {
             color: var(--gold);
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
             transition: gap 0.3s;
         }
-        .review-card .read-link:hover { gap: 12px; }
+        .review-card .read-link:hover { gap: 10px; }
 
         /* ===== LOADING SPINNER ===== */
         .loading-spinner {
@@ -322,34 +423,44 @@
             100% { transform: rotate(360deg); }
         }
 
+        /* ===== NO RESULTS ===== */
+        .no-results {
+            grid-column: 1/-1;
+            text-align: center;
+            padding: 40px 20px;
+            color: #888;
+        }
+
         /* ===== PARTNER SECTION ===== */
         .partner-box {
             background: #fff;
-            padding: 30px 32px;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px var(--shadow);
+            padding: 24px 28px;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px var(--shadow);
             margin-top: 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 20px;
+            gap: 16px;
         }
         .partner-box h3 {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
         }
         .partner-box p {
             color: #5a6b5e;
             max-width: 500px;
             margin: 0;
+            font-size: 0.9rem;
         }
         .btn-gold {
             display: inline-block;
             background: var(--gold);
             color: var(--dark);
-            padding: 10px 30px;
+            padding: 8px 24px;
             border-radius: 50px;
             font-weight: 600;
+            font-size: 0.85rem;
             transition: all 0.3s;
         }
         .btn-gold:hover {
@@ -395,7 +506,7 @@
 
         /* ===== RESPONSIVE ===== */
         @media (max-width: 900px) {
-            .page-header h1 { font-size: 2.6rem; }
+            .page-header h1 { font-size: 2.4rem; }
         }
         @media (max-width: 700px) {
             .menu-toggle { display: flex; }
@@ -408,22 +519,28 @@
             }
             .nav-links.open { display: flex; }
             .page-header {
-                padding: 50px 0 40px;
-                min-height: 250px;
+                padding: 40px 0 30px;
+                min-height: 200px;
             }
-            .page-header h1 { font-size: 2.2rem; }
-            .reviews-grid { grid-template-columns: 1fr; }
+            .page-header h1 { font-size: 2rem; }
+            .reviews-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
+            .filter-wrapper {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+                padding: 14px;
+            }
+            .filter-tabs { justify-content: center; }
+            .filter-search { min-width: unset; }
+            .filter-results-count { text-align: center; }
             .partner-box { flex-direction: column; text-align: center; }
             .vault-stats { gap: 20px; }
         }
         @media (max-width: 480px) {
             .logo-text { font-size: 1.1rem; }
-            .page-header {
-                padding: 40px 0 30px;
-                min-height: 200px;
-            }
-            .page-header h1 { font-size: 1.8rem; }
-            .page-header p { font-size: 1rem; }
+            .page-header h1 { font-size: 1.6rem; }
+            .reviews-grid { grid-template-columns: 1fr; }
+            .partner-box { padding: 18px 20px; }
             .footer-logo img { height: 26px; }
         }
     </style>
@@ -468,7 +585,7 @@
     <div class="container">
         <div class="vault-stats">
             <div><span class="num" id="totalEntries">0</span><span class="lbl">Entries in Directory</span></div>
-            <div><span class="num" id="teaFamilies">—</span><span class="lbl">Tea Families</span></div>
+            <div><span class="num" id="teaOrigins">—</span><span class="lbl">Tea Origins</span></div>
         </div>
     </div>
 
@@ -477,6 +594,21 @@
         <div class="container">
             <span class="section-label">The Directory</span>
             <h2 class="section-title">Tea Profiles</h2>
+
+            <!-- ===== ORIGIN FILTER ===== -->
+            <div class="filter-wrapper">
+                <div class="filter-label">Filter by <span>Origin</span></div>
+                <div class="filter-tabs" id="filterTabs">
+                    <button class="filter-tab active" data-origin="all">All</button>
+                </div>
+                <div class="filter-search">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="searchInput" placeholder="Search profiles..." />
+                </div>
+                <div class="filter-results-count" id="resultsCount">
+                    Showing <strong id="countDisplay">0</strong> profiles
+                </div>
+            </div>
 
             <div class="reviews-grid" id="reviewsGrid">
                 <div class="loading-spinner" id="loadingSpinner">
@@ -530,6 +662,9 @@
         const SHEET_ID = '1ZTrbGbyGNk8v3x8SDSyn4EsQ6WFRUGtsuzGb35vWk8U';
         const API_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
 
+        // ===== GLOBAL VARIABLES =====
+        let allReviews = [];
+
         // ===== FETCH AND DISPLAY REVIEWS =====
         async function loadReviews() {
             const grid = document.getElementById('reviewsGrid');
@@ -542,6 +677,7 @@
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 
                 const text = await response.text();
+                console.log('📊 Response received, length:', text.length);
                 
                 // Parse the JSON response
                 const jsonStart = text.indexOf('{');
@@ -549,33 +685,49 @@
                 const jsonText = text.substring(jsonStart, jsonEnd);
                 const data = JSON.parse(jsonText);
                 
+                console.log('📊 Parsed data successfully');
+                
                 // Extract rows from the response
                 const rows = data.table.rows;
                 let reviews = [];
+                const originSet = new Set();
                 
-                // Column mapping: A=id, B=title, C=grade, D=origin, E=excerpt, F=link
+                // Column mapping: A=id, B=title, C=grade, D=origin, E=excerpt, F=link, G=status
                 for (let i = 0; i < rows.length; i++) {
                     const row = rows[i];
-                    // Check if row has an id value (first column)
                     if (row.c && row.c[0] && row.c[0].v !== null && row.c[0].v !== '') {
-                        const review = {
-                            id: parseInt(row.c[0]?.v || 0),
-                            title: row.c[1]?.v || 'Untitled',
-                            grade: row.c[2]?.v || 'N/A',
-                            origin: row.c[3]?.v || 'Unknown',
-                            excerpt: row.c[4]?.v || '',
-                            link: row.c[5]?.v || '#'
-                        };
-                        reviews.push(review);
+                        // Get the status from column G (index 6)
+                        const status = row.c[6]?.v || '';
+                        
+                        // Only include reviews that are published
+                        if (status === '' || status.toLowerCase() === 'published') {
+                            const origin = row.c[3]?.v || 'Unknown';
+                            const review = {
+                                id: parseInt(row.c[0]?.v || 0),
+                                title: row.c[1]?.v || 'Untitled',
+                                grade: row.c[2]?.v || 'N/A',
+                                origin: origin,
+                                excerpt: row.c[4]?.v || '',
+                                link: row.c[5]?.v || '#'
+                            };
+                            reviews.push(review);
+                            originSet.add(origin);
+                            console.log(`📊 Added review: ${review.id} - ${review.title} (${origin})`);
+                        } else {
+                            console.log(`⏳ Skipping review: ${row.c[0]?.v} - status: "${status}"`);
+                        }
                     }
                 }
+                
+                console.log(`📊 Total reviews loaded: ${reviews.length}`);
+                console.log(`📊 Origins found: ${[...originSet].join(', ')}`);
                 
                 // Remove loading spinner
                 if (spinner) spinner.remove();
                 
                 if (reviews.length === 0) {
                     grid.innerHTML = `
-                        <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; color: var(--dark);">
+                        <div class="no-results">
                             <p style="font-size: 1.2rem; margin-bottom: 10px;">📚 No entries found yet</p>
                             <p style="color: #888;">Check back soon for new tea profiles!</p>
                         </div>
@@ -583,20 +735,26 @@
                     return;
                 }
                 
+                // Store all reviews globally
+                allReviews = reviews;
+                
+                // Build origin filter tabs
+                buildFilterTabs(originSet);
+                
                 // Sort reviews by id
                 const sortedReviews = [...reviews].sort((a, b) => a.id - b.id);
                 
-                // Display reviews in grid
+                // Display reviews
                 displayReviews(sortedReviews, grid);
                 
                 // Update stats
-                updateStats(sortedReviews);
+                updateStats(reviews);
                 
             } catch (error) {
                 console.error('❌ Error loading reviews from Google Sheets:', error);
                 if (spinner) spinner.remove();
                 grid.innerHTML = `
-                    <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px;">
+                    <div class="no-results">
                         <p style="font-size: 1.2rem; color: #b33; margin-bottom: 10px;">⚠️ Could not load directory</p>
                         <p style="color: #888;">Error: ${error.message}</p>
                         <button onclick="loadReviews()" style="margin-top: 20px; padding: 10px 30px; background: var(--gold); color: var(--dark); border: none; border-radius: 50px; font-weight: 600; cursor: pointer; font-size: 1rem;">
@@ -607,16 +765,85 @@
             }
         }
 
+        // ===== BUILD ORIGIN FILTER TABS =====
+        function buildFilterTabs(origins) {
+            const container = document.getElementById('filterTabs');
+            
+            // Keep the "All" button
+            const allButton = container.querySelector('[data-origin="all"]');
+            const totalCount = allReviews.length;
+            allButton.innerHTML = `All <span class="count">(${totalCount})</span>`;
+            
+            container.innerHTML = '';
+            container.appendChild(allButton);
+            
+            // Sort origins alphabetically
+            const sortedOrigins = [...origins].sort();
+            
+            sortedOrigins.forEach(origin => {
+                const count = allReviews.filter(r => r.origin === origin).length;
+                const button = document.createElement('button');
+                button.className = 'filter-tab';
+                button.dataset.origin = origin;
+                button.innerHTML = `${origin} <span class="count">(${count})</span>`;
+                button.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
+                    button.classList.add('active');
+                    filterReviews(origin);
+                });
+                container.appendChild(button);
+            });
+        }
+
+        // ===== FILTER REVIEWS BY ORIGIN =====
+        function filterReviews(origin) {
+            const grid = document.getElementById('reviewsGrid');
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            
+            let filtered = allReviews;
+            
+            // Filter by origin
+            if (origin !== 'all') {
+                filtered = filtered.filter(review => review.origin === origin);
+            }
+            
+            // Filter by search term
+            if (searchTerm !== '') {
+                filtered = filtered.filter(review => 
+                    review.title.toLowerCase().includes(searchTerm) ||
+                    review.excerpt.toLowerCase().includes(searchTerm) ||
+                    review.grade.toLowerCase().includes(searchTerm) ||
+                    review.origin.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            // Sort by id
+            const sorted = filtered.sort((a, b) => a.id - b.id);
+            
+            // Update count
+            document.getElementById('countDisplay').textContent = sorted.length;
+            
+            if (sorted.length === 0) {
+                grid.innerHTML = `
+                    <div class="no-results">
+                        <p style="font-size: 1.1rem; margin-bottom: 6px;">🔍 No profiles found</p>
+                        <p style="color: #888; font-size: 0.9rem;">Try adjusting your search or origin filter.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            displayReviews(sorted, grid);
+        }
+
+        // ===== DISPLAY REVIEWS =====
         function displayReviews(reviews, grid) {
-            // Clear existing content
             grid.innerHTML = '';
             
-            // Create cards for each review
             reviews.forEach(review => {
                 const card = document.createElement('div');
                 card.className = 'review-card';
                 
-                // Create card HTML with vday.jpg as background
                 card.innerHTML = `
                     <div class="card-image">
                         <span class="grade-badge">${review.grade || 'N/A'}</span>
@@ -633,18 +860,24 @@
             });
         }
 
+        // ===== UPDATE STATS =====
         function updateStats(reviews) {
-            // Update total entries count
             document.getElementById('totalEntries').textContent = reviews.length;
             
-            // Update tea families count (unique origins)
             const origins = new Set(reviews.map(r => r.origin).filter(o => o && o !== 'Unknown'));
-            document.getElementById('teaFamilies').textContent = origins.size || '—';
+            document.getElementById('teaOrigins').textContent = origins.size || '—';
         }
+
+        // ===== SEARCH INPUT LISTENER =====
+        document.getElementById('searchInput').addEventListener('input', () => {
+            const activeTab = document.querySelector('.filter-tab.active');
+            const origin = activeTab ? activeTab.dataset.origin : 'all';
+            filterReviews(origin);
+        });
 
         // ===== AUTO-REFRESH EVERY 5 MINUTES =====
         setInterval(() => {
-            console.log('🔄 Auto-refreshing directory...');
+            console.log('🔄 Auto-refreshing reviews...');
             loadReviews();
         }, 300000);
 
