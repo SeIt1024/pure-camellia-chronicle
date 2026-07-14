@@ -178,37 +178,104 @@
             text-shadow: 0 2px 15px rgba(0,0,0,0.3);
         }
 
-        /* ===== CATEGORY FILTER TABS ===== */
-        .filter-tabs {
+        /* ===== CATEGORY FILTER DROPDOWN ===== */
+        .filter-wrapper {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            align-items: center;
+            gap: 16px;
             margin-bottom: 30px;
-            padding: 10px 0;
-            border-bottom: 2px solid rgba(184,134,11,0.2);
-        }
-        .filter-tab {
-            padding: 8px 20px;
-            border-radius: 50px;
+            padding: 12px 16px;
             background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px var(--shadow);
+        }
+        .filter-wrapper .filter-label {
+            font-size: 0.8rem;
+            font-weight: 600;
             color: var(--dark);
-            font-size: 0.85rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .filter-wrapper .filter-label span {
+            color: var(--gold);
+        }
+        .filter-dropdown {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+        .filter-dropdown select {
+            width: 100%;
+            padding: 10px 16px;
             border: 1px solid #e0ddd8;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-family: 'Inter', sans-serif;
+            background: var(--cream);
+            color: var(--dark);
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            transition: border-color 0.3s;
         }
-        .filter-tab:hover {
-            background: var(--gold);
-            color: #fff;
+        .filter-dropdown select:hover {
             border-color: var(--gold);
-            transform: translateY(-2px);
         }
-        .filter-tab.active {
-            background: var(--gold);
-            color: #fff;
+        .filter-dropdown select:focus {
+            outline: none;
             border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(184,134,11,0.15);
+        }
+        .filter-dropdown select option {
+            padding: 8px;
+        }
+        .filter-search {
+            flex: 2;
+            min-width: 180px;
+            position: relative;
+        }
+        .filter-search input {
+            width: 100%;
+            padding: 10px 16px;
+            padding-left: 38px;
+            border: 1px solid #e0ddd8;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-family: 'Inter', sans-serif;
+            background: var(--cream);
+            color: var(--dark);
+            transition: border-color 0.3s;
+        }
+        .filter-search input::placeholder {
+            color: #aaa;
+        }
+        .filter-search input:hover {
+            border-color: var(--gold);
+        }
+        .filter-search input:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(184,134,11,0.15);
+        }
+        .filter-search .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+        .filter-results-count {
+            font-size: 0.8rem;
+            color: #888;
+            white-space: nowrap;
+        }
+        .filter-results-count strong {
+            color: var(--dark);
         }
 
         /* ===== FEATURED CARD ===== */
@@ -493,8 +560,15 @@
             }
             .page-header h1 { font-size: 2rem; }
             .articles-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
-            .filter-tabs { gap: 6px; }
-            .filter-tab { padding: 6px 14px; font-size: 0.75rem; }
+            .filter-wrapper {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+                padding: 14px;
+            }
+            .filter-dropdown { min-width: unset; }
+            .filter-search { min-width: unset; }
+            .filter-results-count { text-align: center; }
         }
         @media (max-width: 480px) {
             .logo-text { font-size: 1.1rem; }
@@ -502,7 +576,6 @@
             .featured-card .card-body { padding: 16px 18px 20px; }
             .featured-card .card-body h3 { font-size: 1.1rem; }
             .articles-grid { grid-template-columns: 1fr; }
-            .filter-tabs { justify-content: center; }
             .footer-logo img { height: 26px; }
         }
     </style>
@@ -568,10 +641,22 @@
             <span class="section-label">The Archive</span>
             <h2 class="section-title">All Episodes</h2>
 
-            <!-- ===== CATEGORY FILTER TABS ===== -->
-            <div class="filter-tabs" id="filterTabs">
-                <button class="filter-tab active" data-category="all">All</button>
-                <!-- Categories will be added dynamically -->
+            <!-- ===== CATEGORY FILTER DROPDOWN ===== -->
+            <div class="filter-wrapper">
+                <div class="filter-label">Filter by <span>Category</span></div>
+                <div class="filter-dropdown">
+                    <select id="categorySelect">
+                        <option value="all">All Categories</option>
+                        <!-- Categories will be added dynamically -->
+                    </select>
+                </div>
+                <div class="filter-search">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="searchInput" placeholder="Search articles..." />
+                </div>
+                <div class="filter-results-count" id="resultsCount">
+                    Showing <strong id="countDisplay">0</strong> articles
+                </div>
             </div>
 
             <!-- ===== ARTICLES GRID ===== -->
@@ -616,7 +701,6 @@
 
         // ===== GLOBAL VARIABLES =====
         let allArticles = [];
-        let currentCategory = 'all';
 
         // ===== FETCH AND DISPLAY ARTICLES =====
         async function loadArticles() {
@@ -643,7 +727,7 @@
                 // Extract rows from the response
                 const rows = data.table.rows;
                 let articles = [];
-                const categories = new Set();
+                const categorySet = new Set();
                 
                 // Column mapping: A=day, B=title, C=era, D=category, E=excerpt, F=link, G=status
                 for (let i = 0; i < rows.length; i++) {
@@ -652,7 +736,7 @@
                         // Get the status from column G (index 6)
                         const status = row.c[6]?.v || '';
                         
-                        // Only include articles that are published (or empty for backward compatibility)
+                        // Only include articles that are published
                         if (status === '' || status.toLowerCase() === 'published') {
                             const category = row.c[3]?.v || 'History';
                             const article = {
@@ -664,7 +748,7 @@
                                 link: row.c[5]?.v || '#'
                             };
                             articles.push(article);
-                            categories.add(category);
+                            categorySet.add(category);
                             console.log(`📊 Added article: Day ${article.day} - ${article.title} (${category})`);
                         } else {
                             console.log(`⏳ Skipping article: Day ${row.c[0]?.v} - status: "${status}"`);
@@ -673,7 +757,7 @@
                 }
                 
                 console.log(`📊 Total articles loaded: ${articles.length}`);
-                console.log(`📊 Categories found: ${[...categories].join(', ')}`);
+                console.log(`📊 Categories found: ${[...categorySet].join(', ')}`);
                 
                 // Remove loading spinner
                 if (spinner) spinner.remove();
@@ -691,8 +775,8 @@
                 // Store all articles globally
                 allArticles = articles;
                 
-                // Build category filter tabs
-                buildFilterTabs(categories);
+                // Populate category dropdown
+                populateCategoryDropdown(categorySet);
                 
                 // Sort articles by day in ASCENDING order
                 const sortedArticles = [...articles].sort((a, b) => a.day - b.day);
@@ -721,53 +805,54 @@
             }
         }
 
-        // ===== BUILD CATEGORY FILTER TABS =====
-        function buildFilterTabs(categories) {
-            const container = document.getElementById('filterTabs');
-            
-            // Keep the "All" button
-            const allButton = container.querySelector('[data-category="all"]');
-            container.innerHTML = '';
-            container.appendChild(allButton);
-            
-            // Add category buttons
+        // ===== POPULATE CATEGORY DROPDOWN =====
+        function populateCategoryDropdown(categories) {
+            const select = document.getElementById('categorySelect');
             const sortedCategories = [...categories].sort();
+            
             sortedCategories.forEach(category => {
-                const button = document.createElement('button');
-                button.className = 'filter-tab';
-                button.dataset.category = category;
-                button.textContent = category;
-                button.addEventListener('click', () => {
-                    // Update active state
-                    document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
-                    button.classList.add('active');
-                    // Filter articles
-                    currentCategory = category;
-                    filterArticles(category);
-                });
-                container.appendChild(button);
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = category;
+                select.appendChild(option);
             });
         }
 
-        // ===== FILTER ARTICLES BY CATEGORY =====
-        function filterArticles(category) {
+        // ===== FILTER AND SEARCH =====
+        function filterAndSearch() {
             const grid = document.getElementById('articlesGrid');
+            const selectedCategory = document.getElementById('categorySelect').value;
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
             
-            let filtered;
-            if (category === 'all') {
-                filtered = [...allArticles];
-            } else {
-                filtered = allArticles.filter(article => article.category === category);
+            let filtered = allArticles;
+            
+            // Filter by category
+            if (selectedCategory !== 'all') {
+                filtered = filtered.filter(article => article.category === selectedCategory);
+            }
+            
+            // Filter by search term
+            if (searchTerm !== '') {
+                filtered = filtered.filter(article => 
+                    article.title.toLowerCase().includes(searchTerm) ||
+                    article.excerpt.toLowerCase().includes(searchTerm) ||
+                    article.category.toLowerCase().includes(searchTerm) ||
+                    article.era.toLowerCase().includes(searchTerm)
+                );
             }
             
             // Sort by day ascending
             const sorted = filtered.sort((a, b) => a.day - b.day);
             
+            // Update count
+            document.getElementById('countDisplay').textContent = sorted.length;
+            
+            // Display or show no results
             if (sorted.length === 0) {
                 grid.innerHTML = `
                     <div class="no-results">
-                        <p style="font-size: 1.1rem; margin-bottom: 6px;">📭 No articles in this category</p>
-                        <p style="color: #888; font-size: 0.9rem;">Try selecting a different category.</p>
+                        <p style="font-size: 1.1rem; margin-bottom: 6px;">🔍 No articles found</p>
+                        <p style="color: #888; font-size: 0.9rem;">Try adjusting your search or category filter.</p>
                     </div>
                 `;
                 return;
@@ -778,10 +863,8 @@
 
         // ===== DISPLAY ARTICLES =====
         function displayArticles(articles, grid) {
-            // Clear existing content
             grid.innerHTML = '';
             
-            // Create cards for each article
             articles.forEach(article => {
                 const card = document.createElement('div');
                 card.className = 'article-card';
@@ -819,6 +902,10 @@
             document.getElementById('featuredExcerpt').textContent = article.excerpt || 'Click to read the full story...';
             document.getElementById('featuredLink').href = article.link || '#';
         }
+
+        // ===== EVENT LISTENERS =====
+        document.getElementById('categorySelect').addEventListener('change', filterAndSearch);
+        document.getElementById('searchInput').addEventListener('input', filterAndSearch);
 
         // ===== AUTO-REFRESH EVERY 5 MINUTES =====
         setInterval(() => {
