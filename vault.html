@@ -303,7 +303,7 @@
             color: var(--dark);
         }
 
-        /* ===== REVIEW CARDS GRID ===== */
+        /* ===== REVIEW CARDS GRID - SMALLER ===== */
         .reviews-grid-section {
             padding: 30px 0 60px;
         }
@@ -324,22 +324,22 @@
         }
         .reviews-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 24px;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
         }
         .review-card {
             background: #fff;
-            border-radius: 12px;
+            border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 3px 15px var(--shadow);
+            box-shadow: 0 2px 10px var(--shadow);
             transition: all 0.3s;
         }
         .review-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 30px rgba(26,60,42,0.15);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(26,60,42,0.12);
         }
         .review-card .card-image {
-            height: 150px;
+            height: 120px;
             background-image: url('images/vday.jpg');
             background-size: cover;
             background-position: center;
@@ -350,41 +350,42 @@
         }
         .review-card .card-image .grade-badge {
             position: absolute;
-            top: 10px;
-            left: 10px;
+            top: 8px;
+            left: 8px;
             background: var(--gold);
             color: var(--dark);
-            padding: 2px 12px;
+            padding: 2px 10px;
             border-radius: 50px;
-            font-size: 0.6rem;
+            font-size: 0.55rem;
             font-weight: 700;
             text-transform: uppercase;
             z-index: 2;
         }
         .review-card .card-image .origin-badge {
             position: absolute;
-            bottom: 10px;
-            left: 10px;
+            bottom: 8px;
+            left: 8px;
             background: rgba(26,60,42,0.8);
             color: #fff;
-            padding: 2px 12px;
+            padding: 2px 10px;
             border-radius: 50px;
-            font-size: 0.6rem;
+            font-size: 0.55rem;
             font-weight: 500;
             z-index: 2;
         }
         .review-card .card-body {
-            padding: 16px 18px 20px;
+            padding: 12px 14px 16px;
         }
         .review-card .card-body h3 {
-            font-size: 1rem;
-            margin-bottom: 4px;
+            font-size: 0.85rem;
+            margin-bottom: 3px;
+            line-height: 1.3;
         }
         .review-card .card-body .excerpt-text {
             color: #5a6b5e;
-            font-size: 0.85rem;
-            line-height: 1.5;
-            margin-bottom: 10px;
+            font-size: 0.75rem;
+            line-height: 1.4;
+            margin-bottom: 8px;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
@@ -393,13 +394,13 @@
         .review-card .read-link {
             color: var(--gold);
             font-weight: 600;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             display: inline-flex;
             align-items: center;
             gap: 4px;
             transition: gap 0.3s;
         }
-        .review-card .read-link:hover { gap: 10px; }
+        .review-card .read-link:hover { gap: 8px; }
 
         /* ===== LOADING SPINNER ===== */
         .loading-spinner {
@@ -523,7 +524,7 @@
                 min-height: 200px;
             }
             .page-header h1 { font-size: 2rem; }
-            .reviews-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
+            .reviews-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
             .filter-wrapper {
                 flex-direction: column;
                 align-items: stretch;
@@ -540,6 +541,7 @@
             .logo-text { font-size: 1.1rem; }
             .page-header h1 { font-size: 1.6rem; }
             .reviews-grid { grid-template-columns: 1fr; }
+            .review-card .card-image { height: 140px; }
             .partner-box { padding: 18px 20px; }
             .footer-logo img { height: 26px; }
         }
